@@ -83,8 +83,17 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "giggsey/libphonenumber-for-php": {
+        "version": "8.9.15"
+    },
+    "giggsey/locale": {
+        "version": "1.5"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "misd/phone-number-bundle": {
+        "version": "v1.3.2"
     },
     "monolog/monolog": {
         "version": "1.23.0"

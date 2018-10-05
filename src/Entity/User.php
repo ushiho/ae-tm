@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -18,26 +20,50 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 15,
+     *      minMessage = "Your first name must be at least 3 characters long",
+     *      maxMessage = "Your first name cannot be longer than 15 characters"
+     * )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 15,
+     *      minMessage = "Your first name must be at least 3 characters long",
+     *      maxMessage = "Your first name cannot be longer than 15 characters"
+     * )
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Email(
+     *     message = "The email is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min=8,
+     *      minMessage = "Set a password minimum of 8 characters"
+     * )
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @AssertPhoneNumber
      */
     private $phoneNumber;
 
@@ -53,15 +79,21 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Country
      */
     private $country;
 
     /**
-     * @ORM\Column(type="string", length=255)
+    *@Assert\EqualTo(propertyPath="password")
+    */
+    private $confirmPassword;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Assert\Date()
      */
     private $birthday;
 
-    private $confirmPassword;
 
     public function getId(): ?int
     {
@@ -164,24 +196,24 @@ class User
         return $this;
     }
 
-    public function getBirthday(): ?string
-    {
-        return $this->birthday;
-    }
-
-    public function setBirthday(string $birthday): self
-    {
-        $this->birthday = $birthday;
-
-        return $this;
-    }
-
     public function getConfirmPassword(){
         return $this->confirmPassword;
     }
 
     public function setConfirmPassword(string $confirm){
         $this->confirmPassword = $confirm;
+    }
+
+    public function getBirthday(): ?\DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(?\DateTimeInterface $birthday): self
+    {
+        $this->birthday = $birthday;
+
+        return $this;
     }
     
 }
