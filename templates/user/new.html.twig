@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/base.html.twig' %}
 {% block center_column %}
 {{ form_start(form) }}
 <h1>Enter your data</h1>
@@ -81,7 +81,6 @@
                     {'placeholder':'Role', 'class':'text' }}) }}</td>
                 </tr>
             </table>
-            <p>&nbsp;</p>
             <button type="submit" class="button">Create</button>
         </div>
         {{ form_end(form) }}

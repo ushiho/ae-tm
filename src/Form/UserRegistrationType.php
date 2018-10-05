@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserRegistrationType extends AbstractType
@@ -39,7 +40,7 @@ class UserRegistrationType extends AbstractType
                 ),
             ))
             ->add('country', CountryType::class)
-            ->add('birthday', DateType::class)
+            ->add('birthday', BirthdayType::class)
         ;
     }
 
