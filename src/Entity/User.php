@@ -61,6 +61,8 @@ class User
      */
     private $birthday;
 
+    private $confirmPassword;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -173,4 +175,13 @@ class User
 
         return $this;
     }
+
+    public function getConfirmPassword(){
+        return $this->confirmPassword;
+    }
+
+    public function setConfirmPassword(string $confirm){
+        $this->confirmPassword = $confirm;
+    }
+    
 }

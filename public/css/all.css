@@ -332,3 +332,15 @@ div.table .select select {
 	padding:30px 0 15px 0;
 	}
 .buttons input {margin:0 0 6px 0;}
+.button {
+	float:right;
+	display:block;
+	width:75px;
+	height:35px;
+	text-align:center;
+	color:#fff;
+	text-transform:uppercase;
+	font-weight:bold;
+	line-height:27px;
+	background:url(../img/bg-orange-button.gif) no-repeat;
+	}
