@@ -1,0 +1,87 @@
+{% extends 'user/base.html.twig' %}
+{% block center_column %}
+{{ form_start(form) }}
+<h1>Enter your data</h1>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Add user information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.firstName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.firstName, {'attr' : 
+                    {'placeholder':'First Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.lastName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.lastName, {'attr' : 
+                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.email) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.email, {'attr' : 
+                    {'placeholder':'Email', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.password) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.password, {'attr' : 
+                    {'placeholder':'Password', 'class':'text' }}) }}</td>
+                </tr>
+                 <tr>
+                <td class="first" width="172">
+                        <strong>{{ form_label(form.confirmPassword) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.confirmPassword, {'attr' : 
+                    {'placeholder':'Confirm Password', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.phoneNumber) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.phoneNumber, {'attr' : 
+                    {'placeholder':'Phone Number', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.birthday) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.birthday, {'attr' : 
+                    {'placeholder':'BirthDay', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.gender) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.gender, {'attr' : 
+                    {'placeholder':'Gender', 'class':'text' }}) }}</td>
+                </tr>
+                
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.country) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.country, {'attr' : 
+                    {'placeholder':'Country', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.role) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.role, {'attr' : 
+                    {'placeholder':'Role', 'class':'text' }}) }}</td>
+                </tr>
+            </table>
+            <button type="submit" class="button">Create</button>
+        </div>
+        {{ form_end(form) }}
+{% endblock %}
