@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    <li><span><span><a href="#">Projects</a></span></span></li>
+    <li><span><span><a href="#">Missions</a></span></span></li>
+    <li><span><span><a href="#">Rent</a></span></span></li>
+    <li><span><span><a href="#">Drivers</a></span></span></li>
+    <li><span><span><a href="#">Vehicles</a></span></span></li>
+    <li><span><span><a href="#">Payments</a></span></span></li>
+    <li class="active"><span><span><a href="#">Users</a></span></span></li>
+{% endblock %}
+
+{% block center_column  %}
+    <div class="top-bar"> <a href="/user/new" class="button">ADD NEW </a>
+        <h1>Contents</h1>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/user">Users</a>
+        {% endblock %}
+        </div>
+        <br/>
+    </div>
+    <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th>Phone number</th>
+                <th>Gender</th>
+                <th>Birthdate</th>
+                <th>Country</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            {% for user in users %}
+            <tr class="bg">
+                <td class="first">{{ user.firstname }}</td>
+                <td class="first">{{ user.lastname }}</td>
+                <td class="first">{{ user.email }}</td>
+                <td class="first">{{ user.phoneNumber }}</td>
+                <td class="first">
+                {% if user.gender==1 %}Female{% else %}Male{% endif %}
+                </td>
+                <td class="first">{% if user.birthday %}{{ user.birthday|date('d-m-Y')}}{% endif %}</td>
+                <td class="first">{{ user.country }}</td>
+                <td class="first">
+                {% if user.role==1 %}Admin{% else %}User{% endif %}
+                </td>
+                <td>
+                <a href="{{ path('deleteUser', {'id': user.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editUser', {'id': user.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

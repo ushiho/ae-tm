@@ -4,20 +4,15 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserRegistrationType;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-
-    /**
-     * @Route("/home", name="home")
-     */
-    public function home(){
-        return $this->render('home.html.twig');
-    }
 
     /**
      * @Route("/", name="login")
@@ -31,39 +26,45 @@ class UserController extends AbstractController
 
     /**
      * @Route("/user/new", name="addUser")
+     * @Route("user/edit/{id}", name="editUser")
      */
-    public function addUser(Request $request, ObjectManager $manager){
-        $user = new User();
-
+    public function userForm(Request $request, ObjectManager $manager,
+    UserPasswordEncoderInterface $encoder, User $user = null){
+        if($user == null){
+            $user = new User();
+        }
         $form = $this->createForm(UserRegistrationType::class, $user);
-
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
             $manager->persist($user);
             $manager->flush();
+            return $this->redirectToRoute('allUsers');
         }
-        dump($user);
-        return $this->render('user/new.html.twig', [
-            'form' => $form->createView()
+        return $this->render('user/show.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
         ]);
     }
 
     /**
-     * @Route("/test", name="Add")
+     * @Route("/user", name="allUsers")
      */
-    public function testAdd(ObjectManager $manager){
-        $user = new User();
-        $user->setFirstName("hamza")
-             ->setLastName("lotfi")
-             ->setEmail("lol@gmail.com")
-             ->setPassword("123")
-             ->setCountry("Morocco")
-             ->setBirthday(new \DateTime())
-             ->setPhoneNumber("0615478487")
-             ->setGender("2")
-             ->setRole("1");
-        $manager->persist($user);
-        $manager->flush();
-        return $this->redirectToRoute('home');
+    public function findAll(UserRepository $repo){
+        $users = $repo->findAll();
+        return $this->render('user/userBase.html.twig', array(
+        'users' => $users,
+        )
+        );
     }
+
+    /**
+     * @Route("/user/delete/{id}", name="deleteUser")
+     */
+    public function delete(User $user, ObjectManager $manager){
+        $manager->remove($user);
+        $manager->flush();
+        return $this->redirectToRoute('allUsers');
+    }
+
 }

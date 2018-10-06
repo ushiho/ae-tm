@@ -13,6 +13,7 @@ form {
 	}
 img {border:none;}
 a {color:#060606;text-decoration: none}
+a.path {text-decoration: underline red}
 a:hover {text-decoration: underline}
 input {vertical-align:middle}
 .floatleft {float:left !important}

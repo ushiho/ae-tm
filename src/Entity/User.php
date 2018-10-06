@@ -4,12 +4,18 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber as AssertPhoneNumber;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *   fields={"email"},
+ *   message="The email adress is already exist"
+ * )
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -63,7 +69,12 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @AssertPhoneNumber
+     * @Assert\Length(
+     * min=10,
+     * max=10,
+     * minMessage = "The number phone must be a 10 digits",
+     * maxMessage = "The number phone must be a 10 digits"
+     * )
      */
     private $phoneNumber;
 
@@ -84,7 +95,7 @@ class User
     private $country;
 
     /**
-    *@Assert\EqualTo(propertyPath="password")
+    *@Assert\EqualTo(propertyPath="password", message="The two passwords aren't mutch")
     */
     private $confirmPassword;
 
@@ -93,6 +104,15 @@ class User
      * @Assert\Date()
      */
     private $birthday;
+
+    /**
+     * @Assert\EqualTo(propertyPath="email", message="The two emails aren't mutch")
+     * @Assert\Email(
+     *     message = "The email is not a valid email.",
+     *     checkMX = true
+     * )
+     */
+    private $confirmEmail;
 
 
     public function getId(): ?int
@@ -215,5 +235,22 @@ class User
 
         return $this;
     }
+
+    public function getConfirmEmail(){
+        return $this->confirmEmail;
+    }
+
+    public function setConfirmEmail($email){
+        $this->confirmEmail = $email;
+    }
     
+    public function getUsername() {}
+
+    public function getRoles() {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials() {}
+
+    public function getSalt() {}
 }

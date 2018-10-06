@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -23,9 +24,10 @@ class UserRegistrationType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('email', EmailType::class)
+            ->add('confirmEmail', EmailType::class)
             ->add('password', PasswordType::class)
             ->add('confirmPassword', PasswordType::class)
-            ->add('phoneNumber', NumberType::class)
+            ->add('phoneNumber', TelType::class)
             ->add('role', ChoiceType::class, array(
                 'choices' => array(
                     'Admin' => 1,
@@ -36,7 +38,6 @@ class UserRegistrationType extends AbstractType
                 'choices' => array(
                     'Female' => 1,
                     'Male' => 2,
-                    'None' => 3,
                 ),
             ))
             ->add('country', CountryType::class)
