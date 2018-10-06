@@ -1,0 +1,32 @@
+a
+{
+color:#000000;
+cursor:hand;
+font-family:Arial;
+font-size:14px;
+text-decoration :none;
+}
+.btn
+{
+    padding: 0;
+border: none;
+background: none;
+cursor: pointer;
+}
+button:hover
+{
+    color: #990000;
+}
+td
+{
+font-family:Arial;
+font-size:14px;
+}
+a:hover {
+color:#990000;
+}
+body
+{
+margin: 0 0 0 0;
+font-family:Arial;
+}

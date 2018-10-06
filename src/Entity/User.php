@@ -245,7 +245,9 @@ class User implements UserInterface
         $this->confirmEmail = $email;
     }
     
-    public function getUsername() {}
+    public function getUsername():string {
+        return (string) $this->email;
+    }
 
     public function getRoles() {
         return ['ROLE_USER'];

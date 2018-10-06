@@ -21,6 +21,10 @@ security:
             form_login:
                 login_path: login
                 check_path: login
+            
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
 
             # activate different ways to authenticate
 
