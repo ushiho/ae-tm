@@ -115,6 +115,7 @@ class User implements UserInterface
     private $confirmEmail;
 
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -253,4 +254,5 @@ class User implements UserInterface
     public function eraseCredentials() {}
 
     public function getSalt() {}
+
 }
