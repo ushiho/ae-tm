@@ -31,6 +31,13 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
+                        <strong>{{ form_label(form.cin) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.cin, {'attr' : 
+                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
                         <strong>{{ form_label(form.email) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.email, {'attr' : 

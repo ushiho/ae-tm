@@ -22,6 +22,7 @@ class UserRegistrationType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
+            ->add('cin')
             ->add('email', EmailType::class)
             ->add('confirmEmail', EmailType::class)
             ->add('password', PasswordType::class)
