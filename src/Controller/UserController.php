@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -26,7 +27,6 @@ class UserController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-        
         return $this->render('user/login.html.twig', [
             'username' => $lastUsername,
             'error'         => $error,
@@ -76,4 +76,10 @@ class UserController extends AbstractController
         return $this->redirectToRoute('allUsers');
     }
 
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout(){
+        throw new \Exception();
+    }
 }

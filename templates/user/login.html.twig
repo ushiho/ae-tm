@@ -51,6 +51,7 @@
                                                     <tr></tr>
                                                     <tr><td height="10"></td></tr>
                                                     <tr>
+                                                    {% block body %}
                                                         <form method="POST" id="myfrom" >
                                                         <td align="right"><img src="{{ asset('img/language.gif') }}" width="41" height="37"></td>
                                                         <td align="center"><label for="_username">Username</label></td>
@@ -76,6 +77,11 @@
                                                 <tbody><tr><td height="10"></td></tr>
                                                 <tr>
                                                 <td width="2%"></td>
+                                                <td align="center">
+                                                    <label>
+                                                        <input type="checkbox" value="_remember_me"> Remember me
+                                                    </label>
+                                                </td>
                                                 {% if error %}
                                                 <td width="71" height="32" align="right"><img src="{{ asset('img/sigh.gif') }}" width="25" height="20"> </td>
                                                 <td width="6" align="left"></td>
@@ -120,8 +126,9 @@
                                     </td>
                                     <td id="cancelright" height="38" width="6" background="{{asset('img/loginitright.gif')}}"></td>
                                     <td width="51">&nbsp;  </td>
-
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                                 </form>
+                                {% endblock %}
                             </tr>
                         </tbody>
                     </table>

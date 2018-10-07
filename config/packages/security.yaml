@@ -1,7 +1,7 @@
 security:
     encoders:
         App\Entity\User:
-            algorithm: bcrypt
+            algorithm: argon2i
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory: { memory: ~ }
@@ -18,13 +18,18 @@ security:
 
 
             provider: user_provider
-            form_login:
-                login_path: login
-                check_path: login
-            
+            # form_login:
+            #     login_path: login
+            #     check_path: login
+            logout:
+                path: logout
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds
+            
 
             # activate different ways to authenticate
 
@@ -36,6 +41,6 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
-    # access_control:
-    #     - { path: ^/, roles: ROLE_ADMIN }
+    access_control:
+        - { path: ^/user, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
