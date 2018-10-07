@@ -30,7 +30,7 @@ class UserController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
         return $this->render('user/login.html.twig', [
             'username' => $lastUsername,
-            'error'         => $error,
+            'error'    => $error,
         ]);
     }
 
@@ -54,6 +54,7 @@ class UserController extends AbstractController
         return $this->render('user/show.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+            'connectedUser' => $this->getUser(),
         ]);
     }
 
@@ -64,7 +65,7 @@ class UserController extends AbstractController
         $users = $repo->findAll();
         return $this->render('user/userBase.html.twig', array(
         'users' => $users,
-        // 'connectedUser' => $this->getUser(),
+        'connectedUser' => $this->getUser(),
         )
         );
     }

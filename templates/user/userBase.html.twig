@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block header %}
-    <li><span><span><a href="#">Projects</a></span></span></li>
+    <li><span><span><a href="{{ path('allProjects') }}">Projects</a></span></span></li>
     <li><span><span><a href="#">Missions</a></span></span></li>
     <li><span><span><a href="#">Rent</a></span></span></li>
     <li><span><span><a href="#">Drivers</a></span></span></li>
     <li><span><span><a href="#">Vehicles</a></span></span></li>
     <li><span><span><a href="#">Payments</a></span></span></li>
-    {# {% if connectedUser.role == 1 %} #}
+    {% if connectedUser.role == 1 %}
     <li class="active"><span><span><a href="#">Users</a></span></span></li>
-    {# {% endif %} #}
+    {% endif %}
 {% endblock %}
 
 {% block center_column  %}

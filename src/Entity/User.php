@@ -248,7 +248,7 @@ class User implements UserInterface
     public function getSalt() {}
 
     public function getRoles() {
-
+        return ['ROLE_USER'];
     }
     
     public function getCin(): ?string

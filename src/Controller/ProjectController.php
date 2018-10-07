@@ -8,12 +8,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProjectController extends AbstractController
 {
     /**
-     * @Route("/project", name="project")
+     * @Route("/project", name="allProjects")
      */
-    public function index()
+    public function show()
     {
-        return $this->render('project/index.html.twig', [
-           
+        return $this->render('project/show.html.twig', [
+           'connectedUser' => $this->getUser(),
         ]);
     }
 }

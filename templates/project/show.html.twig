@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }}{% endblock %}
+
+{% block header %}
+            <li class="active"><span><span><a href="#">Projects</a></span></span></li>
+            <li><span><span><a href="#">Missions</a></span></span></li>
+            <li><span><span><a href="#">Rent</a></span></span></li>
+            <li><span><span><a href="#">Drivers</a></span></span></li>
+            <li><span><span><a href="#">Vehicles</a></span></span></li>
+            <li><span><span><a href="#">Payments</a></span></span></li>
+            {% if connectedUser.role == 1 %}
+            <li><span><span><a href="{{ path('allUsers') }}">Users</a></span></span></li>
+            {% endif %}
+            {% endblock %}
+{% block center_column %}
+    <h1>Projects are here!</h1>
+{% endblock %}
