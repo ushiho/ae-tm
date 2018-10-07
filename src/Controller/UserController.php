@@ -8,7 +8,11 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
@@ -16,11 +20,18 @@ class UserController extends AbstractController
 
     /**
      * @Route("/login", name="login")
+     * @Method("POST")
      */
-    public function login(Request $request)
+    public function login(AuthenticationUtils $authenticationUtils)
     {
-        dump($request);
-        return $this->render('user/login.html.twig');
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+        return $this->render('user/login.html.twig', [
+            'username' => $lastUsername,
+            'error'         => $error,
+        ]);
     }
 
     /**
@@ -53,6 +64,7 @@ class UserController extends AbstractController
         $users = $repo->findAll();
         return $this->render('user/userBase.html.twig', array(
         'users' => $users,
+        // 'connectedUser' => $this->getUser(),
         )
         );
     }
@@ -66,4 +78,10 @@ class UserController extends AbstractController
         return $this->redirectToRoute('allUsers');
     }
 
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout(){
+        throw new \Exception();
+    }
 }

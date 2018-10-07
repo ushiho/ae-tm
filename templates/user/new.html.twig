@@ -1,11 +1,5 @@
-{% extends 'user/userBase.html.twig' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% extends 'user/base.html.twig' %}
 {% block center_column %}
-{% block path %}
-{{ parent() }}
-<a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
- / {% if user.id == null %}Add user{% else %}Edit User{% endif %}</a>
-{% endblock %}
 {{ form_start(form) }}
 <h1>Enter your data</h1>
         <div class="table"> 
@@ -42,13 +36,6 @@
                     </td>
                     <td class="last">{{ form_widget(form.email, {'attr' : 
                     {'placeholder':'Email', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.confirmEmail) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.confirmEmail, {'attr' : 
-                    {'placeholder':'Confirm Email', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
@@ -97,11 +84,10 @@
                     <td class="first" width="172">
                         <strong>{{ form_label(form.role) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.role, {'attr' : 
-                    {'placeholder':'Role', 'class':'text' }}) }}</td>
+                    <td class="last">{{ form_widget(form.role }}</td>
                 </tr>
             </table>
-            <button type="submit" class="button">{% if user.id %}Update{% else %}Create{% endif %}</button>
+            <button type="submit" class="button">Create</button>
         </div>
         {{ form_end(form) }}
 {% endblock %}

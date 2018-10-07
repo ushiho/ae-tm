@@ -81,11 +81,6 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="smallint")
      */
-    private $role;
-
-    /**
-     * @ORM\Column(type="smallint")
-     */
     private $gender;
 
     /**
@@ -115,7 +110,18 @@ class User implements UserInterface
     private $confirmEmail;
 
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $cin;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $role;
+
+
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -181,18 +187,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRole(): ?int
-    {
-        return $this->role;
-    }
-
-    public function setRole(int $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getGender(): ?int
     {
         return $this->gender;
@@ -245,14 +239,39 @@ class User implements UserInterface
         $this->confirmEmail = $email;
     }
     
-    public function getUsername() {}
-
-    public function getRoles() {
-        return ['ROLE_USER'];
+    public function getUsername():string {
+        return (string) $this->email;
     }
 
     public function eraseCredentials() {}
 
     public function getSalt() {}
 
+    public function getRoles() {
+
+    }
+    
+    public function getCin(): ?string
+    {
+        return $this->cin;
+    }
+
+    public function setCin(string $cin): self
+    {
+        $this->cin = $cin;
+
+        return $this;
+    }
+
+    public function getRole(): ?int
+    {
+        return $this->role;
+    }
+
+    public function setRole(int $role): self
+    {
+        $this->role = $role;
+        return $this;
+    }
+   
 }
