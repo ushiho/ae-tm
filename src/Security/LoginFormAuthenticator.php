@@ -4,12 +4,11 @@ namespace App\Security;
 
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -20,7 +19,7 @@ use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticato
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
-    
+    use TargetPathTrait;
     private $userRepo;
     private $router;
     private $csrfTokenManager;
@@ -70,17 +69,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        if($targetPath = $this->getTargetPath($request->getSession(), $providerKey)){
+            return new RedirectResponse($targetPath);
+        }
         return new RedirectResponse($this->router->generate('allUsers'));
     }
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = array(
-            // you might translate this message
-            'message' => 'Authentication Required'
-        );
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        
     }
 
     public function supportsRememberMe()
