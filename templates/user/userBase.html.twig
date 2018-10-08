@@ -12,16 +12,23 @@
     {% endif %}
 {% endblock %}
 
+{% block left_column %}
+    <h3>USERS MANAGMENT</h3>
+                <a href="{{ path('addUser') }}" class="link">Add user</a>
+                <a href="{{ path('allUsers') }}" class="link">Show all users</a>
+{% endblock %}
+
 {% block center_column  %}
-    <div class="top-bar"> <a href="/user/new" class="button">ADD NEW </a>
-        <h1>Contents</h1>
+    <div class="top-bar"> <a title="Add new User" href="/user/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
         <div class="breadcrumbs">
         {% block path %}
         <a class="path" href="/user">Users</a>
         {% endblock %}
         </div>
-        <br/>
     </div>
+    <br>
+    <br>
     <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
             <tr>

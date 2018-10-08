@@ -85,4 +85,14 @@ class UserController extends AbstractController
     public function logout(){
         throw new \Exception();
     }
+
+    /**
+     * @Route("/user/profil", name="profil")
+     */
+    public function profil(){
+        return $this->render('user/profil.html.twig', [
+            'connectedUser' => $this->getUser(),
+        ]);
+    }
+
 }

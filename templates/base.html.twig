@@ -132,7 +132,8 @@
                     </select>
                     </div>
                 </div>
-                <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
                     <table class="listing form" cellpadding="0" cellspacing="0">
                     <tr>
                         <th class="full" colspan="2">Header Here</th>
@@ -160,14 +161,17 @@
                 {% endblock %}
             </div>
             <div id="right_column">
-            {% block reight_column %}
-                <strong class="h">INFO</strong>
+            
+                <strong style="background:url(../img/bg-left-link.gif);" class="h">ACTIONS</strong>
+                <br>
+                <br>
                 <div class="box">
-                    {% block info %}
-                    Detect and eliminate viruses and Trojan horses, even new and unknown ones. Detect and eliminate viruses and Trojan horses, even new and 
-                    {% endblock %}
+                    <ul class="rightNav">
+                    <li><a class="first" href="{{ path('profil') }}">Profil</a></li>
+                    <li class="last"><a class="first" href="{{path('logout') }}">Logout</a></li>
+                    </ul>
+                        
                 </div>
-            {% endblock %}
             </div>
         </div>
 

@@ -170,6 +170,25 @@ ul.nav a:hover {
 	font-weight:bold;
 	}
 ul.nav li.last {background:none;}
+ul.rightNav {
+		margin:0 0 11px 820px;
+		border-bottom:2px solid #FF9600;
+		background:#ECEFE7;
+		list-style:none;
+		padding:0 2px;
+		}
+ul.rightNav li {
+		padding:4px 4px 6px 5px;
+		background:url(../img/bg-dotted.gif) repeat-x bottom;
+}
+ul.rightNav a {
+		padding:0 0 0 12px;
+		background:url(../img/arrow.gif) no-repeat 0 4px;
+		}
+ul.rightNav a:hover {
+		font-weight:bold;
+		}
+ul.rightNav li.last {background:none;}
 
 #left-column .link {
 	display:block;
@@ -344,4 +363,17 @@ div.table .select select {
 	font-weight:bold;
 	line-height:27px;
 	background:url(../img/bg-orange-button.gif) no-repeat;
+	cursor: pointer;
 	}
+/* .btn {
+		float:right;
+		display:block;
+		width:75px;
+		height:35px;
+		text-align:center;
+		color:#fff;
+		text-transform:uppercase;
+		font-weight:bold;
+		line-height:27px;
+		background:url(../img/bg-orange-button.gif) no-repeat;
+		} */

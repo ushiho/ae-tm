@@ -120,8 +120,7 @@ class User implements UserInterface
      */
     private $role;
 
-
-    
+      
     public function getId(): ?int
     {
         return $this->id;
@@ -271,7 +270,8 @@ class User implements UserInterface
     public function setRole(int $role): self
     {
         $this->role = $role;
+
         return $this;
     }
-   
+
 }
