@@ -15,11 +15,52 @@
 
 {% block left_column %}
     <h3>PROJECTS MANAGMENT</h3>
-    <a href="#" class="link">Create Project</a>
-    <a href="#" class="link">Show all projects</a>
+    <a href="{{path('addProject')}}" class="link">Create Project</a>
+    <a href="/project" class="link">Show all projects</a>
     <a href="#" class="link">Search For</a>
+    <a href="#" class="link">Calendrier</a>
     <a href="#" class="link">Export data</a>
 {% endblock %}
 {% block center_column %}
-    <h1>Projects are here!</h1>
+<div class="top-bar"> <a title="Add new User" href="/project/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/project">Projects</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> 
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">Name</th>
+                <th>Owner</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Budget</th>
+                <th>Missions</th>
+                <th class="last">Actions</th>
+            </tr>
+            {% for project in projects %}
+            <tr class="bg">
+                <td class="first">{{ project.name }}</td>
+                <td class="first">{{ project.owner }}</td>
+                <td class="first">{{ project.startDate|date('d-m-Y') }}</td>
+                <td class="first">{{ project.endDate|date('d-m-Y') }}</td>
+                <td class="first">{{ project.budget }}</td>
+                <td class="first">
+                {% if project.mission == null or project.mission is empty %} Add Missions
+                {% else %} Show Missions {% endif %}
+                </td>
+                <td>
+                <a href="{{ path('deleteProject', {'id': project.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

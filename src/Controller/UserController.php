@@ -53,7 +53,7 @@ class UserController extends AbstractController
                 $manager->flush();
                 return $this->redirectToRoute('allUsers');
             }
-            return $this->render('user/show.html.twig', [
+            return $this->render('user/userForm.html.twig', [
                 'form' => $form->createView(),
                 'user' => $user,
                 'connectedUser' => $this->getUser(),
@@ -107,13 +107,5 @@ class UserController extends AbstractController
             'connectedUser' => $this->getUser(),
         ]);
     }
-
-    // /**
-    //  * @Route("/user/cancel", name="userCancel")
-    //  */
-    // public function cancel(Request $request){
-    //     // dd($request);
-    //     return $this->redirect('allUsers');
-    // }
 
 }
