@@ -6,7 +6,7 @@
 
 {% block header %}
             <li class="active"><span><span><a href="#">Projects</a></span></span></li>
-            <li><span><span><a href="#">Missions</a></span></span></li>
+            <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
             <li><span><span><a href="#">Rent</a></span></span></li>
             <li><span><span><a href="#">Drivers</a></span></span></li>
             <li><span><span><a href="#">Vehicles</a></span></span></li>
@@ -24,7 +24,7 @@
     <a href="#" class="link">Export data</a>
 {% endblock %}
 {% block center_column %}
-<div class="top-bar"> <a title="Add new User" href="/project/new" class="button">ADD NEW </a>
+<div class="top-bar"> <a title="Add new Project" href="/project/new" class="button">ADD NEW </a>
         <h1>Contents</h1><br>
         <div class="breadcrumbs">
         {% block path %}

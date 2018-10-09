@@ -1,0 +1,60 @@
+{% extends 'mission/missionBase.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }}
+<a class="path" href="{% if mission.id == null %}{{ path('addMission') }} {% else %}{{path('editMission', {'id': mission.id })}}{% endif %}">
+ / {% if mission.id == null %}Create mission{% else %}Edit mission{% endif %}</a>
+{% endblock %}
+{{ form_start(form) }}
+<hr>
+<br>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter mission information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.startDate) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.startDate, {'attr' : 
+                    {'placeholder':'Start Date', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.endDate) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.endDate, {'attr' : 
+                    {'placeholder':'End Date', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.driver) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.driver, {'attr' : 
+                    {'placeholder':'Driver', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.department) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.department, {'attr' : 
+                    {'placeholder':'Mission Owner', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.project) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.project, {'attr' : 
+                    {'placeholder':'Budget DH', 'class':'text' }}) }}</td>
+                </tr>
+                
+            </table>
+            <button type="submit" class="button">{% if mission.id %}Update{% else %}Create{% endif %}</button>
+            <button class="button" formnovalidate><a href="{{ path('allMissions') }}" >Cancel</a></button>
+        </div>
+        {{ form_end(form) }}
+{% endblock %}
