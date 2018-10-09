@@ -365,7 +365,7 @@ div.table .select select {
 	background:url(../img/bg-orange-button.gif) no-repeat;
 	cursor: pointer;
 	}
-/* .btn {
+.btn {
 		float:right;
 		display:block;
 		width:75px;
@@ -376,4 +376,4 @@ div.table .select select {
 		font-weight:bold;
 		line-height:27px;
 		background:url(../img/bg-orange-button.gif) no-repeat;
-		} */
+		}

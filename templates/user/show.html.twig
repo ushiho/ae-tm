@@ -103,6 +103,7 @@
                 </tr>
             </table>
             <button type="submit" class="button">{% if user.id %}Update{% else %}Create{% endif %}</button>
+            <button class="button" formnovalidate><a href="{{ path('allUsers') }}" >Cancel</a></button>
         </div>
         {{ form_end(form) }}
 {% endblock %}

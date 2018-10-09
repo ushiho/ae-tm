@@ -54,10 +54,12 @@
                     </tr>
                     <tr>
                     </tr>
+                    {% if connectedUser.role == 1 %}
                     <tr>
                     <td></td>
                         <td ><a title="Edit my profil" href="{{ path('editUser', { 'id' : connectedUser.id }) }}" class="button">EDIT </a></td>
                     </tr>
+                    {% endif %}
                     </table>
                     <p>&nbsp;</p>
                 </div>

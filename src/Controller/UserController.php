@@ -14,6 +14,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends AbstractController
 {
@@ -40,43 +41,55 @@ class UserController extends AbstractController
      */
     public function userForm(Request $request, ObjectManager $manager,
     UserPasswordEncoderInterface $encoder, User $user = null){
-        if($user == null){
-            $user = new User();
+        if($this->getUser()->getRole() == 1){
+            if($user == null){
+                $user = new User();
+            }
+            $form = $this->createForm(UserRegistrationType::class, $user);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+                $manager->persist($user);
+                $manager->flush();
+                return $this->redirectToRoute('allUsers');
+            }
+            return $this->render('user/show.html.twig', [
+                'form' => $form->createView(),
+                'user' => $user,
+                'connectedUser' => $this->getUser(),
+            ]);
+        } else{
+            throw $this->createAccessDeniedException("You don't have access to this page!");
         }
-        $form = $this->createForm(UserRegistrationType::class, $user);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
-            $manager->persist($user);
-            $manager->flush();
-            return $this->redirectToRoute('allUsers');
-        }
-        return $this->render('user/show.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-            'connectedUser' => $this->getUser(),
-        ]);
     }
 
     /**
      * @Route("/user", name="allUsers")
      */
     public function findAll(UserRepository $repo){
-        $users = $repo->findAll();
-        return $this->render('user/userBase.html.twig', array(
-        'users' => $users,
-        'connectedUser' => $this->getUser(),
-        )
-        );
+        if($this->getUser()->getRole()==1){
+            $users = $repo->findAll();
+            return $this->render('user/userBase.html.twig', array(
+            'users' => $users,
+            'connectedUser' => $this->getUser(),
+            )
+            );
+        }else{
+            throw $this->createAccessDeniedException("You don't have access to this page!");
+        }
     }
 
     /**
      * @Route("/user/delete/{id}", name="deleteUser")
      */
     public function delete(User $user, ObjectManager $manager){
+        if($this->getUser()->getRole()==1){
         $manager->remove($user);
         $manager->flush();
         return $this->redirectToRoute('allUsers');
+        } else{
+            throw $this->createAccessDeniedException("You don't have access to this page");
+        }
     }
 
     /**
@@ -94,5 +107,13 @@ class UserController extends AbstractController
             'connectedUser' => $this->getUser(),
         ]);
     }
+
+    // /**
+    //  * @Route("/user/cancel", name="userCancel")
+    //  */
+    // public function cancel(Request $request){
+    //     // dd($request);
+    //     return $this->redirect('allUsers');
+    // }
 
 }
