@@ -59,4 +59,12 @@ class ProjectController extends AbstractController
         return $this->redirectToRoute('allProjects');
     }
 
+    /**
+     * @Route("project/calendar", name="projectCalendar")
+     */
+    public function calendar(){
+        return $this->render('project/calendar.html.twig', [
+            'connectedUser' => $this->getUser(),
+        ]);
+    }
 }

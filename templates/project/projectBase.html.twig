@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }}{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}
 
 {% block header %}
             <li class="active"><span><span><a href="#">Projects</a></span></span></li>
@@ -17,8 +20,7 @@
     <h3>PROJECTS MANAGMENT</h3>
     <a href="{{path('addProject')}}" class="link">Create Project</a>
     <a href="/project" class="link">Show all projects</a>
-    <a href="#" class="link">Search For</a>
-    <a href="#" class="link">Calendrier</a>
+    <a href="{{path('projectCalendar')}}" class="link">Calendrier</a>
     <a href="#" class="link">Export data</a>
 {% endblock %}
 {% block center_column %}
