@@ -41,16 +41,16 @@ class MissionType extends AbstractType
                             ->orderBy('d.name', 'ASC');
                 },
             ])
-            ->add('project', EntityType::class, [
-                'class' => Project::class,
-                'choice_label' => 'project',
-                'required' => true,
-                'placeholder' => 'link a project',
-                'query_builder' => function (EntityRepository $er){
-                    return $er->createQueryBuilder('p')
-                            ->orderBy('p.name', 'ASC');
-                },
-            ])
+            // ->add('project', EntityType::class, [
+            //     'class' => Project::class,
+            //     'choice_label' => 'project',
+            //     'required' => true,
+            //     'placeholder' => 'link a project',
+            //     'query_builder' => function (EntityRepository $er){
+            //         return $er->createQueryBuilder('p')
+            //                 ->orderBy('p.name', 'ASC');
+            //     },
+            // ])
         ;
     }
 

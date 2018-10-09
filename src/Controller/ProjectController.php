@@ -32,7 +32,7 @@ class ProjectController extends AbstractController
      * @Route("/project/new", name="addProject")
      * @Route("project/edit/{id}", name="editProject")
      */
-    public function create(Request $request, ObjectManager $manager, Project $project=null){
+    public function action(Request $request, ObjectManager $manager, Project $project=null){
         if($project==null){
             $project = new Project();
         }

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    <li><span><span><a href="{{ path('allProjects') }}">Projects</a></span></span></li>
+    <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
+    <li><span><span><a href="{{path('allRents')}}">Rent</a></span></span></li>
+    <li><span><span><a href="{{path('allSuppliers')}}">Suppliers</a></span></span></li>
+    <li class="active"><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
+    <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
+    <li><span><span><a href="{{path('allVehicles')}}">Vehicles</a></span></span></li>
+    <li><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
+    {% if connectedUser.role == 1 %}
+    <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
+    {% endif %}
+{% endblock %}
+
+{% block left_column %}
+    <h3>DEPART MANAGMENT</h3>
+    <a href="{{path('addDepartment')}}" class="link">Create Mission</a>
+    <a href="{{path('allDepartments')}}" class="link">Show all missions</a>
+    <a href="{{path('projectCalendar')}}" class="link">Calendrier</a>
+    <a href="#" class="link">Export data</a>
+{% endblock %}
+{% block center_column %}
+<div class="top-bar"> <a title="Add new Department" href="/department/new" class="button">ADD NEW </a>
+        <h1>Department</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+            <a class="path" href="/department">Departments</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> 
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Notes</th>
+                <th>Missions</th>
+                <th class="last">Actions</th>
+            </tr>
+            {% for department in departments %}
+            <tr class="bg">
+                <td class="first">{{ department.name }}</td>
+                <td class="first">{{ department.adress }}</td>
+                <td class="first">{{ department.note }}</td>
+                <td class="first">
+                {% if department.missions is empty or department.missions == null %}Add
+                {% else %}Show{% endif %}
+                </td>
+                <td>
+                <a href="{{ path('deleteDepartment', {'id': department.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editDepartment', {'id': department.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

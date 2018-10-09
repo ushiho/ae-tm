@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+
+{% block header %}
+    <li><span><span><a href="{{ path('allProjects') }}">Projects</a></span></span></li>
+    <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
+    <li><span><span><a href="{{path('allRents')}}">Rent</a></span></span></li>
+    <li><span><span><a href="{{path('allSuppliers')}}">Suppliers</a></span></span></li>
+    <li><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
+    <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
+    <li><span><span><a href="{{path('allVehicles')}}">Vehicles</a></span></span></li>
+    <li class="active"><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
+    {% if connectedUser.role == 1 %}
+    <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
+    {% endif %}
+{% endblock %}
