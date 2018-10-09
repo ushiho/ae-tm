@@ -58,6 +58,11 @@ class PaymentDriver
      */
     private $payment;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +160,18 @@ class PaymentDriver
     public function setPayment(?Payment $payment): self
     {
         $this->payment = $payment;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }

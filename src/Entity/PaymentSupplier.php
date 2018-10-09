@@ -53,6 +53,11 @@ class PaymentSupplier
      */
     private $allocate;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +143,18 @@ class PaymentSupplier
     public function setAllocate(?Allocate $allocate): self
     {
         $this->allocate = $allocate;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }

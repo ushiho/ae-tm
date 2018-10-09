@@ -40,16 +40,19 @@
             <tr>
                 <th class="first">Name</th>
                 <th>Owner</th>
+                <th>Created At</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Budget</th>
                 <th>Missions</th>
+                <th>Notes</th>
                 <th class="last">Actions</th>
             </tr>
             {% for project in projects %}
             <tr class="bg">
                 <td class="first">{{ project.name }}</td>
                 <td class="first">{{ project.owner }}</td>
+                <td class="first">{{ project.createdAt|date('d-m-Y H:i') }}</td>
                 <td class="first">{{ project.startDate|date('d-m-Y') }}</td>
                 <td class="first">{{ project.endDate|date('d-m-Y') }}</td>
                 <td class="first">{{ project.budget }}</td>
@@ -57,6 +60,7 @@
                 {% if project.mission == null or project.mission is empty %} Add Missions
                 {% else %} Show Missions {% endif %}
                 </td>
+                <td class="first">{{ project.note }}</td>
                 <td>
                 <a href="{{ path('deleteProject', {'id': project.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Mission;
 use App\Entity\Project;
 use App\Form\ProjectType;
@@ -38,6 +39,7 @@ class ProjectController extends AbstractController
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
+            $project->setCreatedAt(new \DateTime());
             $manager->persist($project);
             $manager->flush();
             return $this->redirectToRoute('allProjects');

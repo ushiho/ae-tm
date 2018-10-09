@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MissionRepository")
@@ -23,6 +24,7 @@ class Mission
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\GreaterThan(propertyPath="startDate", message="The end date should be greater than start date")
      */
     private $endDate;
 
@@ -54,6 +56,11 @@ class Mission
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
 
 
     public function getId(): ?int
@@ -141,6 +148,18 @@ class Mission
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }

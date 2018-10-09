@@ -65,6 +65,11 @@ class Allocate
      */
     private $paymentSuppliers;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
+
     public function __construct()
     {
         $this->paymentSuppliers = new ArrayCollection();
@@ -198,6 +203,18 @@ class Allocate
                 $paymentSupplier->setAllocate(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
 
         return $this;
     }
