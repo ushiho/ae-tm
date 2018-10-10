@@ -13,3 +13,56 @@
     <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
     {% endif %}
 {% endblock %}
+{% block left_column %}
+    <h3>DRIVERS MANAGMENT</h3>
+                <a href="{{ path('addDriver') }}" class="link">Add Driver</a>
+                <a href="{{ path('allDrivers') }}" class="link">Show all Drivers</a>
+                <a href="#" class="link">Search</a>
+{% endblock %}
+
+{% block center_column  %}
+    <div class="top-bar"> <a title="Add new User" href="/driver/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/driver">Drivers</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">Firstname</th>
+                <th>Lastname</th>
+                <th>Gender</th>
+                <th>CIN</th>
+                <th>Email</th>
+                <th>Phone number</th>
+                <th>Address</th>
+                <th>Mission</th>
+                <th>Actions</th>
+            </tr>
+            {% for driver in drivers %}
+            <tr class="bg">
+                <td class="first">{{ driver.firstname }}</td>
+                <td class="first">{{ driver.lastname }}</td>
+                <td class="first">
+                {% if driver.gender==1 %}Female{% else %}Male{% endif %}
+                </td>
+                <td class="first">{{ driver.cin }}</td>
+                <td class="first">{{ driver.email }}</td>
+                <td class="first">{{ driver.numberPhone }}</td>
+                <td class="first">{{ driver.adress }}</td>
+                <td class="first">{% if driver.mission == null or driver.mission is empty%}
+                Link Mission{% else %} Show Mission{% endif %}</td>
+                <td>
+                <a href="{{ path('deleteDriver', {'id': driver.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editDriver', {'id': driver.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

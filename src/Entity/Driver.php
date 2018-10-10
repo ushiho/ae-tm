@@ -58,9 +58,21 @@ class Driver
      */
     private $paymentDrivers;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $gender;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="driver")
+     */
+    private $missions;
+
+
     public function __construct()
     {
         $this->paymentDrivers = new ArrayCollection();
+        $this->missions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -194,4 +206,48 @@ class Driver
 
         return $this;
     }
+
+    public function getGender(): ?int
+    {
+        return $this->gender;
+    }
+
+    public function setGender(int $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Mission[]
+     */
+    public function getMissions(): Collection
+    {
+        return $this->missions;
+    }
+
+    public function addMission(Mission $mission): self
+    {
+        if (!$this->missions->contains($mission)) {
+            $this->missions[] = $mission;
+            $mission->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMission(Mission $mission): self
+    {
+        if ($this->missions->contains($mission)) {
+            $this->missions->removeElement($mission);
+            // set the owning side to null (unless already changed)
+            if ($mission->getDriver() === $this) {
+                $mission->setDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

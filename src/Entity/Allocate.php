@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AllocateRepository")
@@ -25,6 +26,7 @@ class Allocate
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\GreaterThan(propertyPath="startDate", message="The end date should be greater than start date")
      */
     private $endDate;
 
@@ -35,25 +37,15 @@ class Allocate
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\Type(type="decimal")
      */
     private $price;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $withDeiver;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="allocates")
      * @ORM\JoinColumn(nullable=false)
      */
     private $supplier;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $vehicle;
 
     /**
      * @ORM\Column(type="datetime")
@@ -69,6 +61,22 @@ class Allocate
      * @ORM\Column(type="text", nullable=true)
      */
     private $note;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $withDriver;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Vehicle", inversedBy="allocate", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vehicle;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Mission", mappedBy="allocate", cascade={"persist", "remove"})
+     */
+    private $mission;
 
     public function __construct()
     {
@@ -128,18 +136,7 @@ class Allocate
         return $this;
     }
 
-    public function getWithDeiver(): ?bool
-    {
-        return $this->withDeiver;
-    }
-
-    public function setWithDeiver(bool $withDeiver): self
-    {
-        $this->withDeiver = $withDeiver;
-
-        return $this;
-    }
-
+    
     public function getSupplier(): ?Supplier
     {
         return $this->supplier;
@@ -215,6 +212,36 @@ class Allocate
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getWithDriver(): ?bool
+    {
+        return $this->withDriver;
+    }
+
+    public function setWithDriver(bool $withDriver): self
+    {
+        $this->withDriver = $withDriver;
+
+        return $this;
+    }
+
+    public function getMission(): ?Mission
+    {
+        return $this->mission;
+    }
+
+    public function setMission(?Mission $mission): self
+    {
+        $this->mission = $mission;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newAllocate = $mission === null ? null : $this;
+        if ($newAllocate !== $mission->getAllocate()) {
+            $mission->setAllocate($newAllocate);
+        }
 
         return $this;
     }

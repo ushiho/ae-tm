@@ -21,7 +21,12 @@ class ProjectType extends AbstractType
             ->add('budget', NumberType::class)
             ->add('name', TextType::class)
             ->add('owner', TextType::class)
-            ->add('note', TextareaType::class)
+            ->add('note', TextareaType::class, array(
+                'attr' => [
+                    'rows' => '3',
+                    'cols' => '80'
+                ]
+            ))
         ;
     }
 

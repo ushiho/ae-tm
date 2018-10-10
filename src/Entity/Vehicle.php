@@ -38,6 +38,11 @@ class Vehicle
      */
     private $brand;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Allocate", mappedBy="vehicle", cascade={"persist", "remove"})
+     */
+    private $allocate;
+
 
     
     public function getId(): ?int
@@ -89,6 +94,23 @@ class Vehicle
     public function setBrand(string $brand): self
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getAllocate(): ?Allocate
+    {
+        return $this->allocate;
+    }
+
+    public function setAllocate(Allocate $allocate): self
+    {
+        $this->allocate = $allocate;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $allocate->getVehicle()) {
+            $allocate->setVehicle($this);
+        }
 
         return $this;
     }

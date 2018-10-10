@@ -60,6 +60,11 @@ class Project
      */
     private $note;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $finshed;
+
     public function __construct()
     {
         $this->mission = new ArrayCollection();
@@ -182,6 +187,18 @@ class Project
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getFinshed(): ?bool
+    {
+        return $this->finshed;
+    }
+
+    public function setFinshed(bool $finshed): self
+    {
+        $this->finshed = $finshed;
 
         return $this;
     }

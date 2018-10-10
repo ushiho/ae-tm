@@ -2,25 +2,74 @@
 
 namespace App\Form;
 
+use App\Entity\Vehicle;
 use App\Entity\Allocate;
+use App\Entity\Supplier;
+use Doctrine\DBAL\Types\DecimalType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class RentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('startDate')
-            ->add('endDate')
-            ->add('period')
-            ->add('price')
-            ->add('withDeiver')
-            ->add('createdAt')
-            ->add('note')
-            ->add('supplier')
-            ->add('vehicle')
+            ->add('startDate', DateType::class)
+            ->add('endDate', DateType::class)
+            ->add('period', ChoiceType::class, array(
+                'choices' => [
+                    'Daily' => 1,
+                    'Weekly' => 2,
+                    'Monthly' => 3,
+                ],
+                'placeholder' => '--Select a period--',
+                'required' => true,
+                'attr' => [
+                    'style' => 'width:127px',
+                ]
+            ))
+            ->add('price', NumberType::class)
+            ->add('withDriver', ChoiceType::class, array(
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'placeholder' => '--Select--',
+                'attr' => [
+                    'style' => 'width:127px',
+                ]
+            ))
+            ->add('note', TextareaType::class, array(
+                'attr' => [
+                    'rows' => '3',
+                    'cols' => '80'
+                ]
+            ))
+            ->add('supplier', EntityType::class, array(
+                'class' => Supplier::class,
+                'placeholder' => '--Choose a supplier--',
+                'required' => true,
+                'choice_label' => 'firstName',
+                'attr' => [
+                    'style' => 'width:127px',
+                ]
+            ))
+            ->add('vehicle', EntityType::class, array(
+            'class' => Vehicle::class,
+            'placeholder' => '--Choose Vehicle--',
+            'required' => true,
+            'choice_label' => 'reg-type',
+            'attr' => [
+                'style' => 'width:127px',
+            ]
+            ))
         ;
     }
 

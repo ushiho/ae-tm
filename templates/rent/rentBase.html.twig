@@ -14,3 +14,60 @@
     <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
     {% endif %}
 {% endblock %}
+{% block left_column %}
+    <h3>RENTS MANAGMENT</h3>
+    <a href="{{path('addRent')}}" class="link">Create Rent</a>
+    <a href="/rent" class="link">Show all Rents</a>
+    <a href="#" class="link">Search</a>
+{% endblock %}
+{% block center_column %}
+<div class="top-bar"> <a title="Add new Rent" href="/rent/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/rent">Rents</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> 
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">Created At</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Period</th>
+                <th>Price</th>
+                <th>Supplier</th>
+                <th>Vehicle</th>
+                <th>With Driver</th>
+                <th>Payment Supplier</th>
+                <th>Note</th>
+                <th class="last">Actions</th>
+            </tr>
+            {% for Rent in Rents %}
+            <tr class="bg">
+                <td class="first">{{ Rent.createdAt }}</td>
+                <td class="first">{{ Rent.startDate }}</td>
+                <td class="first">{{ Rent.endDate }}</td>
+                <td class="first">{{ Rent.period}}</td>
+                <td class="first">{{ Rent.price}}</td>
+                <td class="first">{{ Rent.supplier.name}}</td>
+                <td class="first">{{ Rent.vehicle.reg}}</td>
+                <td class="first">{% if Rent.withDriver %}Yes{% else %}No{% endif %}</td>
+                <td class="first">
+                {% if Rent.paymentSuppliers == null or Rent.paymentSuppliers is empty() %}Show Payments
+                {% else %} Add Payment{% endif %}
+                </td>
+                <td class="first">{{ Rent.note}}</td>
+                <td>
+                <a href="{{ path('deleteRent', {'id': Rent.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editRent', {'id': Rent.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

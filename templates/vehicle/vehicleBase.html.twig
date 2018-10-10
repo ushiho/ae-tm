@@ -13,3 +13,52 @@
     <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
     {% endif %}
 {% endblock %}
+
+{% block left_column %}
+    <h3>VEHICLES MANAGMENT</h3>
+    <a href="{{path('addVehicle')}}" class="link">Add Vehicle</a>
+    <a href="/vehicle" class="link">Show all Vehicles</a>
+    <a href="#" class="link">Search</a>
+{% endblock %}
+{% block center_column %}
+<div class="top-bar"> <a title="Add new Vehicle" href="/vehicle/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/vehicle">Vehicles</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> 
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">REG</th>
+                <th>Mileage</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Rent Information</th>
+                <th class="last">Actions</th>
+            </tr>
+            {% for Vehicle in vehicles %}
+            <tr class="bg">
+                <td class="first">{{ Vehicle.reg }}</td>
+                <td class="first">{{ Vehicle.mileage }}</td>
+                <td class="first">{{ Vehicle.type }}</td>
+                <td class="first">{{ Vehicle.brand}}</td>
+                <td class="first">
+                {% if Vehicle.allocate == null or Vehicle.allocate is empty() %}Show
+                {% else %} Add a Rent{% endif %}
+                </td>
+                <td>
+                <a href="{{ path('deleteVehicle', {'id': Vehicle.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editVehicle', {'id': Vehicle.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+

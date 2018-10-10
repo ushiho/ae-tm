@@ -14,3 +14,57 @@
     <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
     {% endif %}
 {% endblock %}
+{% block left_column %}
+    <h3>SUPPLIERS MANAGMENT</h3>
+    <a href="{{path('addSupplier')}}" class="link">Create Supplier</a>
+    <a href="/supplier" class="link">Show all Suppliers</a>
+    <a href="#" class="link">Search</a>
+{% endblock %}
+{% block center_column %}
+<div class="top-bar"> <a title="Add new Supplier" href="/supplier/new" class="button">ADD NEW </a>
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+        {% block path %}
+        <a class="path" href="/supplier">Suppliers</a>
+        {% endblock %}
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="table"> 
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+        <table class="listing" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="first">First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Rent</th>
+                <th>Payments</th>
+                <th class="last">Actions</th>
+            </tr>
+            {% for supplier in suppliers %}
+            <tr class="bg">
+                <td class="first">{{ supplier.firstName }}</td>
+                <td class="first">{{ supplier.lastName }}</td>
+                <td class="first">{{ supplier.email }}</td>
+                <td class="first">{{ supplier.phoneNumber}}</td>
+                <td class="first">{{ supplier.adress}}</td>
+                <td class="first">
+                {% if supplier.allocates == null or supplier.allocates is empty() %}Show Rents
+                {% else %} Add Rent{% endif %}
+                </td>
+                <td class="first">
+                {% if supplier.paymentSuppliers == null or supplier.paymentSuppliers is empty %} Add Payments
+                {% else %} Show Payments {% endif %}
+                </td>
+                <td>
+                <a href="{{ path('deleteSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

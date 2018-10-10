@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class MissionType extends AbstractType
 {
@@ -21,36 +22,59 @@ class MissionType extends AbstractType
         $builder
             ->add('startDate', DateType::class)
             ->add('endDate', DateType::class)
-            ->add('driver', EntityType::class, [
-                'class'        => Driver::class,
-                'choice_label' => 'driver',
-                'required'     => true,
-                'placeholder'  => 'choose driver',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('d')
-                        ->orderBy('d.firstName', 'ASC');
-                },
-            ])
-            ->add('department', EntityType::class, [
+            ->add('note', TextareaType::class, array(
+                'attr' => [
+                    'rows' => '3',
+                    'cols' => '80',
+                    'formnovalidate' => 'true'
+                ]
+            ))
+            ->add('project',EntityType::class,array(
+                'class' => Project::class,
+                'required'=>true,
+                'choice_label' => 'name',
+                'placeholder' => 'Link a project',
+                'attr' => array(
+                    'class'=>'bootstrap-select',
+                    'data-live-search'=>'true',
+                    'data-width'=>'100%',
+                    'style' => 'width:200px;'
+                )
+            ))
+            ->add('department',EntityType::class,array(
                 'class' => Department::class,
-                'choice_label' => 'department',
-                'required' => true,
-                'placeholder' => 'choose department',
-                'query_builder' => function (EntityRepository $er){
-                    return $er->createQueryBuilder('d')
-                            ->orderBy('d.name', 'ASC');
-                },
-            ])
-            // ->add('project', EntityType::class, [
-            //     'class' => Project::class,
-            //     'choice_label' => 'project',
-            //     'required' => true,
-            //     'placeholder' => 'link a project',
-            //     'query_builder' => function (EntityRepository $er){
-            //         return $er->createQueryBuilder('p')
-            //                 ->orderBy('p.name', 'ASC');
-            //     },
-            // ])
+                'required'=>true,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose the department',
+                'attr' => array(
+                    'class'=>'bootstrap-select',
+                    'data-live-search'=>'true',
+                    'data-width'=>'100%',
+                    'style' => 'width:200px;'
+                )
+            ))
+            ->add('driver',EntityType::class,array(
+                'class' => Driver::class,
+                'required'=>true,
+                'choice_label' => 'firstName',
+                'placeholder' => 'Choose the driver',
+                'attr' => array(
+                    'class'=>'bootstrap-select',
+                    'data-live-search'=>'true',
+                    'data-width'=>'100%',
+                    'style' => 'width:200px;'
+                )
+            ))
+            ->add('finished', ChoiceType::class, array(
+                'choices' => array(
+                    'Yes' => true,
+                    'No' => false,
+                ),
+                'placeholder' => '--Select a state--',
+                'attr' => array(
+                    'style' => 'width:200px',
+                )
+            ))
         ;
     }
 

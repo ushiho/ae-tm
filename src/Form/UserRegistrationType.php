@@ -29,6 +29,7 @@ class UserRegistrationType extends AbstractType
             ->add('confirmPassword', PasswordType::class)
             ->add('phoneNumber', TelType::class)
             ->add('role', ChoiceType::class, array(
+                'label' => 'Gender',
                 'choices' => array(
                     'Admin' => 1,
                     'User'  => 2,

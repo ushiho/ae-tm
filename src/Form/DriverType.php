@@ -6,6 +6,7 @@ use App\Entity\Driver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class DriverType extends AbstractType
 {
@@ -19,6 +20,16 @@ class DriverType extends AbstractType
             ->add('cin')
             ->add('adress')
             ->add('licenceNumber')
+            ->add('gender', ChoiceType::class, array(
+                'label' => 'Gender',
+                'choices' => array(
+                    'Femal' => 1,
+                    'Male' => 2,
+                ),
+                'attr' => array(
+                    'style'=>'width:270px;',
+                )
+            ))
         ;
     }
 

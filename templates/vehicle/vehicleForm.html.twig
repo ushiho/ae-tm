@@ -1,0 +1,52 @@
+{% extends 'vehicle/vehicleBase.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }}
+<a class="path" href="{% if vehicle.id == null %}{{ path('addVehicle') }} {% else %}{{path('editVehicle', {'id': vehicle.id })}}{% endif %}">
+ / {% if vehicle.id == null %}Create Vehicle{% else %}Edit Vehicle{% endif %}</a>
+{% endblock %}
+{{ form_start(form) }}
+<hr>
+<br>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter Vehicle information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.reg) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.reg, {'attr' : 
+                    {'placeholder':'Reg', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.mileage) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.mileage, {'attr' : 
+                    {'placeholder':'Mileage', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.type) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.type, {'attr' : 
+                    {'placeholder':'Vehicle Type', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.brand) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.brand, {'attr' : 
+                    {'placeholder':'Vehicle Brand', 'class':'text' }}) }}</td>
+                </tr>
+            </table>
+            <button type="submit" class="button">{% if vehicle.id %}Update{% else %}Create{% endif %}</button>
+            <button class="button" formnovalidate><a href="{{ path('allVehicles') }}" >Cancel</a></button>
+        </div>
+        {{ form_end(form) }}
+{% endblock %}

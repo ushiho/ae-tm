@@ -20,7 +20,7 @@
 
 {% block left_column %}
     <h3>MISSIONS MANAGMENT</h3>
-    <a href="{{path('addProject')}}" class="link">Create Mission</a>
+    <a href="{{path('addMission')}}" class="link">Create Mission</a>
     <a href="{{path('allMissions')}}" class="link">Show all missions</a>
     <a href="{{path('projectCalendar')}}" class="link">Calendrier</a>
     <a href="#" class="link">Export data</a>
@@ -39,6 +39,11 @@
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
+        {% if missions is empty or missions is null %}
+                <tr class="bg">
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no missions add some <a href="/mission/new" style="color:red;text-decoration: underline black;">here</a></td>
+                </tr>
+            {% else %}
             <tr>
                 <th class="first">Created At</th>
                 <th>Start Date</th>
@@ -48,15 +53,16 @@
                 <th>Project</th>
                 <th>Payment</th>
                 <th>Rent</th>
+                <th>Finished</th>
                 <th>Notes</th>
                 <th class="last">Actions</th>
             </tr>
             {% for mission in missions %}
             <tr class="bg">
-                <td class="first">{{ mission.createdAt|date('d-m-Y H:i') }}</td>
-                <td class="first">{{ mission.startDate|date('d-m-Y') }}</td>
-                <td class="first">{{ mission.endDate|date('d-m-Y') }}</td>
-                <td class="first">{{ mission.driver.name }}</td>
+                <td class="first" width="57px">{{ mission.createdAt|date('d-m-Y H:i') }}</td>
+                <td class="first" width="57px">{{ mission.startDate|date('d-m-Y') }}</td>
+                <td class="first" width="57px">{{ mission.endDate|date('d-m-Y') }}</td>
+                <td class="first">{{ mission.driver.firstName }}</td>
                 <td class="first">{{ mission.department.name }}</td>
                 <td class="first">{{ mission.project.name }}</td>
                 <td class="first">
@@ -64,16 +70,18 @@
                 {% else %}Show{% endif %}
                 </td>
                 <td class="first">
-                {% if mission.allocate == null or mission.allocate is empty %} Add Rent
+                {% if mission.allocate == null or mission.allocate is empty %} Add
                 {% else %} Show Rents {% endif %}
                 </td>
+                <td class="first"> {% if mission.finished %}Yes{% else %}No{% endif %}</td>
                 <td class="first">{{ mission.note }}</td>
                 <td>
-                <a href="{{ path('deleteProject', {'id': mission.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editProject', {'id': mission.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('deleteMission', {'id': mission.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editMission', {'id': mission.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
                 </td>
             </tr>
             {% endfor %}
+            {% endif %}
         </table>
     </div>
 {% endblock %}

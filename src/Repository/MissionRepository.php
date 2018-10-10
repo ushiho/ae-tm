@@ -47,4 +47,14 @@ class MissionRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findMissionByStateByDriver($driver, $finished){
+        return $this->createQueryBuilder('m')
+                ->andWhere('m.driver = :driver')
+                ->andWhere('m.finished = :finished')
+                ->setParameter('driver', $driver)
+                ->setParameter('finished', $finished)
+                ->getQuery()
+                ->getResult()
+            ;
+    }
 }

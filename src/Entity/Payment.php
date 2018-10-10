@@ -43,6 +43,11 @@ class Payment
      */
     private $paymentSupplier;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Mission", mappedBy="payment", cascade={"persist", "remove"})
+     */
+    private $mission;
+
     public function __construct()
     {
         $this->paymentDriver = new ArrayCollection();
@@ -147,6 +152,24 @@ class Payment
             if ($paymentSupplier->getPayment() === $this) {
                 $paymentSupplier->setPayment(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getMission(): ?Mission
+    {
+        return $this->mission;
+    }
+
+    public function setMission(?Mission $mission): self
+    {
+        $this->mission = $mission;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newPayment = $mission === null ? null : $this;
+        if ($newPayment !== $mission->getPayment()) {
+            $mission->setPayment($newPayment);
         }
 
         return $this;

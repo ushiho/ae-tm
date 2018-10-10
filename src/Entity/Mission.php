@@ -34,18 +34,6 @@ class Mission
     private $createdAt;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Driver", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $driver;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Payment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $payment;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Department", inversedBy="missions")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -61,6 +49,27 @@ class Mission
      * @ORM\Column(type="text", nullable=true)
      */
     private $note;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $finished;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Payment", inversedBy="mission", cascade={"persist", "remove"})
+     */
+    private $payment;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Allocate", inversedBy="mission", cascade={"persist", "remove"})
+     */
+    private $allocate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="missions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $driver;
 
 
     public function getId(): ?int
@@ -104,30 +113,6 @@ class Mission
         return $this;
     }
 
-    public function getDriver(): ?Driver
-    {
-        return $this->driver;
-    }
-
-    public function setDriver(Driver $driver): self
-    {
-        $this->driver = $driver;
-
-        return $this;
-    }
-
-    public function getPayment(): ?Payment
-    {
-        return $this->payment;
-    }
-
-    public function setPayment(Payment $payment): self
-    {
-        $this->payment = $payment;
-
-        return $this;
-    }
-
     public function getDepartment(): ?Department
     {
         return $this->department;
@@ -160,6 +145,54 @@ class Mission
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(bool $finished): self
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
+    public function getPayment(): ?Payment
+    {
+        return $this->payment;
+    }
+
+    public function setPayment(?Payment $payment): self
+    {
+        $this->payment = $payment;
+
+        return $this;
+    }
+
+    public function getAllocate(): ?Allocate
+    {
+        return $this->allocate;
+    }
+
+    public function setAllocate(?Allocate $allocate): self
+    {
+        $this->allocate = $allocate;
+
+        return $this;
+    }
+
+    public function getDriver(): ?Driver
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(?Driver $driver): self
+    {
+        $this->driver = $driver;
 
         return $this;
     }

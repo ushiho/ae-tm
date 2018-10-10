@@ -1,0 +1,80 @@
+{% extends 'driver/driverBase.html.twig'  %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }}
+<a class="path" href="{% if driver.id == null %}{{ path('addDriver') }} {% else %}{{path('editDriver', {'id': driver.id })}}{% endif %}">
+ / {% if driver.id == null %}Create driver{% else %}Edit driver{% endif %}</a>
+{% endblock %}
+{{ form_start(form) }}
+<hr>
+<br>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter driver information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.firstName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.firstName, {'attr' : 
+                    {'placeholder':'First Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.lastName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.lastName, {'attr' : 
+                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.gender) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.gender, {'attr' : 
+                    {'placeholder':'Gender', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.cin) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.cin, {'attr' : 
+                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.licenceNumber) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.licenceNumber, {
+                        'attr' : {'placeholder':'Licence Number', 'class':'text',}}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.email) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.email, {
+                        'attr' : {'placeholder':'Email address', 'class':'text',}})}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.numberPhone) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.numberPhone, {
+                        'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.adress) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.adress, {
+                        'attr' : {'placeholder':'Address', 'class':'text',}})}}</td>
+                </tr>                
+            </table>
+            <button type="submit" class="button">{% if driver.id %}Update{% else %}Create{% endif %}</button>
+            <button class="button" formnovalidate><a href="{{ path('allDrivers') }}" >Cancel</a></button>
+        </div>
+        {{ form_end(form) }}
+{% endblock %}
