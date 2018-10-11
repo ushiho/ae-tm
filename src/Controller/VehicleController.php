@@ -16,11 +16,12 @@ class VehicleController extends AbstractController
     /**
      * @Route("/vehicle", name="allVehicles")
      */
-    public function show(VehicleRepository $repo)
+    public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo)
     {
         return $this->render('vehicle/vehicleBase.html.twig', [
             'connectedUser' => $this->getUser(),
             'vehicles' => $repo->findAll(),
+            'types' => $typeRepo->findAll(),
         ]);
     }
 

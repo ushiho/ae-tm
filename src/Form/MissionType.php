@@ -26,7 +26,8 @@ class MissionType extends AbstractType
                 'attr' => [
                     'rows' => '3',
                     'cols' => '80',
-                    'formnovalidate' => 'true'
+                    'formnovalidate' => 'true',
+                    'novalidate' => 'novalidate',
                 ]
             ))
             ->add('project',EntityType::class,array(

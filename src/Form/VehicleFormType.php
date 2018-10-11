@@ -17,8 +17,20 @@ class VehicleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('reg', TextType::class)
-            ->add('mileage', NumberType::class)
+            ->add('matricule', TextType::class)
+            ->add('state', ChoiceType::class, array(
+                'choices' => array(
+                    'New' => 1,
+                    'Good Condition' => 2,
+                    'Bad Condition' => 3,
+
+                ),
+                'required' => true,
+                'attr' => [
+                    'style' => 'width:270px',
+                    ]
+
+            ))
             ->add('type', EntityType::class, array(
                 'class' => VehicleType::class,
                 'placeholder' => '--Select the type--',

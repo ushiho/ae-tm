@@ -47,6 +47,8 @@ class MissionRepository extends ServiceEntityRepository
         ;
     }
     */
+    // $query = $em->createQuery('DELETE SomeOtherBundle:CarEntityClass c WHERE c.idOwner = 4 AND c.id = 10');
+
     public function findMissionByStateByDriver($driver, $finished){
         return $this->createQueryBuilder('m')
                 ->andWhere('m.driver = :driver')
@@ -57,4 +59,5 @@ class MissionRepository extends ServiceEntityRepository
                 ->getResult()
             ;
     }
+
 }

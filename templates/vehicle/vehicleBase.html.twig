@@ -39,21 +39,24 @@
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
             <tr>
-                <th class="first">REG</th>
-                <th>Mileage</th>
+                <th class="first">Matricule</th>
                 <th>Type</th>
                 <th>Brand</th>
+                <th>State</th>
                 <th>Rent Information</th>
                 <th class="last">Actions</th>
             </tr>
             {% for Vehicle in vehicles %}
             <tr class="bg">
-                <td class="first">{{ Vehicle.reg }}</td>
-                <td class="first">{{ Vehicle.mileage }}</td>
-                <td class="first">{{ Vehicle.type }}</td>
+                <td class="first">{{ Vehicle.matricule }}</td>
+                <td class="first">{{ Vehicle.type.name }}</td>
                 <td class="first">{{ Vehicle.brand}}</td>
                 <td class="first">
-                {% if Vehicle.allocate == null or Vehicle.allocate is empty() %}Show
+                {% if Vehicle.state == 1 %}New{% elseif Vehicle.state == 2 %}Good Condition
+                {% else %}Bad Condition{% endif %}
+                </td>
+                <td class="first">
+                {% if Vehicle.allocate != null or Vehicle.allocate is not empty() %}Show
                 {% else %} Add a Rent{% endif %}
                 </td>
                 <td>

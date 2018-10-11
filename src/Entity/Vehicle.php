@@ -21,16 +21,6 @@ class Vehicle
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $reg;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $mileage;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $brand;
 
     /**
@@ -44,35 +34,20 @@ class Vehicle
      */
     private $type;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $matricule;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $state;
 
     
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getReg(): ?string
-    {
-        return $this->reg;
-    }
-
-    public function setReg(string $reg): self
-    {
-        $this->reg = $reg;
-
-        return $this;
-    }
-
-    public function getMileage(): ?int
-    {
-        return $this->mileage;
-    }
-
-    public function setMileage(?int $mileage): self
-    {
-        $this->mileage = $mileage;
-
-        return $this;
     }
 
     public function getBrand(): ?string
@@ -112,6 +87,30 @@ class Vehicle
     public function setType(?VehicleType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getMatricule(): ?string
+    {
+        return $this->matricule;
+    }
+
+    public function setMatricule(string $matricule): self
+    {
+        $this->matricule = $matricule;
+
+        return $this;
+    }
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(int $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }

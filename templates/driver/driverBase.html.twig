@@ -56,8 +56,8 @@
                 <td class="first">{{ driver.email }}</td>
                 <td class="first">{{ driver.numberPhone }}</td>
                 <td class="first">{{ driver.adress }}</td>
-                <td class="first">{% if driver.mission == null or driver.mission is empty%}
-                Link Mission{% else %} Show Mission{% endif %}</td>
+                <td class="first">{% if driver.missions == null or driver.missions is empty%}
+                Link{% else %} Show{% endif %}</td>
                 <td>
                 <a href="{{ path('deleteDriver', {'id': driver.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editDriver', {'id': driver.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>

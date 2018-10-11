@@ -53,8 +53,8 @@
                 <td class="first">{{ supplier.phoneNumber}}</td>
                 <td class="first">{{ supplier.adress}}</td>
                 <td class="first">
-                {% if supplier.allocates == null or supplier.allocates is empty() %}Show Rents
-                {% else %} Add Rent{% endif %}
+                {% if supplier.allocates != null or supplier.allocates is not empty() %}Show
+                {% else %} Add {% endif %}
                 </td>
                 <td class="first">
                 {% if supplier.paymentSuppliers == null or supplier.paymentSuppliers is empty %} Add Payments

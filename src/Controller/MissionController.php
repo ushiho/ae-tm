@@ -38,13 +38,14 @@ class MissionController extends AbstractController
         $form = $this->createForm(MissionType::class, $mission);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            if($request->getPathInfo() == 'addMission' && $repo->findMissionByStateByDriver($mission->getDriver(), true)){
-            $alert = "The driver selected has a mission non finished, please select another one.";
+            $rest = $repo->findMissionByStateByDriver($mission->getDriver(), false);
+            if(!empty($rest) && $request->attributes->get('_route')=="addMission"){
+                $alert = "The driver selected has a mission non finished, please select another one.";
             } else{
-            $mission->setCreatedAt(new \DateTime());
-            $manager->persist($mission);
-            $manager->flush();
-            return $this->redirectToRoute('allMissions');
+                $mission->setCreatedAt(new \DateTime());
+                $manager->persist($mission);
+                $manager->flush();
+                return $this->redirectToRoute('allMissions');
             }
         }
         return $this->render('mission/missionForm.html.twig', [
@@ -61,6 +62,17 @@ class MissionController extends AbstractController
     public function delete($id, ObjectManager $manager, MissionRepository $repo){
         $manager->remove($repo->find($id));
         $manager->flush();
+        return $this->redirectToRoute('allMissions');
+    }
+
+    /**
+     * @Route("/mission/deleteAll", name="deleteAll")
+     */
+    public function deleteAll(MissionRepository $repo, ObjectManager $manager){
+        foreach($repo->findAll() as $mission){
+            $manager->remove($mission);
+            $manager->flush();
+        }
         return $this->redirectToRoute('allMissions');
     }
 }

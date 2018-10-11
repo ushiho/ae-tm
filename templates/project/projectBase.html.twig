@@ -58,7 +58,7 @@
                 <td class="first">{{ project.createdAt|date('d-m-Y H:i') }}</td>
                 <td class="first">{{ project.startDate|date('d-m-Y') }}</td>
                 <td class="first">{{ project.endDate|date('d-m-Y') }}</td>
-                <td class="first">{{ project.budget }}</td>
+                <td class="first">{{ project.budget }} DH</td>
                 <td class="first">
                 {% if project.mission == null or project.mission is empty %} Add Missions
                 {% else %} Show Missions {% endif %}

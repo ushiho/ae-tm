@@ -82,7 +82,9 @@
                 </td>
             </tr>
             {% endfor %}
-            {% endif %}
         </table>
+        <br>
+            <div class="first"><a class="button" href="{{ path('deleteAll') }}" onclick="return confirm('are u sure?')" >Delete All</a></div>
+            {% endif %}
     </div>
 {% endblock %}

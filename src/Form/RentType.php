@@ -65,7 +65,7 @@ class RentType extends AbstractType
             'class' => Vehicle::class,
             'placeholder' => '--Choose Vehicle--',
             'required' => true,
-            'choice_label' => 'reg-type',
+            'choice_label' => 'matricule',
             'attr' => [
                 'style' => 'width:127px',
             ]
