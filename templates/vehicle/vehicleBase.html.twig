@@ -8,6 +8,7 @@
     <li><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
     <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
     <li class="active"><span><span><a href="#">Vehicles</a></span></span></li>
+    <li><span><span><a href="{{path('allTypes')}}">Vehicles Type</a></span></span></li>
     <li><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
     {% if connectedUser.role == 1 %}
     <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
@@ -17,6 +18,9 @@
 {% block left_column %}
     <h3>VEHICLES MANAGMENT</h3>
     <a href="{{path('addVehicle')}}" class="link">Add Vehicle</a>
+    {% for type in types %}
+        <a href="{{path('addByType', {'idType':type.id})}}" class="link">{{ type.name }} Managment</a>
+    {% endfor %}
     <a href="/vehicle" class="link">Show all Vehicles</a>
     <a href="#" class="link">Search</a>
 {% endblock %}

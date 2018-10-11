@@ -41,7 +41,7 @@ class UserController extends AbstractController
      */
     public function userForm(Request $request, ObjectManager $manager,
     UserPasswordEncoderInterface $encoder, User $user = null){
-        if($this->getUser()->getRole() == 1){
+        // if($this->getUser()->getRole() == 1){
             if($user == null){
                 $user = new User();
             }
@@ -58,25 +58,25 @@ class UserController extends AbstractController
                 'user' => $user,
                 'connectedUser' => $this->getUser(),
             ]);
-        } else{
-            throw $this->createAccessDeniedException("You don't have access to this page!");
-        }
+        // } else{
+        //     throw $this->createAccessDeniedException("You don't have access to this page!");
+        // }
     }
 
     /**
      * @Route("/user", name="allUsers")
      */
     public function findAll(UserRepository $repo){
-        if($this->getUser()->getRole()==1){
+        // if($this->getUser()->getRole()==1){
             $users = $repo->findAll();
             return $this->render('user/userBase.html.twig', array(
             'users' => $users,
             'connectedUser' => $this->getUser(),
             )
             );
-        }else{
-            throw $this->createAccessDeniedException("You don't have access to this page!");
-        }
+        // }else{
+        //     throw $this->createAccessDeniedException("You don't have access to this page!");
+        // }
     }
 
     /**

@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
-use App\Form\VehicleType;
+use App\Form\VehicleFormType;
 use App\Repository\VehicleRepository;
+use App\Repository\VehicleTypeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,12 +27,17 @@ class VehicleController extends AbstractController
     /**
      * @Route("/vehicle/new", name="addVehicle")
      * @Route("/vehicle/edit/{id}", name="editVehicle")
+     * @Route("/vehicle/new/{idType}", name="addByType", requirements={"idType"="\d+"})
      */
-    public function action(Vehicle $vehicle=null, ObjectManager $manager, Request $request){
+    public function action($idType=null, Vehicle $vehicle=null, ObjectManager $manager, Request $request,
+        VehicleTypeRepository $typeRepo){
         if($vehicle==null){
             $vehicle = new Vehicle();
         }
-        $form = $this->createForm(VehicleType::class, $vehicle);
+        if($idType!=null){
+            $vehicle->setType($typeRepo->find($idType));
+        }
+        $form = $this->createForm(VehicleFormType::class, $vehicle);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $manager->persist($vehicle);
@@ -42,6 +48,7 @@ class VehicleController extends AbstractController
             'form' => $form->createView(),
             'connectedUser' => $this->getUser(),
             'vehicle' => $vehicle,
+            'types' => $typeRepo->findAll(),
         ]);
     }
 
@@ -53,4 +60,5 @@ class VehicleController extends AbstractController
         $manager->flush();
         return $this->redirectToRoute('allVehicles');
     }
+
 }

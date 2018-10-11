@@ -30,6 +30,15 @@ class DriverType extends AbstractType
                     'style'=>'width:270px;',
                 )
             ))
+            ->add('type', EntityType::class, array(
+                'class' => VehicleType::class,
+                'placeholder' => '--Select the type--',
+                'required' => true,
+                'choice_label' => 'name',
+                'attr' => [
+                    'style' => 'width:200px',
+                    ]
+            ))
         ;
     }
 

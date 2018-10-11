@@ -31,17 +31,18 @@ class Vehicle
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $brand;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Allocate", mappedBy="vehicle", cascade={"persist", "remove"})
      */
     private $allocate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType", inversedBy="vehicles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $type;
 
 
     
@@ -74,18 +75,6 @@ class Vehicle
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getBrand(): ?string
     {
         return $this->brand;
@@ -111,6 +100,18 @@ class Vehicle
         if ($this !== $allocate->getVehicle()) {
             $allocate->setVehicle($this);
         }
+
+        return $this;
+    }
+
+    public function getType(): ?VehicleType
+    {
+        return $this->type;
+    }
+
+    public function setType(?VehicleType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

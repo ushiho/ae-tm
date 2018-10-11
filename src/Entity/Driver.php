@@ -68,11 +68,17 @@ class Driver
      */
     private $missions;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleType", inversedBy="drivers")
+     */
+    private $vehicleType;
+
 
     public function __construct()
     {
         $this->paymentDrivers = new ArrayCollection();
         $this->missions = new ArrayCollection();
+        $this->vehicleType = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -245,6 +251,32 @@ class Driver
             if ($mission->getDriver() === $this) {
                 $mission->setDriver(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VehicleType[]
+     */
+    public function getVehicleType(): Collection
+    {
+        return $this->vehicleType;
+    }
+
+    public function addVehicleType(VehicleType $vehicleType): self
+    {
+        if (!$this->vehicleType->contains($vehicleType)) {
+            $this->vehicleType[] = $vehicleType;
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleType(VehicleType $vehicleType): self
+    {
+        if ($this->vehicleType->contains($vehicleType)) {
+            $this->vehicleType->removeElement($vehicleType);
         }
 
         return $this;

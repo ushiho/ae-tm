@@ -1,0 +1,30 @@
+{% extends 'vehicle_type_form/vehicleTypeBase.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }}
+<a class="path" href="{% if type.id == null %}{{ path('addType') }} {% else %}{{path('editType', {'id': type.id })}}{% endif %}">
+ / {% if type.id == null %}Create Type{% else %}Edit Type{% endif %}</a>
+{% endblock %}
+{{ form_start(form) }}
+<hr>
+<br>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter Vehicle Type information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.name) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.name) }}</td>
+                </tr>
+            </table>
+            <button type="submit" class="button">{% if type.id %}Update{% else %}Create{% endif %}</button>
+            <button class="button" formnovalidate><a href="{{ path('allTypes') }}" >Cancel</a></button>
+        </div>
+        {{ form_end(form) }}
+{% endblock %}
