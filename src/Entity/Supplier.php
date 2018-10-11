@@ -44,19 +44,20 @@ class Supplier
     private $adress;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="supplier")
-     */
-    private $paymentSuppliers;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Allocate", mappedBy="supplier")
      */
     private $allocates;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="supplier")
+     */
+    private $paymentSupplier;
 
     public function __construct()
     {
         $this->paymentSuppliers = new ArrayCollection();
         $this->allocates = new ArrayCollection();
+        $this->paymentSupplier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -125,37 +126,6 @@ class Supplier
     }
 
     /**
-     * @return Collection|PaymentSupplier[]
-     */
-    public function getPaymentSuppliers(): Collection
-    {
-        return $this->paymentSuppliers;
-    }
-
-    public function addPaymentSupplier(PaymentSupplier $paymentSupplier): self
-    {
-        if (!$this->paymentSuppliers->contains($paymentSupplier)) {
-            $this->paymentSuppliers[] = $paymentSupplier;
-            $paymentSupplier->setSupplier($this);
-        }
-
-        return $this;
-    }
-
-    public function removePaymentSupplier(PaymentSupplier $paymentSupplier): self
-    {
-        if ($this->paymentSuppliers->contains($paymentSupplier)) {
-            $this->paymentSuppliers->removeElement($paymentSupplier);
-            // set the owning side to null (unless already changed)
-            if ($paymentSupplier->getSupplier() === $this) {
-                $paymentSupplier->setSupplier(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Allocate[]
      */
     public function getAllocates(): Collection
@@ -180,6 +150,37 @@ class Supplier
             // set the owning side to null (unless already changed)
             if ($allocate->getSupplier() === $this) {
                 $allocate->setSupplier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PaymentSupplier[]
+     */
+    public function getPaymentSupplier(): Collection
+    {
+        return $this->paymentSupplier;
+    }
+
+    public function addPaymentSupplier(PaymentSupplier $paymentSupplier): self
+    {
+        if (!$this->paymentSupplier->contains($paymentSupplier)) {
+            $this->paymentSupplier[] = $paymentSupplier;
+            $paymentSupplier->setSupplier($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaymentSupplier(PaymentSupplier $paymentSupplier): self
+    {
+        if ($this->paymentSupplier->contains($paymentSupplier)) {
+            $this->paymentSupplier->removeElement($paymentSupplier);
+            // set the owning side to null (unless already changed)
+            if ($paymentSupplier->getSupplier() === $this) {
+                $paymentSupplier->setSupplier(null);
             }
         }
 

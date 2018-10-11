@@ -58,6 +58,11 @@ class PaymentSupplier
      */
     private $note;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="paymentSupplier")
+     */
+    private $supplier;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +160,18 @@ class PaymentSupplier
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
 
         return $this;
     }
