@@ -63,7 +63,7 @@ class Project
     /**
      * @ORM\Column(type="boolean")
      */
-    private $finshed;
+    private $finished;
 
     public function __construct()
     {
@@ -191,14 +191,14 @@ class Project
         return $this;
     }
 
-    public function getFinshed(): ?bool
+    public function getFinished(): ?bool
     {
-        return $this->finshed;
+        return $this->finished;
     }
 
-    public function setFinshed(bool $finshed): self
+    public function setFinished(bool $finished): self
     {
-        $this->finshed = $finshed;
+        $this->finished = $finished;
 
         return $this;
     }

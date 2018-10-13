@@ -39,7 +39,8 @@ class MissionType extends AbstractType
                     'class'=>'bootstrap-select',
                     'data-live-search'=>'true',
                     'data-width'=>'100%',
-                    'style' => 'width:200px;'
+                    'style' => 'width:200px;',
+                    'data-live-search'=>'true',
                 )
             ))
             ->add('department',EntityType::class,array(
@@ -51,7 +52,8 @@ class MissionType extends AbstractType
                     'class'=>'bootstrap-select',
                     'data-live-search'=>'true',
                     'data-width'=>'100%',
-                    'style' => 'width:200px;'
+                    'style' => 'width:200px;',
+                    'data-live-search'=>'true',
                 )
             ))
             ->add('driver',EntityType::class,array(
@@ -63,7 +65,8 @@ class MissionType extends AbstractType
                     'class'=>'bootstrap-select',
                     'data-live-search'=>'true',
                     'data-width'=>'100%',
-                    'style' => 'width:200px;'
+                    'style' => 'width:200px;',
+                    'data-live-search'=>'true',
                 )
             ))
             ->add('finished', ChoiceType::class, array(

@@ -16,13 +16,13 @@ class VehicleController extends AbstractController
 {
     /**
      * @Route("/vehicle", name="allVehicles")
-     * @Route("/vehicle/driver/{id}", name="showVehiclesByType")
+     * @Route("/vehicle/type/{idType}", name="showVehiclesByType")
      */
     public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo,
     VehicleType $type=null, Request $request)
     {
         $vehicles = [];
-        if(!$type && $request->attributes->get('_route')=="showVehiclesByType"){
+        if($type && $request->attributes->get('_route')=="showVehiclesByType"){
             $vehicles = $repo->findByType($type);
         }else{
             $vehicles = $repo->findAll();
@@ -81,6 +81,17 @@ class VehicleController extends AbstractController
                 'vehicle' => $vehicle,
                 'types' => $typeRepo->findAll(),
             ]);
+        }
+        return $this->redirectToRoute('allVehicles');
+    }
+
+    /**
+     * @Route("/vehicle/deleteAll", name="deleteAllVehicles")
+     */
+    public function deleteAll(ObjectManager $manager, VehicleRepository $repo){
+        foreach($repo->findAll() as $vehicle ){
+            $manager->remove($vehicle);
+            $manager->flush();
         }
         return $this->redirectToRoute('allVehicles');
     }

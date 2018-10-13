@@ -67,4 +67,15 @@ class DepartmentController extends AbstractController
         }
         return $this->redirectToRoute('allDepartments');
     }
+
+    /**
+     * @Route("/department/deleteAll", name="deleteAllDepartments")
+     */
+    public function deleteAll(ObjectManager $manager, DepartmentRepository $repo){
+        foreach ($repo->findAll() as $department) {
+            $manager->remove($department);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('allDepartments');
+    }
 }

@@ -67,4 +67,14 @@ class SupplierController extends AbstractController
     }
     }
 
+    /**
+     * @Route("/supplier/deleteAll", name="deleteAllSuppliers")
+     */
+    public function deleteAll(ObjectManager $manager, SupplierRepository $repo){
+        foreach ($repo->findAll() as $supplier) {
+            $manager->remove($supplier);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('allSuppliers');
+    }
 }

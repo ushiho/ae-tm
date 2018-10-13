@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -26,6 +27,14 @@ class ProjectType extends AbstractType
                     'rows' => '3',
                     'cols' => '80'
                 ]
+            ))
+            ->add('finished', ChoiceType::class, array(
+                'choices' => [
+                    'Yes' => 1,
+                    'No' => 2,
+                ],
+                'placeholder' => '--Select Value--',
+                'required' => true,
             ))
         ;
     }

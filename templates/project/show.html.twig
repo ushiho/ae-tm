@@ -43,18 +43,23 @@
                   </tr>
                     <tr class="bg">
                         <td class="first"><strong>Missions</strong></td>
-                        <td class="last"><a href="{{ path('showMission', {'id':project.id}) }}" class="link">Show Project's Missions</a></td>
+                        <td class="last">
+                        {% if project.mission and project.mission is not empty %}
+                        <a href="{{ path('showMission', {'id':project.id}) }}" class="link">Show Missions</a></td>
+                        {% else %}
+                        <a href="{{ path('addMissionForProject', {'idProject': project.id})}}" class="link" title="Add a mission">Add One</a>
+                        {% endif %}
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Is Finished?</strong></td>
-                        <td class="last">{% if project.finshed %}Yes{% else %}No{% endif %} </td>
+                        <td class="last">{% if project.finished %}Yes{% else %}No{% endif %} </td>
                     </tr>
                     <tr class="bg">
                     <td class="first"><strong>Notes</strong></td>
                     <td class="last">{{project.note}}</td>
                     </tr>
                     </table>
-                    <p>&nbsp;</p>
+                    <br>
                     <a title="Show All Missions" href="{{ path('allProjects') }}" class="button">Back </a>
                     <a title="Edit This Mission" href="{{ path('editProject', { 'id' : project.id }) }}" class="button">EDIT </a></td>
                 </div>

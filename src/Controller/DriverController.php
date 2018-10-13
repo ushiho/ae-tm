@@ -74,4 +74,15 @@ class DriverController extends AbstractController
             ]);
         }
     }
+
+    /**
+     * @Route("driver/deleteAll", name="deleteAllDrivers")
+     */
+    public function deleteAll(ObjectManager $manager, DriverRepository $repo){
+        foreach ($repo->findAll() as $driver) {
+            $manager->remove($driver);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('allDrivers');
+    }
 }

@@ -1,8 +1,4 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ parent() }}{% endblock %}
-{% block stylesheets %}
-
-{% endblock %}
 
 {% block header %}
             <li><span><span><a href="{{path('allProjects')}}">Projects</a></span></span></li>
@@ -15,7 +11,7 @@
             <li><span><span><a href="{{path('allTypes')}}">Vehicles Type</a></span></span></li>
             <li><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
             {% if connectedUser.role == 1 %}
-            <li><span><span><a href="{{ path('allUsers') }}">Users</a></span></span></li>
+                <li><span><span><a href="{{ path('allUsers') }}">Users</a></span></span></li>
             {% endif %}
 {% endblock %}
 
@@ -36,6 +32,7 @@
         </div>
     </div>
     <br>
+    <hr>
     <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
@@ -69,8 +66,10 @@
                 </td>
             </tr>
             {% endfor %}
+            {% endif %}
         </table>
         <br>
+        {% if missions is not empty and missions is not null %}
             <div class="first"><a class="button" href="{{ path('deleteAll') }}" onclick="return confirm('Are u sure, You want to delete all missions?')" >Delete All</a></div>
             {% endif %}
     </div>

@@ -29,7 +29,12 @@
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Rent Info</strong></td>
-                        <td class="last"><a href="{{ path('showRent', {'idRent':vehicle.allocate.id}) }}" class="link">Show Rent's Info</a></td>
+                        <td class="last">
+                        {% if vehicle.allocate and vehicle.allocate is not empty %}
+                        <a href="{{ path('showRent', {'idRent':vehicle.allocate.id}) }}" class="link">Show Rent's Info</a></td>
+                        {% else %}
+                        <a href="{{ path('addRent') }}" class="link">Add Rent's Info</a></td>
+                        {% endif %}                        
                     </tr>
                     </table>
                     <p>&nbsp;</p>

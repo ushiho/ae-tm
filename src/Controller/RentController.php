@@ -84,4 +84,15 @@ class RentController extends AbstractController
         }
         return $this->redirectToRoute('allRents');
     }
+
+    /**
+     * @Route("/rent/deleteAll", name="deleteAllRents")
+     */
+    public function deleteAll(AllocateRepository $repo, ObjectManager $manager){
+        foreach ($repo->findAll() as $rent) {
+            $manager->remove($rent);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('allRents');
+    }
 }

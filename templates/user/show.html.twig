@@ -1,61 +1,59 @@
 {% extends 'user/userBase.html.twig' %}
-
 {% block center_column %}
-
-{% block path %}
-    {{ parent()}} / <a href="{{ path('profil') }}" class="path">Profil</a>
+    {% block path %}
+    {{ parent()}} / <a href="#" class="path">Details</a>
 {% endblock %}
 <hr><br>
             <div class="table"> 
                 <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
                 <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-                    <table class="listing form" cellpadding="0" cellspacing="0">
+                <table class="listing form" cellpadding="0" cellspacing="0">
                     <tr>
-                        <th class="full" colspan="2">My profil</th>
+                        <th class="full" colspan="2">{{ user.firstName }} Details</th>
                     </tr>
                     <tr>
                         <td class="first" width="172"><strong>First Name</strong></td>
-                        <td class="last">{{ connectedUser.firstName }}</td>
+                        <td class="last">{{ user.firstName }}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Last Name</strong></td>
-                        <td class="last">{{ connectedUser.lastName}}</td>
+                        <td class="last">{{ user.lastName}}</td>
                     </tr>
                     <tr>
                         <td class="first"><strong>CIN</strong></td>
-                        <td class="last">{{ connectedUser.cin}}</td>
+                        <td class="last">{{ user.cin}}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Birthday</strong></td>
-                        <td class="last">{{ connectedUser.birthday|date('d-m-Y')}}</td>
+                        <td class="last">{{ user.birthday|date('d-m-Y')}}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Email</strong></td>
-                        <td class="last">{{ connectedUser.email }}</td>
+                        <td class="last">{{ user.email }}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Phone Number</strong></td>
-                        <td class="last">{{ connectedUser.phoneNumber }}</td>
+                        <td class="last">{{ user.phoneNumber }}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Gender</strong></td>
-                        <td class="last">{% if connectedUser.gender == 1 %}Female
-                    {% elseif connectedUser.gender == 2 %}Male{% else %} Not defined {% endif %}
+                        <td class="last">{% if user.gender == 1 %}Female
+                    {% elseif user.gender == 2 %}Male{% else %} Not defined {% endif %}
                         </td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Country</strong></td>
-                        <td class="last">{{ connectedUser.country }}</td>
+                        <td class="last">{{ user.country }}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Role</strong></td>
-                        <td class="last">{% if connectedUser.role == 1 %}Admin
-                        {% elseif connectedUser.role == 2 %} User{% else %} Not defined{% endif %} </td>
+                        <td class="last">{% if user.role == 1 %}Admin
+                        {% elseif user.role == 2 %} User{% else %} Not defined{% endif %} </td>
                     </tr>
-
-                    </table>
-                        <br>
-                        <div><a title="Edit my profil" href="{{ path('editUser', { 'id' : connectedUser.id }) }}" class="button">EDIT </a></div>
+                </table>
+                    <a title="Edit my profil" href="{{ path('editUser', { 'id' : user.id }) }}" class="button">EDIT </a>
+                    <a title="Show All Missions" href="{{ path('allVehicles') }}" class="button">Back </a>
+                    <p>&nbsp;</p>
                 </div>
 
 {% endblock %}

@@ -11,6 +11,7 @@ use App\Form\MissionType;
 use App\Entity\Department;
 use App\Repository\DriverRepository;
 use App\Repository\MissionRepository;
+use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,10 +48,15 @@ class MissionController extends AbstractController
      /**
      * @Route("/mission/new", name="addMission")
      * @Route("mission/edit/{id}", name="editMission")
+     * @Route("mission/new/{idProject}", name="addMissionForProject")
      */
-    public function create(Request $request, ObjectManager $manager, Mission $mission=null, MissionRepository $repo){
+    public function create(Request $request, ObjectManager $manager, Mission $mission=null, 
+    MissionRepository $repo, $idProject=null, ProjectRepository $projectRepo){
         if($mission==null){
             $mission = new Mission();
+        }
+        if($idProject){
+            $mission->setProject($projectRepo->find($idProject));
         }
         $alert = "";
         $form = $this->createForm(MissionType::class, $mission);

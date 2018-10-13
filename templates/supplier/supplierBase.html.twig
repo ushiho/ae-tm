@@ -31,10 +31,16 @@
         </div>
     </div>
     <br>
+    <hr>
     <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
+        {% if suppliers is null or suppliers is empty  %}
+                <tr class="bg">
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no Supplier add One <a href="{{ path('addSupplier')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                </tr>
+            {% else %}
             <tr>
                 <th class="first">First Name</th>
                 <th>Last Name</th>
@@ -53,6 +59,11 @@
                 </td>
             </tr>
             {% endfor %}
+            {% endif %}
         </table>
+        <br>
+        {% if suppliers is not empty and suppliers is not null %}
+            <div class="first"><a class="button" href="{{ path('deleteAllSuppliers') }}" onclick="return confirm('Are u sure, You want to delete all Suppliers? Note That all payments and rents infos will be deleted!')" >Delete All</a></div>
+        {% endif %}
     </div>
 {% endblock %}

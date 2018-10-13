@@ -76,4 +76,15 @@ class VehicleTypeFormController extends AbstractController
         }
         return $this->redirectToRoute('allTypes');
     }
+
+    /**
+     * @Route("/vehicle/type/deleteAll/", name="deleteAllTypes")
+     */
+    public function deleteAll(ObjectManager $manager, VehicleTypeRepository $repo){
+        foreach($repo->findAll() as $type){
+            $manager->remove($type);
+            $manager->flush();
+        }
+        return $this->redirectToRoute('allTypes');
+    }
 }

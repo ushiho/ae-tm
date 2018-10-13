@@ -30,10 +30,16 @@
         </div>
     </div>
     <br>
+    <hr>
     <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
+        {% if types is null or types is empty  %}
+                <tr class="bg">
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no Types add some <a href="{{ path('addType')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                </tr>
+            {% else %}
             <tr>
                 <th class="first">Name</th>
                 <th class="first">Vehicles</th>
@@ -43,7 +49,8 @@
             <tr class="bg">
                 <td class="first">{{ type.name }}</td>
                 <td class="first">
-                {% if type.vehicles == null or type.vehicles is empty() %}Show Vehicles
+                {% if type.vehicles and type.vehicles is not empty() %}
+                <a href="{{ path('showVehiclesByType', {'idType': type.id}) }}" class="link">Show Vehicles</a>
                 {% else %} Add a Vehicle{% endif %}
                 </td>
                 <td>
@@ -56,6 +63,11 @@
                 </td>
             </tr>
             {% endfor %}
+            {% endif %}
         </table>
+        <br>
+        {% if types is not empty and types is not null %}
+            <div class="first"><a class="button" href="{{ path('deleteAllTypes') }}" onclick="return confirm('Are u sure, You want to delete all Vehciles types? Note that all vehicles will be deleted!')" >Delete All</a></div>
+        {% endif %}
     </div>
 {% endblock %}

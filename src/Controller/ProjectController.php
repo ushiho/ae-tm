@@ -6,6 +6,7 @@ use DateTime;
 use App\Entity\Mission;
 use App\Entity\Project;
 use App\Form\ProjectType;
+use App\Repository\MissionRepository;
 use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -55,9 +56,16 @@ class ProjectController extends AbstractController
     /**
      * @Route("/project/delete/{id}", name="deleteProject")
      */
-    public function delete($id, ObjectManager $manager, ProjectRepository $repo){
-        $manager->remove($repo->find($id));
-        $manager->flush();
+    public function delete(Project $project, ObjectManager $manager, ProjectRepository $repo,
+     MissionRepository $missionRepo){
+        if($project) {
+            foreach ($missionRepo->findByProject($project) as $mission) {
+                $manager->remove($mission);
+                $manager->flush();
+            }
+            $manager->remove($project);
+            $manager->flush();
+        }
         return $this->redirectToRoute('allProjects');
     }
 
@@ -79,6 +87,21 @@ class ProjectController extends AbstractController
                 'connectedUser' => $this->getUser(),
                 'project' => $project,
             ]);
+        }
+        return $this->redirectToRoute('allProjects');
+    }
+
+    /**
+     * @Route("project/deleteAll", name="deleteAllProjects")
+     */
+    public function deleteAll(ProjectRepository $repo, ObjectManager $manager, MissionRepository $missionRepo){
+        foreach($repo->findAll() as $project){
+            foreach ($missionRepo->findByProject($project) as $mission) {
+                $manager->remove($mission);
+                $manager->flush();
+            }
+            $manager->remove($project);
+            $manager->flush();
         }
         return $this->redirectToRoute('allProjects');
     }

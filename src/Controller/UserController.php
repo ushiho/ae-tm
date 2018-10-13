@@ -18,6 +18,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends AbstractController
 {
+     /**
+     * Adds a flash message to the current session for type.
+     *
+     * @throws \LogicException
+     */
 
     /**
      * @Route("/login", name="login")
@@ -48,9 +53,13 @@ class UserController extends AbstractController
             $form = $this->createForm(UserRegistrationType::class, $user);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
+                if (!$this->container->has('session')) {
+                    throw new \LogicException('You can not use the addFlash method if sessions are disabled.');
+                }
                 $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
                 $manager->persist($user);
                 $manager->flush();
+                $this->container->get('session')->getFlashBag()->add('success', 'The user'.$user->getFirstName().' is added successfully');
                 return $this->redirectToRoute('allUsers');
             }
             return $this->render('user/userForm.html.twig', [
@@ -106,6 +115,32 @@ class UserController extends AbstractController
         return $this->render('user/profil.html.twig', [
             'connectedUser' => $this->getUser(),
         ]);
+    }
+
+    /**
+     * @Route("/user/show/{id}", name="showUser")
+     */
+    public function showDetails(User $user=null){
+        if($user){
+            return $this->render('user/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'user' => $user,
+            ]);
+        }
+        return $this->redirectToRoute('allUsers');
+    }
+
+    /**
+     * @Route("user/deleteAll", name="deleteAllUsers")
+     */
+    public function deleteAll(ObjectManager $manager, UserRepository $repo){
+        foreach ($repo->findAll() as $user) {
+            if($user != $this->getUser()){
+                $manager->remove($user);
+                $manager->flush();
+            }
+        }
+        return $this->redirectToRoute('allUsers');
     }
 
 }
