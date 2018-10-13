@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\Driver;
 use App\Entity\Mission;
 use App\Entity\Payment;
+use App\Entity\Project;
 use App\Form\MissionType;
+use App\Entity\Department;
 use App\Repository\DriverRepository;
 use App\Repository\MissionRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,11 +20,26 @@ class MissionController extends AbstractController
 {
     /**
      * @Route("/mission", name="allMissions")
+     * @Route("/mission/department/{idDepartment}", name="showMissionOfDepartment")
+     * @Route("/mission/project/{idProject}", name="showMissionOfProject")
+     * @Route("/mission/driver/{idDriver}", name="showMissionsByDriver")
      */
-    public function index(MissionRepository $repo)
+    public function index(MissionRepository $repo, Department $department=null, Request $request,
+    Project $project=null, Driver $driver=null)
     {
+        $missions = [];
+        if($department && $request->attributes->get('_route')=="showMissionOfDepartment"){
+            $missions = $repo->findByDepartment($department);
+        }else if(!$project && $request->attributes->get('_route')=="showMissionOfProject"){
+            $missions = $repo->findByProject($project);
+        }else if($driver && $request->attributes->get('_route')=="showMissionsByDriver"){
+            $missions = $repo->findByDriver($driver);
+        }
+        else{
+            $missions = $repo->findAll();
+        }
         return $this->render('mission/missionBase.html.twig', [
-            'missions' => $repo->findAll(),
+            'missions' => $missions,
             'connectedUser' => $this->getUser(),
         ]);
     }
@@ -75,4 +93,18 @@ class MissionController extends AbstractController
         }
         return $this->redirectToRoute('allMissions');
     }
+
+    /**
+     * @Route("/mission/show/{id}", name="showMission")
+     */
+    public function showDetails(Mission $mission=null){
+        if($mission){
+            return $this->render('/mission/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'mission' => $mission,
+            ]);
+        }
+        return $this->redirectToRoute('allMissions');
+    }
+
 }

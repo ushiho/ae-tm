@@ -47,4 +47,13 @@ class DriverRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByType($type){
+        return $this->createQuery('d')
+        ->andWhere('d.vehicleType = :type')
+        ->setParameter('type', $type)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }

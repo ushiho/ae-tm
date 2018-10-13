@@ -47,8 +47,12 @@
                 {% else %} Add a Vehicle{% endif %}
                 </td>
                 <td>
-                <a href="{{ path('deleteType', {'id': type.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editType', {'id': type.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('deleteType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to delete this type of vehicle?')">
+                <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to edit this type of vehicle?')">
+                <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('showVehicleType', {'id': type.id}) }}">
+                <img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>
                 </td>
             </tr>
             {% endfor %}

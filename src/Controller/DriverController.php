@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Driver;
 use App\Form\DriverType;
+use App\Entity\VehicleType;
 use App\Repository\DriverRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -14,12 +15,19 @@ class DriverController extends AbstractController
 {
     /**
      * @Route("/driver", name="allDrivers")
+     * @Route("/driver/type/{id}", name="showDriverByType")
      */
-    public function show(DriverRepository $repo)
+    public function show(DriverRepository $repo, Request $request, VehicleType $type=null)
     {
+        $drivers = [];
+        if(!$type && $request->attributes->get('_route')=="showDriverForType"){
+            $drivers = $repo->findByType($type);
+        }else{
+            $drivers = $repo->findAll();
+        }
         return $this->render('driver/driverBase.html.twig', [
             'connectedUser' => $this->getUser(),
-            'drivers' => $repo->findAll(),
+            'drivers' => $drivers,
         ]);
     }
 
@@ -53,5 +61,17 @@ class DriverController extends AbstractController
         $manager->remove($repo->find($id));
         $manager->flush();
         return $this->redirectToRoute('allDrivers');
+    }
+
+    /**
+     * @Route("driver/show/{id}", name="showDriver")
+     */
+    public function showDetails(Driver $driver=null){
+        if($driver){
+            return $this->render('driver/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'driver' => $driver,
+            ]);
+        }
     }
 }

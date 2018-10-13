@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Mission;
 use App\Entity\Vehicle;
 use App\Entity\Allocate;
 use App\Entity\Supplier;
@@ -35,13 +36,13 @@ class RentType extends AbstractType
                     'style' => 'width:127px',
                 ]
             ))
-            ->add('price', NumberType::class)
+            ->add('price')
             ->add('withDriver', ChoiceType::class, array(
                 'choices' => [
                     'Yes' => true,
                     'No' => false,
                 ],
-                'placeholder' => '--Select--',
+                'placeholder' => '-- Select --',
                 'attr' => [
                     'style' => 'width:127px',
                 ]
@@ -65,10 +66,23 @@ class RentType extends AbstractType
             'class' => Vehicle::class,
             'placeholder' => '--Choose Vehicle--',
             'required' => true,
-            'choice_label' => 'matricule',
+            'choice_label' => function($vehicle){
+                return $vehicle->getMatricule().' '.$vehicle->getType()->getName();
+            },
             'attr' => [
                 'style' => 'width:127px',
             ]
+            ))
+            ->add('mission', EntityType::class, array(
+                'class' => Mission::class,
+                'placeholder' => '--Choose Mission--',
+                'required' => true,
+                'choice_label' => function($mission){
+                    return $mission->getDriver()->getFirstName().' - '.$mission->getDepartment()->getName();
+                },
+                'attr' => [
+                    'style' => 'width:127px;',
+                ]
             ))
         ;
     }

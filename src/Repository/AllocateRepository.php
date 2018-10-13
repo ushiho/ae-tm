@@ -47,4 +47,13 @@ class AllocateRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findBySupplier($supplier){
+        return $this->createQueryBuilder('a')
+        ->andWhere('a.supplier = :supplier')
+        ->setParameter('supplier', $supplier)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }

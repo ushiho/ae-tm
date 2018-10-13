@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Driver;
+use App\Entity\Department;
 use App\Entity\VehicleType;
 use App\Form\VehicleTypeType;
 use App\Repository\VehicleTypeRepository;
@@ -14,12 +16,20 @@ class VehicleTypeFormController extends AbstractController
 {
     /**
      * @Route("/vehicle/type", name="allTypes")
+     * @Route("vehicle/type/driver/{vehicleTypes}", name="showVehicleTypeByDriver")
      */
-    public function show(VehicleTypeRepository $repo)
+    public function show(VehicleTypeRepository $repo, Driver $driver=null, Request $request,
+    array $vehicleTypes=null)
     {
+        $types = [];
+        if($driver && $request->attributes->get('_route')=="showVehicleTypeByDriver"){
+            $types = $vehicleTypes;
+        }else{
+            $types = $repo->findAll();
+        }
         return $this->render('vehicle_type_form/vehicleTypeBase.html.twig', [
             'connectedUser' => $this->getUser(),
-            'types' => $repo->findAll(),
+            'types' => $types,
         ]);
     }
 
@@ -51,6 +61,19 @@ class VehicleTypeFormController extends AbstractController
     public function delete($id, VehicleTypeRepository $repo, ObjectManager $manager){
         $manager->remove($repo->find($id));
         $manager->flush();
+        return $this->redirectToRoute('allTypes');
+    }
+
+    /**
+     * @Route("/vehicle/type/show/{id}", name="showVehicleType")
+     */
+    public function showDetails(VehicleType $vehicleType=null){
+        if($vehicleType){
+            return $this->render('vehicle_type_form/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'vehicleType' => $vehicleType,
+            ]);
+        }
         return $this->redirectToRoute('allTypes');
     }
 }

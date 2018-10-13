@@ -39,10 +39,6 @@
                 <th class="first">First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
-                <th>Phone Number</th>
-                <th>Address</th>
-                <th>Rent</th>
-                <th>Payments</th>
                 <th class="last">Actions</th>
             </tr>
             {% for supplier in suppliers %}
@@ -50,19 +46,10 @@
                 <td class="first">{{ supplier.firstName }}</td>
                 <td class="first">{{ supplier.lastName }}</td>
                 <td class="first">{{ supplier.email }}</td>
-                <td class="first">{{ supplier.phoneNumber}}</td>
-                <td class="first">{{ supplier.adress}}</td>
-                <td class="first">
-                {% if supplier.allocates != null or supplier.allocates is not empty() %}Show
-                {% else %} Add {% endif %}
-                </td>
-                <td class="first">
-                {% if supplier.paymentSupplier == null or supplier.paymentSupplier is empty %} Add Payments
-                {% else %} Show Payments {% endif %}
-                </td>
                 <td>
                 <a href="{{ path('deleteSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('showSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>            
                 </td>
             </tr>
             {% endfor %}

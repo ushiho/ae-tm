@@ -54,4 +54,17 @@ class SupplierController extends AbstractController
         return $this->redirectToRoute('allSuppliers');
     }
 
+    /**
+     * @Route("/supplier/show/{id}", name="showSupplier")
+     */
+    public function showDetails(Supplier $supplier=null){
+        if($supplier)
+        {
+            return $this->render('/supplier/show.html.twig', [
+            'connectedUser' => $this->getUser(),
+            'supplier' => $supplier,
+        ]);
+    }
+    }
+
 }

@@ -54,4 +54,17 @@ class DepartmentController extends AbstractController
         $manager->flush();
         return $this->redirectToRoute('allDepartments');
     }
+
+    /**
+     * @Route("/department/show/{id}", name="showDepartment")
+     */
+    public function showDetails(Department $department=null){
+        if($department){
+            return $this->render('department/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'department' => $department,
+            ]);
+        }
+        return $this->redirectToRoute('allDepartments');
+    }
 }

@@ -73,6 +73,21 @@ class Driver
      */
     private $vehicleType;
 
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $salaire;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $periodOfTravel;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $salairePerDay;
+
 
     public function __construct()
     {
@@ -278,6 +293,42 @@ class Driver
         if ($this->vehicleType->contains($vehicleType)) {
             $this->vehicleType->removeElement($vehicleType);
         }
+
+        return $this;
+    }
+
+    public function getSalaire()
+    {
+        return $this->salaire;
+    }
+
+    public function setSalaire($salaire): self
+    {
+        $this->salaire = $salaire;
+
+        return $this;
+    }
+
+    public function getPeriodOfTravel(): ?int
+    {
+        return $this->periodOfTravel;
+    }
+
+    public function setPeriodOfTravel(int $periodOfTravel): self
+    {
+        $this->periodOfTravel = $periodOfTravel;
+
+        return $this;
+    }
+
+    public function getSalairePerDay()
+    {
+        return $this->salairePerDay;
+    }
+
+    public function setSalairePerDay($salairePerDay): self
+    {
+        $this->salairePerDay = $salairePerDay;
 
         return $this;
     }

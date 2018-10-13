@@ -69,4 +69,17 @@ class ProjectController extends AbstractController
             'connectedUser' => $this->getUser(),
         ]);
     }
+
+    /**
+     * @Route("project/show/{id}", name="showProject")
+     */
+    public function showDetails(Project $project=null){
+        if($project){
+            return $this->render('project/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'project' => $project,
+            ]);
+        }
+        return $this->redirectToRoute('allProjects');
+    }
 }

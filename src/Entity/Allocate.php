@@ -37,7 +37,6 @@ class Allocate
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
-     * @Assert\Type(type="decimal")
      */
     private $price;
 

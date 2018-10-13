@@ -1,0 +1,83 @@
+{% extends 'driver/driverBase.html.twig' %}
+
+{% block center_column %}
+{% block path %}
+    {{ parent()}} / <a href="#" class="path"> Details</a>
+{% endblock %}
+<hr><br>
+            <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Driver Details</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" width="172"><strong>First Name</strong></td>
+                        <td class="last">{{ driver.firstName }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Last Name</strong></td>
+                        <td class="last">{{ driver.lastName }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Gender</strong></td>
+                        <td class="last">{% if driver.gender == 1 %}Female{% else %} Male{% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>CIN</strong></td>
+                        <td class="last">{{ driver.cin }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Licence Number</strong></td>
+                        <td class="last">{{driver.licenceNumber}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Vehicle Type</strong></td>
+                        <td class="last">
+                        {# <a title="All vehicle type for this driver" href="{{path('showVehicleTypeByDriver', {'vehicleTypes': driver.vehicleType })}}">Show</a> #}
+                        add an array in path function twig
+                        </td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Salaire</strong></td>
+                        <td class="last">{{driver.salaire}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Period Of Travel</strong></td>
+                        <td class="last">{% if driver.periodOfTravel == 1 %}Daily
+                        {% elseif driver.periodOfTravel == 2 %}Weekly
+                        {% elseif driver.periodOfTravel == 3 %}Monthly
+                        {% else %}Not Specified {% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Email</strong></td>
+                        <td class="last">{{ driver.email }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Phone Number</strong></td>
+                        <td class="last">{{driver.numberPhone}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Address</strong></td>
+                        <td class="last">{{ driver.adress }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Payment</strong></td>
+                        <td class="last">{% if driver.paymentDrivers %}Add{% else %}More details{% endif %} </td>
+                    </tr>
+                    <tr class="bg">
+                    <td class="first"><strong>Mission</strong></td>
+                        <td class="last">{% if driver.missions and driver.missions is not empty %}
+                        <a href="{{path('showMissionsByDriver', {'idDriver': driver.id})}}">More details</a>
+                        {% else %}
+                        <a href="{{path('addMission', {'idDriver':driver.id})}}">Add</a>
+                        {% endif %} </td>
+                    </tr> 
+                    </table>
+                    <p>&nbsp;</p>
+                    <a title="Show All Rents" href="{{ path('allDrivers') }}" class="button">Back </a>
+                    <a title="Edit This Rent" href="{{ path('editDriver', { 'id' : driver.id }) }}" class="button">EDIT </a></td>
+                </div>
+
+{% endblock %}

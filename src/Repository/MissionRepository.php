@@ -60,4 +60,30 @@ class MissionRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findByDepartment($department){
+        return $this->createQueryBuilder('m')
+        ->andWhere('m.department = :department')
+        ->setParameter('department', $department)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+    
+    public function findByProject($project){
+        return $this->createQueryBuilder('m')
+        ->andWhere('m.project = :project')
+        ->setParameter('project', $project)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
+    public function findByDriver($driver){
+        return $this->createQueryBuilder('m')
+        ->andWhere('m.driver = :driver')
+        ->setParameter('driver', $driver)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }

@@ -46,45 +46,32 @@
                 </tr>
             {% else %}
             <tr>
-                <th class="first">Created At</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Driver</th>
                 <th>Department</th>
                 <th>Project</th>
-                <th>Payment</th>
-                <th>Rent</th>
                 <th>Finished</th>
-                <th>Notes</th>
                 <th class="last">Actions</th>
             </tr>
             {% for mission in missions %}
             <tr class="bg">
-                <td class="first" width="57px">{{ mission.createdAt|date('d-m-Y H:i') }}</td>
                 <td class="first" width="57px">{{ mission.startDate|date('d-m-Y') }}</td>
                 <td class="first" width="57px">{{ mission.endDate|date('d-m-Y') }}</td>
-                <td class="first">{{ mission.driver.firstName }}</td>
-                <td class="first">{{ mission.department.name }}</td>
-                <td class="first">{{ mission.project.name }}</td>
-                <td class="first">
-                {% if mission.payment is empty or mission.payment == null %}Add
-                {% else %}Show{% endif %}
-                </td>
-                <td class="first">
-                {% if mission.allocate == null or mission.allocate is empty %} Add
-                {% else %} Show Rents {% endif %}
-                </td>
+                <td class="first"><a href="{{path('showDriver', {'id': mission.driver.id})}}" title="More Details">{{ mission.driver.firstName }}</a></td>
+                <td class="first"><a href="{{path('showDepartment', {'id': mission.department.id})}}" title="More Details">{{ mission.department.name }}</a></td>
+                <td class="first"><a href="{{path('showProject', {'id': mission.project.id})}}" title="More Details">{{ mission.project.name }}</td>
                 <td class="first"> {% if mission.finished %}Yes{% else %}No{% endif %}</td>
-                <td class="first">{{ mission.note }}</td>
                 <td>
-                <a href="{{ path('deleteMission', {'id': mission.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editMission', {'id': mission.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('deleteMission', {'id': mission.id}) }}" onclick="return confirm('Are u sure, You want to delete this mission?')"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editMission', {'id': mission.id}) }}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('showMission', {'id': mission.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>
                 </td>
             </tr>
             {% endfor %}
         </table>
         <br>
-            <div class="first"><a class="button" href="{{ path('deleteAll') }}" onclick="return confirm('are u sure?')" >Delete All</a></div>
+            <div class="first"><a class="button" href="{{ path('deleteAll') }}" onclick="return confirm('Are u sure, You want to delete all missions?')" >Delete All</a></div>
             {% endif %}
     </div>
 {% endblock %}

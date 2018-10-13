@@ -1,0 +1,52 @@
+{% extends 'supplier/supplierBase.html.twig' %}
+
+{% block center_column %}
+{% block path %}
+    {{ parent()}} / <a href="#" class="path"> Details</a>
+{% endblock %}
+<hr><br>
+            <div class="table">
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr >
+                        <th class="full" colspan="2">Supplier Details</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" width="172"><strong>First Name</strong></td>
+                        <td class="last">{{ supplier.firstName}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Last Name</strong></td>
+                        <td class="last">{{ supplier.lastName }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Email</strong></td>
+                        <td class="last">{{ supplier.email }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Phone Number</strong></td>
+                        <td class="last">{{ supplier.phoneNumber }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Address</strong></td>
+                        <td class="last">{{ supplier.adress }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Rents Info</strong></td>
+                        <td class="last"><a href="{{path('showRentsBySupplier', {'id':supplier.id})}}" title="More Details">
+                        {% if supplier.allocates and supplier.allocates is not empty %} More Details
+                        {% else %}Add {% endif %}
+                        </a></td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Payment Info</strong></td>
+                        <td class="last">{% if supplier.paymentSupplier and supplier.paymentSupplier is not empty %}More Details{% else %} Add {% endif %}</td>
+                    </tr>
+                    </table>
+                    <p>&nbsp;</p>
+                    <a title="Show All Suppliers" href="{{ path('allSuppliers') }}" class="button">Back </a>
+                    <a title="Edit This Supplier" href="{{ path('editSupplier', { 'id' : supplier.id }) }}" class="button">EDIT </a></td>
+                </div>
+
+{% endblock %}

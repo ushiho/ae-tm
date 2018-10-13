@@ -39,10 +39,7 @@
                 <th>Lastname</th>
                 <th>Gender</th>
                 <th>CIN</th>
-                <th>Email</th>
-                <th>Phone number</th>
-                <th>Address</th>
-                <th>Mission</th>
+                <th>Licence Number</th>
                 <th>Actions</th>
             </tr>
             {% for driver in drivers %}
@@ -53,14 +50,13 @@
                 {% if driver.gender==1 %}Female{% else %}Male{% endif %}
                 </td>
                 <td class="first">{{ driver.cin }}</td>
-                <td class="first">{{ driver.email }}</td>
-                <td class="first">{{ driver.numberPhone }}</td>
-                <td class="first">{{ driver.adress }}</td>
-                <td class="first">{% if driver.missions == null or driver.missions is empty%}
-                Link{% else %} Show{% endif %}</td>
+                <td class="first">{{ driver.licenceNumber }}</td>
                 <td>
-                <a href="{{ path('deleteDriver', {'id': driver.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editDriver', {'id': driver.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('deleteDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
+                <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('editDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
+                <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                <a href="{{ path('showDriver', {'id': driver.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>                
                 </td>
             </tr>
             {% endfor %}

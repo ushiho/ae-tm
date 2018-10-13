@@ -39,6 +39,22 @@ class DriverType extends AbstractType
                     'style' => 'width:200px',
                     ]
             ))
+            ->add('salaire', array(
+                'placeholder' => 'Salaire of the period selected',
+                'required' => true,
+            ))
+            ->add('periodOfTravel', ChoiceType::class, array(
+                'choices' => array(
+                    'Daily' => 1,
+                    'Weekly' => 2,
+                    'Monthly' => 3,
+                ),
+                'placeholder' => '--Select a period--',
+                'required' => true,
+                'attr' => [
+                    'style' => 'width:200px',
+                ],
+            ))
         ;
     }
 

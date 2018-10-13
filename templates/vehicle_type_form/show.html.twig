@@ -1,0 +1,44 @@
+{% extends 'vehicle_type_form/vehicleTypeBase.html.twig' %}
+{% block center_column %}
+    {% block path %}
+        {{ parent()}} / <a href="#" class="path">Details</a>
+    {% endblock %}
+    <hr><br>
+                <div class="table"> 
+                    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                    <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                        <table class="listing form" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <th class="full" colspan="2">Vehicle Type Details</th>
+                        </tr>
+                        <tr>
+                            <td class="first" width="172"><strong>Name of Type</strong></td>
+                            <td class="last">{{ vehicleType.name }}</td>
+                        </tr>
+                        <tr class="bg">
+                            <td class="first"><strong>Vehicles</strong></td>
+                            <td class="last">
+                            {% if vehicleType.vehicles and vehicleType.vehicles is not empty %} 
+                            <a href="{{ path('showVehiclesByType', {'id': vehicleType.id})}}" class="link">Show Vehicles</a>
+                            {% else %}
+                            <a href="{{ path('addByType', {'idType': vehicleType.id}) }}" class="link">Add Vehicle</a>
+                            {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="bg">
+                            <td class="first"><strong>Drivers</strong></td>
+                            <td class="last">
+                            {% if vehicleType.drivers %}
+                            {# <a href="{{ path('showDriversByType', {'id': vehicleType.id})}}" class="link">Show Drivers</a> #}
+                            array in path twig
+                            {% else %} <a href="{{path('addDriver')}}" title="Add new Driver for this Type">Add</a>
+                            {% endif %}
+                            </td>
+                        </tr> 
+                        </table>
+                        <p>&nbsp;</p>
+                        <a title="Show All Missions" href="{{ path('allTypes') }}" class="button">Back </a>
+                        <a title="Edit This Mission" href="{{ path('editType', { 'id' : vehicleType.id }) }}" class="button">EDIT </a></td>
+                    </div>
+
+{% endblock %}

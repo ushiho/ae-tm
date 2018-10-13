@@ -1,0 +1,40 @@
+{% extends 'vehicle/vehicleBase.html.twig' %}
+{% block center_column %}
+{% block path %}
+    {{ parent()}} / <a href="#" class="path">Details</a>
+{% endblock %}
+<hr><br>
+            <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Vehicle Details</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" width="172"><strong>Brand</strong></td>
+                        <td class="last">{{ vehicle.brand }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Matricule</strong></td>
+                        <td class="last">{{ vehicle.matricule }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Type</strong></td>
+                        <td class="last">{{ vehicle.type.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first"><strong>State</strong></td>
+                        <td class="last">{% if vehicle.state == 1 %}New{% elseif vehicle.state == 2 %}Good Condition{% else %}Bad Condition{% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Rent Info</strong></td>
+                        <td class="last"><a href="{{ path('showRent', {'idRent':vehicle.allocate.id}) }}" class="link">Show Rent's Info</a></td>
+                    </tr>
+                    </table>
+                    <p>&nbsp;</p>
+                    <a title="Show All Missions" href="{{ path('allVehicles') }}" class="button">Back </a>
+                    <a title="Edit This Mission" href="{{ path('editVehicle', { 'id' : vehicle.id }) }}" class="button">EDIT </a></td>
+                </div>
+
+{% endblock %}

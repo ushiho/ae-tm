@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
+use App\Entity\VehicleType;
 use App\Form\VehicleFormType;
 use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
@@ -15,13 +16,21 @@ class VehicleController extends AbstractController
 {
     /**
      * @Route("/vehicle", name="allVehicles")
+     * @Route("/vehicle/driver/{id}", name="showVehiclesByType")
      */
-    public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo)
+    public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo,
+    VehicleType $type=null, Request $request)
     {
+        $vehicles = [];
+        if(!$type && $request->attributes->get('_route')=="showVehiclesByType"){
+            $vehicles = $repo->findByType($type);
+        }else{
+            $vehicles = $repo->findAll();
+        }
         return $this->render('vehicle/vehicleBase.html.twig', [
             'connectedUser' => $this->getUser(),
-            'vehicles' => $repo->findAll(),
             'types' => $typeRepo->findAll(),
+            'vehicles' => $vehicles,
         ]);
     }
 
@@ -62,4 +71,17 @@ class VehicleController extends AbstractController
         return $this->redirectToRoute('allVehicles');
     }
 
+    /**
+     * @Route("/vehicle/show/{id}", name="showVehicle")
+     */
+    public function showDetails(Vehicle $vehicle=null, VehicleTypeRepository $typeRepo){
+        if($vehicle){
+            return $this->render('vehicle/show.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'vehicle' => $vehicle,
+                'types' => $typeRepo->findAll(),
+            ]);
+        }
+        return $this->redirectToRoute('allVehicles');
+    }
 }

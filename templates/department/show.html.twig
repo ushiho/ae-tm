@@ -1,0 +1,39 @@
+{% extends 'department/departmentBase.html.twig' %}
+{% block center_column %}
+
+{% block path %}
+    {{ parent()}} / <a href="#" class="path"> Details</a>
+{% endblock %}
+<hr><br>
+            <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2"> Details</th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172"><strong>Name</strong></td>
+                        <td class="last">{{ department.name }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Address</strong></td>
+                        <td class="last">{{ department.adress }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Missions</strong></td>
+                        <td class="last">{% if department.missions and department.missions is not empty %} 
+                        <a href="{{ path('showMissionOfDepartment', {'idDepartment':department.id}) }}" class="link">Show </a>
+                        {% else %} Add Mission {% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Note</strong></td>
+                        <td class="last">{{ department.note }}</td>
+                    </tr> 
+                    </table>
+                    <p>&nbsp;</p>
+                    <a title="Show All Rents" href="{{ path('allDepartments') }}" class="button">Back </a>
+                    <a title="Edit This Rent" href="{{ path('editDepartment', { 'id' : department.id }) }}" class="button">EDIT </a>
+                </div>
+
+{% endblock %}
