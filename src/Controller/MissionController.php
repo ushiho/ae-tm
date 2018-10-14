@@ -59,9 +59,9 @@ class MissionController extends AbstractController
             $mission->setProject($projectRepo->find($idProject));
         }
         $alert = "";
-        $form = $this->createForm(MissionType::class, $mission);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        $missionForm = $this->createForm(MissionType::class, $mission);
+        $missionForm->handleRequest($request);
+        if($missionForm->isSubmitted() && $missionForm->isValid()){
             $rest = $repo->findMissionByStateByDriver($mission->getDriver(), false);
             if(!empty($rest) && $request->attributes->get('_route')=="addMission"){
                 $alert = "The driver selected has a mission non finished, please select another one.";
@@ -73,7 +73,7 @@ class MissionController extends AbstractController
             }
         }
         return $this->render('mission/missionForm.html.twig', [
-            'form' => $form->createView(),
+            'missionForm' => $missionForm->createView(),
             'mission' => $mission,
             'connectedUser' => $this->getUser(),
             'alert' => $alert,

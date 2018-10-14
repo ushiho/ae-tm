@@ -1,12 +1,11 @@
 {% extends 'mission/missionBase.html.twig' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
 {% block path %}
 {{ parent() }}
 <a class="path" href="{% if mission.id == null %}{{ path('addMission') }} {% else %}{{path('editMission', {'id': mission.id })}}{% endif %}">
  / {% if mission.id == null %}Create mission{% else %}Edit mission{% endif %}</a>
 {% endblock %}
-{{ form_start(form) }}
+{{ form_start(missionForm) }}
 <hr>
 <br>
 <div class="text" style="color:red;font-size:16px;">{{ alert }}</div>
@@ -20,52 +19,52 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.startDate) }}</strong>
+                        <strong>{{ form_label(missionForm.startDate) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.startDate, {'attr' : 
+                    <td class="last">{{ form_widget(missionForm.startDate, {'attr' : 
                     {'placeholder':'Start Date', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.endDate) }}</strong>
+                        <strong>{{ form_label(missionForm.endDate) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.endDate, {'attr' : 
+                    <td class="last">{{ form_widget(missionForm.endDate, {'attr' : 
                     {'placeholder':'End Date', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.driver) }}</strong>
+                        <strong>{{ form_label(missionForm.driver) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.driver, {'attr' : 
-                    {'placeholder':'Driver', 'class':'text' }}) }}</td>
+                    <td class="last">{{ form_widget(missionForm.driver) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.finished) }}</strong>
+                        <strong>{{ form_label(missionForm.finished) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.finished) }}</td>
+                    <td class="last">{{ form_widget(missionForm.finished) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.department) }}</strong>
+                        <strong>{{ form_label(missionForm.department) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.department) }}</td>
+                    <td class="last">{{ form_widget(missionForm.department) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.project) }}</strong>
+                        <strong>{{ form_label(missionForm.project) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.project) }}</td>
+                    <td class="last">{{ form_widget(missionForm.project) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.note) }}</strong>
+                        <strong>{{ form_label(missionForm.note) }}</strong>
                     </td>
-                    <td class="last" formnovalidate>{{ form_widget(form.note) }}</td>
+                    <td class="last" formnovalidate>{{ form_widget(missionForm.note) }}</td>
                 </tr>
             </table>
+            <br>
             <button type="submit" class="button">{% if mission.id %}Update{% else %}Create{% endif %}</button>
             <button class="button" formnovalidate><a href="{{ path('allMissions') }}" >Cancel</a></button>
         </div>
-        {{ form_end(form) }}
+        {{ form_end(missionForm) }}
 {% endblock %}

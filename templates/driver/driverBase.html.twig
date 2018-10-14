@@ -33,6 +33,21 @@
     <br>
         <hr>
         <br>
+        <form action="" method="GET">
+            <table>
+                <tr class="bg">
+                    <td class="first">Filter</td>
+                    <td class="last">
+                        <select name="filter" id="filterMission">
+                            <option value="0">All</option>
+                            <option value="1">With Mission</option>
+                            <option value="2">Without Mission</option>
+                        </select>
+                    </td>
+                    <td class="last"><button type="submit">Get Result</button></td>
+                </tr>
+            </table>
+        </form>
     <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
         {% if drivers is empty or drivers is null %}

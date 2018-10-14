@@ -51,6 +51,7 @@ class RentController extends AbstractController
         $form = $this->createForm(RentType::class, $rent);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
+            // if(compare two date start date of rent and start date of mission )
             $rent->setCreatedAt(new \DateTime());
             $manager->persist($rent);
             $manager->flush();

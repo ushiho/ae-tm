@@ -377,3 +377,21 @@ div.table .select select {
 		line-height:27px;
 		background:url(../img/bg-orange-button.gif) no-repeat;
 		}
+		a.link {
+			color: red;
+		}
+		
+		/* visited link */
+		a:visited {
+			color: green;
+		}
+		
+		/* mouse over link */
+		a:hover {
+			color: #000;
+		}
+		
+		/* selected link */
+		a:active {
+			color: blue;
+		}

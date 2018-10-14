@@ -40,7 +40,6 @@ class MissionType extends AbstractType
                     'data-live-search'=>'true',
                     'data-width'=>'100%',
                     'style' => 'width:200px;',
-                    'data-live-search'=>'true',
                 )
             ))
             ->add('department',EntityType::class,array(

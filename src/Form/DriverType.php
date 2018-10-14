@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Driver;
+use App\Entity\VehicleType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
@@ -27,10 +29,10 @@ class DriverType extends AbstractType
                     'Male' => 2,
                 ),
                 'attr' => array(
-                    'style'=>'width:270px;',
+                    'style'=>'width:200px;',
                 )
             ))
-            ->add('type', EntityType::class, array(
+            ->add('vehicleType', EntityType::class, array(
                 'class' => VehicleType::class,
                 'placeholder' => '--Select the type--',
                 'required' => true,
@@ -39,10 +41,7 @@ class DriverType extends AbstractType
                     'style' => 'width:200px',
                     ]
             ))
-            ->add('salaire', array(
-                'placeholder' => 'Salaire of the period selected',
-                'required' => true,
-            ))
+            ->add('salaire')
             ->add('periodOfTravel', ChoiceType::class, array(
                 'choices' => array(
                     'Daily' => 1,

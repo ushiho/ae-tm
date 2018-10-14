@@ -53,6 +53,22 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
+                        <strong>{{ form_label(form.vehicleType) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.vehicleType)}}</td>
+                </tr>
+                <tr>
+                    <td class="first"><strong>{{ form_label(form.periodOfTravel) }}</strong></td>
+                    <td class="last">{{ form_widget(form.periodOfTravel) }}</td>
+                </tr>     
+                <tr>
+                    <td class="first"><strong>{{ form_label(form.salaire) }}</strong></td>
+                    <td class="last">{{ form_widget(form.salaire, {
+                        'attr' : {'placeholder':'salary for this period'}
+                    }) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
                         <strong>{{ form_label(form.email) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.email, {
@@ -72,17 +88,6 @@
                     <td class="last">{{ form_widget(form.adress, {
                         'attr' : {'placeholder':'Address', 'class':'text',}})}}</td>
                 </tr>
-                <tr>
-                    <td > Payment Info</td>
-                </tr>
-                <tr>
-                    <td class="first"><strong>{{ form_label(form.salaire) }}</strong></td>
-                    <td class="last">{{ form_widget(form.salaire) }}</td>
-                </tr>
-                <tr>
-                    <td class="first"><strong>{{ form_label(form.periodOfTravel) }}</strong></td>
-                    <td class="last">{{ form_widget(form.periodOfTravel) }}</td>
-                </tr>     
             </table>
             <button type="submit" class="button">{% if driver.id %}Update{% else %}Create{% endif %}</button>
             <button class="button" formnovalidate><a href="{{ path('allDrivers') }}" >Cancel</a></button>

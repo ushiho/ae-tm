@@ -56,4 +56,13 @@ class DriverRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
+
+    public function findByConditionOnMission($condition){
+        return $this->createQueryBuilder('d')
+        ->andWhere('d.missions = :condition')
+        ->setParameter('condition', $condition)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }
