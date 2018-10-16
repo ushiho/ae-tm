@@ -33,18 +33,6 @@ class MissionType extends AbstractType
                     'novalidate' => 'novalidate',
                 ]
             ))
-            ->add('project',EntityType::class,array(
-                'class' => Project::class,
-                'required'=>true,
-                'choice_label' => 'name',
-                'placeholder' => 'Link a project',
-                'attr' => array(
-                    'class'=>'bootstrap-select',
-                    'data-live-search'=>'true',
-                    'data-width'=>'100%',
-                    'style' => 'width:250px;',
-                )
-            ))
             ->add('department',EntityType::class,array(
                 'class' => Department::class,
                 'required'=>true,
@@ -54,23 +42,6 @@ class MissionType extends AbstractType
                     'style' => 'width:250px;',
                     'class' => 'selectDepa',
                 )
-            ))
-            ->add('driver',EntityType::class,array(
-                'class' => Driver::class,
-                'required'=>true,
-                'choice_label' => 'firstName',
-                'placeholder' => '--Choose the driver--',
-                'attr' => array(
-                    'style' => 'width:250px;',
-                    'class' => 'selectDriver',
-                )
-            ))
-            ->add('driverForm', DriverType::class, array(
-                'property_path' => 'driver',
-                'constraints' => array(new Valid()),
-            ))
-            ->add('depaForm', DepartmentType::class, array(
-                'property_path' => 'department',
             ))
             ->add('finished', ChoiceType::class, array(
                 'choices' => array(

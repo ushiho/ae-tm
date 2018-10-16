@@ -33,10 +33,10 @@ class RentType extends AbstractType
                 'placeholder' => '--Select a period--',
                 'required' => true,
                 'attr' => [
-                    'style' => 'width:127px',
+                    'style' => 'width:250px',
                 ]
             ))
-            ->add('price')
+            ->add('price', NumberType::class)
             ->add('withDriver', ChoiceType::class, array(
                 'choices' => [
                     'Yes' => true,
@@ -44,13 +44,13 @@ class RentType extends AbstractType
                 ],
                 'placeholder' => '-- Select --',
                 'attr' => [
-                    'style' => 'width:127px',
+                    'style' => 'width:250px',
                 ]
             ))
             ->add('note', TextareaType::class, array(
                 'attr' => [
                     'rows' => '3',
-                    'cols' => '80'
+                    'cols' => '60'
                 ]
             ))
             ->add('supplier', EntityType::class, array(
@@ -59,29 +59,7 @@ class RentType extends AbstractType
                 'required' => true,
                 'choice_label' => 'firstName',
                 'attr' => [
-                    'style' => 'width:127px',
-                ]
-            ))
-            ->add('vehicle', EntityType::class, array(
-            'class' => Vehicle::class,
-            'placeholder' => '--Choose Vehicle--',
-            'required' => true,
-            'choice_label' => function($vehicle){
-                return $vehicle->getMatricule().' '.$vehicle->getType()->getName();
-            },
-            'attr' => [
-                'style' => 'width:127px',
-            ]
-            ))
-            ->add('mission', EntityType::class, array(
-                'class' => Mission::class,
-                'placeholder' => '--Choose Mission--',
-                'required' => true,
-                'choice_label' => function($mission){
-                    return $mission->getDriver()->getFirstName().' - '.$mission->getDepartment()->getName();
-                },
-                'attr' => [
-                    'style' => 'width:127px;',
+                    'style' => 'width:250px',
                 ]
             ))
         ;

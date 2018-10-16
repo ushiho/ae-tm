@@ -4,7 +4,7 @@ body {
 	padding:0;
 	background:#BBD9EE;
   	color:#000;
-	font-size:11px;
+	font-size:10pt;
 	font-family: 'Mali', cursive;
 	}
 form {
@@ -397,6 +397,6 @@ div.table .select select {
 			color: blue;
 		}
 .error{
-	color:blue;text-decoration: underline red;text-align:center;font-size:12pt
+	color:blue;text-decoration: underline red;text-align:center;font-size:10pt
 }
 

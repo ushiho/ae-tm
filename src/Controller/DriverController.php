@@ -107,14 +107,15 @@ class DriverController extends AbstractController
     }
 
     /**
-     * @Route("/missions/new/add_driver", name="stepOne")
-     * @Route("/missions/new/add_driver/cancel", name="cancelStepOne")
+     * @Route("/project/mission/new/add_driver", name="stepOne")
+     * @Route("/project/mission/new/add_driver/cancel", name="cancelStepOne")
      */
     public function addMissionStepOne(Request $request, SessionInterface $session, ObjectManager $manager){
         if($request->attributes->get('_route') == "stepOne"){
             $driver = $session->get('driver');
+            if($driver!=null){
             $driver = $manager->merge($driver);
-            if($driver==null){
+            }else{
                 $driver = new Driver();
             }
             $error = $session->get('driverError');
@@ -122,7 +123,7 @@ class DriverController extends AbstractController
             $form->handleRequest($request);
             if($form->isSubmitted()&&$form->isValid()){
                 $session->set('driver', $driver);
-                return $this->redirectToRoute('stepTow');            
+                return $this->redirectToRoute('stepTwo');            
             }
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),

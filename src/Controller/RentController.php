@@ -12,6 +12,7 @@ use App\Repository\SupplierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class RentController extends AbstractController
@@ -96,4 +97,35 @@ class RentController extends AbstractController
         }
         return $this->redirectToRoute('allRents');
     }
+
+    /**
+     * @Route("/project/mission/new/add_rent", name="stepTree")    * 
+     */
+    public function addMissionStepTree(Request $request, SessionInterface $session, ObjectManager $manager){
+        if($session->get('vehicle')){
+            $rent = $session->get('rent');
+            if($rent){
+                $rent = $manager->merge($rent);
+            }else{
+                $rent = new Allocate();
+            }
+            $error = $session->get('rentError');
+            $form = $this->createForm(RentType::class, $rent);
+            $form->handleRequest($request);
+
+            if($form->isSubmitted()&&$form->isValid()){
+                $session->set('rent', $rent);
+                return $this->redirectToRoute('stepFour');
+            }
+            return $this->render('mission/rentForm.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'form' => $form->createView(),
+                'error' => $error,
+            ]);
+        }else{
+            $session->set('vehicleError', "You must add the vehicle Information to continue!");
+            return $this->redirectToRoute('stepTwo');
+        }
+    }
+
 }

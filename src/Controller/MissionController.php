@@ -7,6 +7,7 @@ use App\Entity\Driver;
 use App\Entity\Mission;
 use App\Entity\Payment;
 use App\Entity\Project;
+use App\Entity\Allocate;
 use App\Form\MissionType;
 use App\Entity\Department;
 use App\Repository\DriverRepository;
@@ -15,6 +16,8 @@ use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MissionController extends AbstractController
@@ -73,7 +76,7 @@ class MissionController extends AbstractController
                 return $this->redirectToRoute('allMissions');
             }
         }
-        return $this->render('mission/missionForm.html.twig', [
+        return $this->render('mission/editMissionForm.html.twig', [
             'missionForm' => $missionForm->createView(),
             'mission' => $mission,
             'connectedUser' => $this->getUser(),
@@ -114,4 +117,67 @@ class MissionController extends AbstractController
         return $this->redirectToRoute('allMissions');
     }
 
+    /**
+     * @Route("/project/mission/new/add_mission", name="stepFour")
+     */
+    public function addMissionStepFour(Request $request, SessionInterface $session, ObjectManager $manager){
+        if($session->get('rent')){
+            $mission = $session->get('mission');
+            if($mission){
+                $mission = $manager->merge($mission);
+            }else{
+                $mission = new Mission();
+            }
+            $error = $session->get('missionError');
+            $form = $this->createForm(MissionType::class, $mission);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                if($this->verifyDates($mission, $session->get('rent'))){
+                    $session->set('mission', $mission);
+                    return $this->redirectToRoute('verifyDatas');
+                }else{
+                    $error = "Attention the  date of the mission should be included inside the date of the rent!";
+                }
+            }
+            return $this->render('/mission/missionForm.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'form' => $form->createView(),
+                'error' => $error,
+            ]);
+        }
+    }
+
+    public function verifyDates(Mission $mission, Allocate $rent){
+        return ($mission->getStartDate()->diff($rent->getStartDate())->days >= 0 && $mission->getEndDate()->diff($rent->getEndDate())->days <= 0);
+    }
+
+    public function daysBetween(String $dt1, String $dt2) {
+        return date_diff(
+            date_create($dt2),  
+            date_create($dt1)
+        )->format('%a');
+    }
+
+    /**
+     * @Route("/project/mission/new/verify", name="verifyDatas")
+     */
+    public function verifyDatas(Request $request, SessionInterface $session, ObjectManager $manager){
+        $data = $this->getDatasFromSession($session);
+        return $this->render('mission/verifyDatas.html.twig', [
+            'connectedUser' => $this->getUser(),
+            'mission' => $data['mission'],
+            'rent' => $data['rent'],
+            'vehicle' => $data['vehicle'],
+            'driver' => $data['driver'],
+        ]);
+    }
+
+    public function getDatasFromSession(SessionInterface $session){
+        return array(
+            'driver' => $session->get('driver'),
+            'vehicle' => $session->get('vehicle'),
+            'rent' => $session->get('rent'),
+            'mission' => $session->get('mission'),
+        );
+    }
 }

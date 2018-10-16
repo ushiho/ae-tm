@@ -31,7 +31,7 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.type) }}</strong>
+                        <strong>{{ form_label(form.type)}}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.type, {'attr' : 
                     {'placeholder':'Vehicle Type', 'class':'text' }}) }}</td>
@@ -48,21 +48,8 @@
             <button class="button" formnovalidate><a href="{{ path('stepOne') }}" >Back</a></button>
         </div>
         {{ form_end(form) }}
-    <p id="test">click</p>
 {% endblock %}
 
 {% block javascripts %}
-<script>
-    $(document).ready(function() {
-        $(".selectVehicle").change(function(){
-            alert("bla bla");
-        });
-        $("#test").click(function(){
-            alert('pas mal');
-        });
-        $('.state').change(function(){
-            alert('hamdo Allah');
-        });
-    });
-</script>
+
 {% endblock %}

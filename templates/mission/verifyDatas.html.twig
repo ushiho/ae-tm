@@ -1,0 +1,198 @@
+{% extends 'mission/missionBase.html.twig' %}
+
+{% block center_column %}
+{% block path %}
+{{ parent() }} <br><br>
+<a class="path" href="#">Step Five: Verify Datas</a>
+{% endblock %}
+<hr>
+<br>
+    <div id="missionAndRent">
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2"> Mission information</th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>Start Date</strong>
+                        </td>
+                        <td class="last">{{ mission.startDate|date('d-m-Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong> End Date </strong>
+                        </td>
+                        <td class="last">{{ mission.endDate|date('d-m-Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>State</strong>
+                        </td>
+                        <td class="last">
+                        {% if mission.finished %}Yes{% else %}No{% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>Department</strong>
+                        </td>
+                        <td class="last">{{ mission.department.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>Note</strong>
+                        </td>
+                        <td class="last" formnovalidate>{% if mission.note == "" %}-----------{% endif %}</td>
+                    </tr>
+            </table>
+            
+        </div>
+        <hr>
+        <br>
+            <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Rent information</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Start Date</strong></td>
+                        <td class="last">{{ rent.startDate|date('d-m-Y')}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>End Date</strong></td>
+                        <td class="last">{{ rent.endDate|date('d-m-Y')}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Period</strong></td>
+                        <td class="last">{% if rent.period == 1 %}Daily{% elseif rent.period == 2 %}Weekly{% else %}Monthly{% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Price for period</strong></td>
+                        <td class="last">{{ rent.price }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Supplier</strong></td>
+                        <td class="last">{{ rent.supplier.firstName }}</a></td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>With driver</strong></td>
+                        <td class="last">{% if rent.withDriver %}Yes{% else %} No {% endif %}</td>
+                    </tr>
+                    </table>
+                </div>
+    </div>
+    <div id="vehicleAndDriver" style="display:none;">
+        <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Vehicle information</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" width="172"><strong>Brand</strong></td>
+                        <td class="last">{{ vehicle.brand }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Matricule</strong></td>
+                        <td class="last">{{ vehicle.matricule }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Type</strong></td>
+                        <td class="last"> <strong style="color:red;">{{ vehicle.type.name }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="first"><strong>State</strong></td>
+                        <td class="last">{% if vehicle.state == 1 %}New{% elseif vehicle.state == 2 %}Good Condition{% else %}Bad Condition{% endif %}</td>
+                    </tr>
+                    </table>
+        </div>
+        <div class="table"> 
+                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
+                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+                    <table class="listing form" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Driver information</th>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" width="172"><strong>First Name</strong></td>
+                        <td class="last">{{ driver.firstName }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Last Name</strong></td>
+                        <td class="last">{{ driver.lastName }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Gender</strong></td>
+                        <td class="last">{% if driver.gender == 1 %}Female{% else %} Male{% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>CIN</strong></td>
+                        <td class="last">{{ driver.cin }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Licence Number</strong></td>
+                        <td class="last">{{driver.licenceNumber}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Vehicle Type</strong></td>
+                        <td class="last">
+                        {% for type in driver.vehicleType %}
+                            <strong style="color:red;">{{ type.name }}</strong>&nbsp;&nbsp;
+                        {% endfor %}
+                        </td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Salaire</strong></td>
+                        <td class="last">{{driver.salaire}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Period Of Travel</strong></td>
+                        <td class="last">{% if driver.periodOfTravel == 1 %}Daily
+                        {% elseif driver.periodOfTravel == 2 %}Weekly
+                        {% elseif driver.periodOfTravel == 3 %}Monthly
+                        {% else %}Not Specified {% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Email</strong></td>
+                        <td class="last">{{ driver.email }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Phone Number</strong></td>
+                        <td class="last">{{driver.numberPhone}}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Address</strong></td>
+                        <td class="last">{{ driver.adress }}</td>
+                    </tr>
+                    </table>
+        </div>
+    
+    </div>
+        <a href="#" title="Next" class="link button" id="next">Next</a>
+        <a href="#" title="Back" class="link button" id="back">Back</a>
+        <a href="{{ path('createMission')}}" class="" id="validate">link button</a>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function(){
+        $("#next").click(function(){
+            $("#missionAndRent").hide();
+            $("#vehicleAndDriver").show();
+            $(this).hide();
+        });
+        $("#back").click(function(){
+            $("#missionAndRent").show();
+            $("#vehicleAndDriver").hide();
+            $("#next").show();
+        });
+    });
+</script>
+
+{% endblock %}
