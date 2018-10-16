@@ -61,6 +61,7 @@ class MissionController extends AbstractController
         $alert = "";
         $missionForm = $this->createForm(MissionType::class, $mission);
         $missionForm->handleRequest($request);
+        dump($missionForm);
         if($missionForm->isSubmitted() && $missionForm->isValid()){
             $rest = $repo->findMissionByStateByDriver($mission->getDriver(), false);
             if(!empty($rest) && $request->attributes->get('_route')=="addMission"){

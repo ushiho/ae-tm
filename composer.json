@@ -6,6 +6,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "misd/phone-number-bundle": "^1.3",
+        "ninsuo/symfony-collection": "^2.1",
+        "olicek/form-selectize": "^1.0",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/asset": "*",
         "symfony/console": "*",

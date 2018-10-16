@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
+         {% block metas %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% endblock %}
         <title>{% block title %}AE-TM{% endblock %}</title>
         <link rel="stylesheet" href="{{ asset('css/all.css') }}">
         <link rel="icon" type="image/png" href="{{ asset('img/favicon.ico') }}">
-
+        <link href="https://fonts.googleapis.com/css?family=Mali" rel="stylesheet">
 
         {% block stylesheets %}{% endblock %}
+        
     </head>
     <body>
     <div id="main">
@@ -180,6 +185,7 @@
         {% endblock %}
 
     </div>
+     <script type="text/javascript" src="{{asset('js/jquery-3.3.1.min.js')}}"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

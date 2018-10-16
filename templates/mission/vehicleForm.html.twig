@@ -1,0 +1,68 @@
+{% extends 'mission/missionBase.html.twig'  %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }} <br><br>
+<a class="path" href="#" >Step Two: Create Vehicle</a>
+{% endblock %}
+{{ form_start(form) }}
+<hr>
+<div class="error"> <strong>{{ error }}</strong></div>
+<br>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter Vehicle information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.matricule) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.matricule, {'attr' : 
+                    {'placeholder':'Matricule', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.state) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.state) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.type) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.type, {'attr' : 
+                    {'placeholder':'Vehicle Type', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(form.brand) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(form.brand, {'attr' : 
+                    {'placeholder':'Vehicle Brand', 'class':'text' }}) }}</td>
+                </tr>
+            </table>
+            <button type="submit" class="button">Next</button>
+            <button class="button" formnovalidate><a href="{{ path('stepOne') }}" >Back</a></button>
+        </div>
+        {{ form_end(form) }}
+    <p id="test">click</p>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function() {
+        $(".selectVehicle").change(function(){
+            alert("bla bla");
+        });
+        $("#test").click(function(){
+            alert('pas mal');
+        });
+        $('.state').change(function(){
+            alert('hamdo Allah');
+        });
+    });
+</script>
+{% endblock %}

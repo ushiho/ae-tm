@@ -63,9 +63,10 @@
                 <td class="first">{{ project.budget }} DH</td>
                 <td>
                 <a href="{{ path('deleteProject', {'id': project.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"
-                onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" /></a>
-                <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
-                <a href="{{ path('showProject', {'id': project.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="More Details" /></a>
+                onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" /></a>&nbsp;
+                <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>&nbsp;
+                <a href="{{ path('showProject', {'id': project.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="More Details" /></a>&nbsp;
+                <a href="{{ path('addMissionForProject', {'idProject': project.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Add a mission for this project" /></a>&nbsp;
                 </td>
             </tr>
             {% endfor %}

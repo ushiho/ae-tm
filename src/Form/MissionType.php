@@ -5,11 +5,14 @@ namespace App\Form;
 use App\Entity\Driver;
 use App\Entity\Mission;
 use App\Entity\Project;
+use App\Form\DriverType;
 use App\Entity\Department;
+use App\Form\DepartmentType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,7 +28,7 @@ class MissionType extends AbstractType
             ->add('note', TextareaType::class, array(
                 'attr' => [
                     'rows' => '3',
-                    'cols' => '80',
+                    'cols' => '60',
                     'formnovalidate' => 'true',
                     'novalidate' => 'novalidate',
                 ]
@@ -39,34 +42,35 @@ class MissionType extends AbstractType
                     'class'=>'bootstrap-select',
                     'data-live-search'=>'true',
                     'data-width'=>'100%',
-                    'style' => 'width:200px;',
+                    'style' => 'width:250px;',
                 )
             ))
             ->add('department',EntityType::class,array(
                 'class' => Department::class,
                 'required'=>true,
                 'choice_label' => 'name',
-                'placeholder' => 'Choose the department',
+                'placeholder' => '--Choose the department--',
                 'attr' => array(
-                    'class'=>'bootstrap-select',
-                    'data-live-search'=>'true',
-                    'data-width'=>'100%',
-                    'style' => 'width:200px;',
-                    'data-live-search'=>'true',
+                    'style' => 'width:250px;',
+                    'class' => 'selectDepa',
                 )
             ))
             ->add('driver',EntityType::class,array(
                 'class' => Driver::class,
                 'required'=>true,
                 'choice_label' => 'firstName',
-                'placeholder' => 'Choose the driver',
+                'placeholder' => '--Choose the driver--',
                 'attr' => array(
-                    'class'=>'bootstrap-select',
-                    'data-live-search'=>'true',
-                    'data-width'=>'100%',
-                    'style' => 'width:200px;',
-                    'data-live-search'=>'true',
+                    'style' => 'width:250px;',
+                    'class' => 'selectDriver',
                 )
+            ))
+            ->add('driverForm', DriverType::class, array(
+                'property_path' => 'driver',
+                'constraints' => array(new Valid()),
+            ))
+            ->add('depaForm', DepartmentType::class, array(
+                'property_path' => 'department',
             ))
             ->add('finished', ChoiceType::class, array(
                 'choices' => array(
@@ -75,7 +79,7 @@ class MissionType extends AbstractType
                 ),
                 'placeholder' => '--Select a state--',
                 'attr' => array(
-                    'style' => 'width:200px',
+                    'style' => 'width:250px',
                 )
             ))
         ;

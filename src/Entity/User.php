@@ -14,6 +14,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *   fields={"email"},
  *   message="The email adress is already exist"
  * )
+ * @UniqueEntity(
+ *   fields={"cin"},
+ *   message=": This cin is already exist!"
+ * )
  */
 class User implements UserInterface
 {

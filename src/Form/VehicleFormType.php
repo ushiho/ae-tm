@@ -23,11 +23,12 @@ class VehicleFormType extends AbstractType
                     'New' => 1,
                     'Good Condition' => 2,
                     'Bad Condition' => 3,
-
                 ),
+                'placeholder' => '--Select state--',
                 'required' => true,
                 'attr' => [
                     'style' => 'width:270px',
+                    'class' => 'state',
                     ]
 
             ))
@@ -38,7 +39,8 @@ class VehicleFormType extends AbstractType
                 'choice_label' => 'name',
                 'attr' => [
                     'style' => 'width:270px',
-                    ]
+                    'class' => 'selectVehicle',
+                ],
             ))
             ->add('brand', TextType::class)
         ;

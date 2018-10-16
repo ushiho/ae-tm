@@ -4,11 +4,17 @@ namespace App\Form;
 
 use App\Entity\Driver;
 use App\Entity\VehicleType;
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\ORM\Query\Expr\Select;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class DriverType extends AbstractType
 {
@@ -17,10 +23,15 @@ class DriverType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
-            ->add('email')
-            ->add('numberPhone')
+            ->add('email', EmailType::class)
+            ->add('numberPhone', TelType::class)
             ->add('cin')
-            ->add('adress')
+            ->add('adress', TextareaType::class, array(
+                'attr' => array(
+                    'cols' => 35,
+                    'rows' => 2,
+                )
+            ))
             ->add('licenceNumber')
             ->add('gender', ChoiceType::class, array(
                 'label' => 'Gender',
@@ -29,8 +40,12 @@ class DriverType extends AbstractType
                     'Male' => 2,
                 ),
                 'attr' => array(
-                    'style'=>'width:200px;',
-                )
+                    'style'=>'width:270px;',
+                ),
+                'placeholder' => '--Select Gender--',
+                'required' => true,
+                'multiple' => false,
+                
             ))
             ->add('vehicleType', EntityType::class, array(
                 'class' => VehicleType::class,
@@ -38,10 +53,16 @@ class DriverType extends AbstractType
                 'required' => true,
                 'choice_label' => 'name',
                 'attr' => [
-                    'style' => 'width:200px',
-                    ]
+                    'style' => 'width:270px;height:50px;',
+                ],
+                'multiple' => true,
+                'by_reference' => false,
             ))
-            ->add('salaire')
+            ->add('salaire', NumberType::class, array(
+                'attr' => array(
+                    'style' => 'width:265px;',
+                )
+            ))
             ->add('periodOfTravel', ChoiceType::class, array(
                 'choices' => array(
                     'Daily' => 1,
@@ -51,8 +72,9 @@ class DriverType extends AbstractType
                 'placeholder' => '--Select a period--',
                 'required' => true,
                 'attr' => [
-                    'style' => 'width:200px',
+                    'style' => 'width:270px',
                 ],
+                'multiple' => false,
             ))
         ;
     }

@@ -11,6 +11,7 @@ use App\Repository\VehicleTypeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DriverController extends AbstractController
@@ -45,11 +46,9 @@ class DriverController extends AbstractController
             $driver = new Driver();
         }
         $form = $this->createForm(DriverType::class, $driver);
-        dd($request->attributes->get('driver')->getVehicleType());
-        // $driver->addVehicleType(VehicleType ());
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $driver->setSalairePerDay(salaryPerDay($driver));
+            $driver->setSalairePerDay($this->salaryPerDay($driver));
             $manager->persist($driver);
             $manager->flush();
             return $this->redirectToRoute('allDrivers');
@@ -96,9 +95,9 @@ class DriverController extends AbstractController
     public function salaryPerDay(Driver $driver){
         if($driver){
             $salary = 0;
-            if($driver->getPeriodOfTravel==1){
+            if($driver->getPeriodOfTravel()==1){
                 $salary = $driver->getSalaire();
-            }else if($driver->getPeriodOfTravel==20){
+            }else if($driver->getPeriodOfTravel()==20){
                 $salary = $driver->getSalaire()/7;                
             }else{
                 $salary = $driver->getSalaire()/30;
@@ -106,4 +105,34 @@ class DriverController extends AbstractController
             return $salary;
         }
     }
+
+    /**
+     * @Route("/missions/new/add_driver", name="stepOne")
+     * @Route("/missions/new/add_driver/cancel", name="cancelStepOne")
+     */
+    public function addMissionStepOne(Request $request, SessionInterface $session, ObjectManager $manager){
+        if($request->attributes->get('_route') == "stepOne"){
+            $driver = $session->get('driver');
+            $driver = $manager->merge($driver);
+            if($driver==null){
+                $driver = new Driver();
+            }
+            $error = $session->get('driverError');
+            $form = $this->createForm(DriverType::class, $driver);
+            $form->handleRequest($request);
+            if($form->isSubmitted()&&$form->isValid()){
+                $session->set('driver', $driver);
+                return $this->redirectToRoute('stepTow');            
+            }
+            return $this->render('mission/driverForm.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'form' => $form->createView(),
+                'error' => $error,
+            ]);
+        }else{
+            $session->remove('driver');
+            return $this->redirectToRoute('allMissions');
+        }
+    }
+    
 }

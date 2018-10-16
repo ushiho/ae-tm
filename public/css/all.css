@@ -4,8 +4,8 @@ body {
 	padding:0;
 	background:#BBD9EE;
   	color:#000;
-	font-family:tahoma,arial,sans-serif;
 	font-size:11px;
+	font-family: 'Mali', cursive;
 	}
 form {
 	margin:0;
@@ -25,7 +25,7 @@ input {vertical-align:middle}
 input.text,
 select,
 textarea {
-	font-family:arial,sans-serif;
+	font-family: 'Mali', cursive;
 	color:#333;
 	font-size:12px;
 	vertical-align:middle;
@@ -364,6 +364,7 @@ div.table .select select {
 	line-height:27px;
 	background:url(../img/bg-orange-button.gif) no-repeat;
 	cursor: pointer;
+	font-family: 'Mali', cursive;
 	}
 .btn {
 		float:right;
@@ -395,3 +396,7 @@ div.table .select select {
 		a:active {
 			color: blue;
 		}
+.error{
+	color:blue;text-decoration: underline red;text-align:center;font-size:12pt
+}
+

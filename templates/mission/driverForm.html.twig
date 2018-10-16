@@ -1,13 +1,13 @@
-{% extends 'driver/driverBase.html.twig'  %}
+{% extends 'mission/missionBase.html.twig'  %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
 {% block path %}
-{{ parent() }}
-<a class="path" href="{% if driver.id == null %}{{ path('addDriver') }} {% else %}{{path('editDriver', {'id': driver.id })}}{% endif %}">
- / {% if driver.id == null %}Create driver{% else %}Edit driver{% endif %}</a>
+{{ parent() }} <br><br>
+<a class="path" href="#">Step One: Create the driver</a>
 {% endblock %}
 {{ form_start(form) }}
 <hr>
+<div class="error"> <strong>{{ error }}</strong></div>
 <br>
         <div class="table"> 
             <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
@@ -89,8 +89,8 @@
                         'attr' : {'placeholder':'Address', 'class':'text',}})}}</td>
                 </tr>
             </table>
-            <button type="submit" class="button">{% if driver.id %}Update{% else %}Create{% endif %}</button>
-            <button class="button" formnovalidate><a href="{{ path('allDrivers') }}" >Cancel</a></button>
+            <button type="submit" class="button">Next</button>
+            <button class="button" formnovalidate><a href="{{ path('cancelStepOne') }}" >Cancel</a></button>
         </div>
         {{ form_end(form) }}
 {% endblock %}

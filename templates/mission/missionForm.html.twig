@@ -1,5 +1,7 @@
 {% extends 'mission/missionBase.html.twig' %}
+
 {% block center_column %}
+{% set error = "" %}
 {% block path %}
 {{ parent() }}
 <a class="path" href="{% if mission.id == null %}{{ path('addMission') }} {% else %}{{path('editMission', {'id': mission.id })}}{% endif %}">
@@ -35,7 +37,10 @@
                     <td class="first" width="172">
                         <strong>{{ form_label(missionForm.driver) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(missionForm.driver) }}</td>
+                    <td class="last">
+                    {{ form_widget(missionForm.driver) }} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+                    <strong id="newDriver" style="text-decoration:underline;cursor:pointer;">Add New Driver</strong>
+                    </td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
@@ -47,10 +52,13 @@
                     <td class="first" width="172">
                         <strong>{{ form_label(missionForm.department) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(missionForm.department) }}</td>
+                    <td class="last">{{ form_widget(missionForm.department) }}
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+                    <strong id="newDepa" style="text-decoration:underline;cursor:pointer;">Add New Department</strong>
+                    </td>
                 </tr>
                 <tr>
-                    <td class="first" width="172">
+                    <td class="first" width="172" id="input">
                         <strong>{{ form_label(missionForm.project) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(missionForm.project) }}</td>
@@ -64,7 +72,193 @@
             </table>
             <br>
             <button type="submit" class="button">{% if mission.id %}Update{% else %}Create{% endif %}</button>
-            <button class="button" formnovalidate><a href="{{ path('allMissions') }}" >Cancel</a></button>
+            <button class="button" formnovalidate><a href="{{ path('allMissions') }}" class="link" >Cancel</a></button>
         </div>
+        <div id="error" style="display:none;color:red;"><strong>{{ error }}</strong></div>
+        {# 
+                Driver Form is here!
+        #}
+        <div id="formDriver" style="display:none;">
+        {{ form_start(missionForm.driverForm) }}
+        <br><hr>
+        <div class="table">
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter driver information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.firstName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.firstName, {'attr' : 
+                    {'placeholder':'First Name', 'class':'text', }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.lastName) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.lastName, {'attr' : 
+                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.gender) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.gender, {'attr' : 
+                    {'placeholder':'Gender', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.cin) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.cin, {'attr' : 
+                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.licenceNumber) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.licenceNumber, {
+                        'attr' : {'placeholder':'Licence Number', 'class':'text',}}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.vehicleType) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.vehicleType)}}</td>
+                </tr>
+                <tr>
+                    <td class="first"><strong>{{ form_label(missionForm.driverForm.periodOfTravel) }}</strong></td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.periodOfTravel) }}</td>
+                </tr>     
+                <tr>
+                    <td class="first"><strong>{{ form_label(missionForm.driverForm.salaire) }}</strong></td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.salaire, {
+                        'attr' : {'placeholder':'salary for this period'}
+                    }) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.email) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.email, {
+                        'attr' : {'placeholder':'Email address', 'class':'text',}})}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.numberPhone) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.numberPhone, {
+                        'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.driverForm.adress) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.driverForm.adress, {
+                        'attr' : {'placeholder':'Address', 'class':'text',}})}}</td>
+                </tr>
+            </table>
+            <br>
+            <div class="first">
+            <a href="#" id="validateAddDriver" class="button">validate</a>
+            <a href="#" id="cancelAddDriver" class="button">Cancel</a>
+            </div>
+        </div>
+            {{ form_end(missionForm.driverForm) }}
+        </div>
+        {# 
+            Department form is here!
+        #}
+        <div id="formDepa" class="table" style="display:none;">
+            <br><hr>
+        <div class="table"> 
+            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
+            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing form" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Enter department information</th>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.depaForm.name) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.depaForm.name, {'attr' : 
+                    {'placeholder':'Department Name', 'class':'text' }}) }}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.depaForm.adress) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.depaForm.adress, {'attr' : 
+                    {'placeholder':'Department adress', 'class':'text' }}) }}</td>
+                </tr>
+                 <tr>
+                    <td class="first" width="172">
+                        <strong>{{ form_label(missionForm.depaForm.note) }}</strong>
+                    </td>
+                    <td class="last">{{ form_widget(missionForm.depaForm.note, {'attr' : 
+                    {'placeholder':'Add a note', 'class':'text', 'cols':'70', 'rows':'3' }}) }}</td>
+                </tr>
+            </table>
+        </div>
+        </div>
+
         {{ form_end(missionForm) }}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function() {
+        $("#newDriver").click(function(){
+            $("#formDriver").show();
+        });
+        // Executed when select is changed
+        $(".selectDriver").change(function(){
+            var driver = $(this).val();
+            if(jQuery.isEmptyObject(driver) || driver == null){
+                $('#newDriver').show();
+            }else{
+                $('#newDriver').hide();
+                $('#formDriver').hide();
+            }
+        });
+        $('#cancelAddDriver').click(function(){
+            if(confirm("Are you sure that you want to cancel?")){
+                $('#formDriver').hide();
+            }else{
+                return;
+            }
+        });
+        $('#validateAddDriver').click(function(){
+            if(confirm("Are you shure that you want to add this driver?")){
+                {% if form_widget(missionForm.driverForm) is empty %}
+                    alert('Please set all driver\'s datas!');
+                    return;
+                {% endif %}
+                $('.selectDriver').append($('<option>', {
+                    value: '{{ form_widget(missionForm.driverForm.firstName) }}',
+                    text: '{{ form_widget(missionForm.driverForm.firstName) }}'
+                }));
+                alert('tout est b1');
+            }else{
+                return;
+            }
+        });
+        $('#newDepa').click(function(){
+            $('#formDepa').show();
+        });
+        $('.selectDepa').change(function(){
+            var depa = $(this).val();
+            if(jQuery.isEmptyObject(depa) || depa == null){
+                $('#newDepa').show();
+            }else{
+                $('#newDepa').hide();
+                $('#formDepa').hide();
+            }
+        });
+    });
+</script>
 {% endblock %}

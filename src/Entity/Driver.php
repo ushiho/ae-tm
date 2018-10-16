@@ -2,14 +2,27 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DriverRepository")
+ * @UniqueEntity(
+ *   fields={"email"},
+ *   message=": There is a driver with this email!"
+ * )
+ * @UniqueEntity(
+ *   fields={"cin"},
+ *   message=": There is a driver with this cin!"
+ * )
+ * @UniqueEntity(
+ *   fields={"licenceNumber"},
+ *   message=": There is a driver with this licence Number!"
+ * )
  */
 class Driver
 {
@@ -22,6 +35,7 @@ class Driver
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $firstName;
 

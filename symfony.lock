@@ -98,11 +98,38 @@
     "monolog/monolog": {
         "version": "1.23.0"
     },
+    "nette/component-model": {
+        "version": "v2.4.0"
+    },
+    "nette/di": {
+        "version": "v2.4.14"
+    },
+    "nette/forms": {
+        "version": "v2.4.9"
+    },
+    "nette/http": {
+        "version": "v2.4.10"
+    },
+    "nette/neon": {
+        "version": "v2.4.3"
+    },
+    "nette/php-generator": {
+        "version": "v3.0.5"
+    },
+    "nette/utils": {
+        "version": "v2.5.3"
+    },
     "nikic/php-parser": {
         "version": "v4.0.4"
     },
+    "ninsuo/symfony-collection": {
+        "version": "2.1.30"
+    },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "olicek/form-selectize": {
+        "version": "v1.0"
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
