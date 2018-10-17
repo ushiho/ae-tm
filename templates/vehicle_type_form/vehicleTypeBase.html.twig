@@ -18,7 +18,7 @@
 {% block left_column %}
     <h3>TYPES MANAGMENT</h3>
     <a href="{{path('addType')}}" class="link">Add Vehicle Types</a>
-    <a href="/vehicle" class="link">Show all Vehicle Types</a>
+    <a href="/vehicle" class="link">Show all Types</a>
 {% endblock %}
 {% block center_column %}
 <div class="top-bar"> <a title="Add new Type" href="/vehicle/type/add" class="button">ADD NEW </a>
@@ -31,6 +31,14 @@
     </div>
     <br>
     <hr>
+        <div class="error"> 
+            <strong>{% if app.session.flashBag.has('typeSuccess') %}
+            <div class="alert alert-success">
+                {% for msg in app.session.flashBag.get('typeSuccess') %}
+                    {{ msg }}
+                {% endfor %}
+            </div>{% endif %}</strong>
+        </div>
     <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />

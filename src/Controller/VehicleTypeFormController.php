@@ -35,7 +35,7 @@ class VehicleTypeFormController extends AbstractController
 
     /**
      * @Route("/vehicle/type/add", name="addType")
-     * @Route("/vehicle/type/edit/{id}", name="editType")
+     * @Route("/vehicle/type/edit/{id}", name="editType", requirements={"idType"="\d+"})
      */
     public function action(VehicleType $type=null, Request $request, ObjectManager $manager){
         if($type==null){
@@ -46,6 +46,7 @@ class VehicleTypeFormController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $manager->persist($type);
             $manager->flush();
+            $request->getSession()->getFlashBag()->add('typeSuccess', 'The type '.$type->getName().' is added successfully!');
             return $this->redirectToRoute('allTypes');
         }
         return $this->render('vehicle_type_form/vehicleTypeForm.html.twig', [
@@ -56,7 +57,7 @@ class VehicleTypeFormController extends AbstractController
     }
 
     /**
-     * @Route("/vehicle/type/delete/{id}", name="deleteType")
+     * @Route("/vehicle/type/delete/{id}", name="deleteType", requirements={"idType"="\d+"})
      */
     public function delete($id, VehicleTypeRepository $repo, ObjectManager $manager){
         $manager->remove($repo->find($id));
@@ -65,7 +66,7 @@ class VehicleTypeFormController extends AbstractController
     }
 
     /**
-     * @Route("/vehicle/type/show/{id}", name="showVehicleType")
+     * @Route("/vehicle/type/show/{id}", name="showVehicleType", requirements={"idType"="\d+"})
      */
     public function showDetails(VehicleType $vehicleType=null){
         if($vehicleType){

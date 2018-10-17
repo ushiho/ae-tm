@@ -29,7 +29,7 @@ class Vehicle
     private $allocate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType", inversedBy="vehicles")
+     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType", inversedBy="vehicles", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;

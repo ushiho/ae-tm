@@ -62,8 +62,7 @@
                         <strong>{{ form_label(form.note) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.note, {'attr' : 
-                    {'placeholder':'Notes are here', 'class':'text',
-                    'cols':'80', 'rows':'2' }}) }}</td>
+                    {'placeholder':'Notes are here'}}) }}</td>
                 </tr>
             </table>
             <button type="submit" class="button">{% if project.id %}Update{% else %}Create{% endif %}</button>

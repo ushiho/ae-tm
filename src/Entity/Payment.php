@@ -21,17 +21,17 @@ class Payment
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPriceToPay;
+    private $totalPriceToPay=0;
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPricePaid;
+    private $totalPricePaid=0;
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPrice;
+    private $totalPrice=0;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentDriver", mappedBy="payment")

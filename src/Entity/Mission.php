@@ -35,13 +35,13 @@ class Mission
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Department", inversedBy="missions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Department", inversedBy="missions", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $department;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="mission")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="mission", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;

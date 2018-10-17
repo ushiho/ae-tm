@@ -59,7 +59,7 @@ class UserController extends AbstractController
                 $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
                 $manager->persist($user);
                 $manager->flush();
-                $this->container->get('session')->getFlashBag()->add('success', 'The user'.$user->getFirstName().' is added successfully');
+                $this->container->get('session')->getFlashBag()->add('success', $this->customizeMsg($request, $user));
                 return $this->redirectToRoute('allUsers');
             }
             return $this->render('user/userForm.html.twig', [
@@ -70,6 +70,16 @@ class UserController extends AbstractController
         // } else{
         //     throw $this->createAccessDeniedException("You don't have access to this page!");
         // }
+    }
+
+    public function customizeMsg(Request $request, User $user){
+        if($request->attributes->get('_route') == "addUser"){
+            return 'The user '.$user->getFirstName().' is added successfully!';
+        }else if($user == $this->getUser()){
+            return 'Your profil is updated successfully!';
+        }else{
+            return 'The user '.$user->getFirstName().' is updated successfully!';
+        }
     }
 
     /**

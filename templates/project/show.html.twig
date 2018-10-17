@@ -47,7 +47,7 @@
                         {% if project.mission and project.mission is not empty %}
                         <a href="{{ path('showMission', {'id':project.id}) }}" class="link" title="Show all missions"><strong>Show Missions</strong></a>
                         {% endif %} Or 
-                        <a href="{{ path('addMissionForProject', {'idProject': project.id})}}" class="link" title="Add a mission"><strong>Add One</strong></a>
+                        <a href="{{ path('addMissionToProject', {'id': project.id})}}" class="link" title="Add a mission"><strong>Add One</strong></a>
                         </td>
                     </tr>
                     <tr class="bg">

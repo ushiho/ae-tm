@@ -17,12 +17,12 @@
 {% endblock %}
 {% block left_column %}
     <h3>RENTS MANAGMENT</h3>
-    <a href="{{path('addRent')}}" class="link">Create Rent</a>
+    <a href="{{path('stepOne')}}" class="link">Create Mission</a>
     <a href="/rent" class="link">Show all Rents</a>
     <a href="#" class="link">Search</a>
 {% endblock %}
 {% block center_column %}
-<div class="top-bar"> <a title="Add new Rent" href="/rent/new" class="button">ADD NEW </a>
+<div class="top-bar"> <a title="Add new Rent" href="{{path('stepOne')}}" class="button">ADD NEW </a>
         <h1>Contents</h1><br>
         <div class="breadcrumbs">
         {% block path %}
@@ -38,7 +38,7 @@
         <table class="listing" cellpadding="0" cellspacing="0">
         {% if Rents is empty or Rents is null %}
                 <tr class="bg">
-                    <td class="first" style="text-align:center;font-weight: bold;">There is no Rent Information add one <a href="/rent/new" style="color:red;text-decoration: underline black;">here</a></td>
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no Rent Information, add a mission and set the rent Information <a href="{{path('stepOne')}}" style="color:red;text-decoration: underline black;">here</a></td>
                 </tr>
             {% else %}
             <tr>

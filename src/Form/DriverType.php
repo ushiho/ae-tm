@@ -28,8 +28,8 @@ class DriverType extends AbstractType
             ->add('cin')
             ->add('adress', TextareaType::class, array(
                 'attr' => array(
-                    'cols' => 35,
-                    'rows' => 2,
+                    'cols' => '60',
+                    'rows' => '3',
                 )
             ))
             ->add('licenceNumber')

@@ -25,7 +25,7 @@ class ProjectType extends AbstractType
             ->add('note', TextareaType::class, array(
                 'attr' => [
                     'rows' => '3',
-                    'cols' => '80'
+                    'cols' => '60'
                 ]
             ))
             ->add('finished', ChoiceType::class, array(

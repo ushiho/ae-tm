@@ -46,14 +46,18 @@
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Mission</strong></td>
-                        <td class="last">{% if rent.mission %}Add{% else %}More details{% endif %} </td>
+                        <td class="last">
+                        {% if rent.mission is null %}Add
+                        {% else %}
+                        <a href="{{path('showMission', {'id': rent.mission.id})}}" class="link" title="More Details">More details</a>    
+                        {% endif %} </td>
                     </tr>
                     <tr class="bg">
                     <td class="first"><strong>Payment Supplier</strong></td>
-                        <td class="last">{% if rent.paymentSuppliers %}Add{% else %}More details{% endif %} </td>
+                        <td class="last">{% if rent.paymentSuppliers is not empty() %}More details{% else %}Add{% endif %} </td>
                     </tr>
                     </table>
-                    <p>&nbsp;</p>
+    <br>
                     <a title="Show All Rents" href="{{ path('allRents') }}" class="button">Back </a>
                     <a title="Edit This Rent" href="{{ path('editRent', { 'id' : rent.id }) }}" class="button">EDIT </a></td>
                 </div>

@@ -10,6 +10,7 @@ use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,9 +20,9 @@ class DriverController extends AbstractController
     /**
      * @Route("/driver", name="allDrivers")
      * @Route("/driver/type/{id}", name="showDriverByType")
+     * @Route("/driver/filter", name="filterDriver")
      */
-    public function show(DriverRepository $repo, Request $request, VehicleType $type=null)
-    {
+    public function show(DriverRepository $repo, Request $request, VehicleType $type=null){
         $drivers = [];
         if($type && $request->attributes->get('_route')=="showDriverForType"){
             $drivers = $repo->findByType($type);
@@ -30,9 +31,25 @@ class DriverController extends AbstractController
             $drivers = $repo->findAll();
         }
         return $this->render('driver/driverBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'drivers' => $drivers,
-        ]);
+                 'connectedUser' => $this->getUser(),
+                 'drivers' => $drivers,
+                ]);
+    }
+
+    public function checkIfBusy(array $drivers){
+        $busy = array();
+        $notBusy = array();
+        foreach ($drivers as $driver) {
+            if($driver->getBusy()){
+                $busy[] = $driver;
+            }else{
+                $notBusy[] = $driver;
+            }
+        }
+        return array(
+            'busy' => $busy,
+            'notBusy' => $notBusy,
+        );
     }
 
     /**
@@ -49,6 +66,7 @@ class DriverController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $driver->setSalairePerDay($this->salaryPerDay($driver));
+            $driver->setBusy($this->isBusy($driver));
             $manager->persist($driver);
             $manager->flush();
             return $this->redirectToRoute('allDrivers');
@@ -93,8 +111,8 @@ class DriverController extends AbstractController
     }
 
     public function salaryPerDay(Driver $driver){
+        $salary = 0;
         if($driver){
-            $salary = 0;
             if($driver->getPeriodOfTravel()==1){
                 $salary = $driver->getSalaire();
             }else if($driver->getPeriodOfTravel()==20){
@@ -102,8 +120,8 @@ class DriverController extends AbstractController
             }else{
                 $salary = $driver->getSalaire()/30;
             }
-            return $salary;
         }
+        return $salary;
     }
 
     /**
@@ -118,7 +136,6 @@ class DriverController extends AbstractController
             }else{
                 $driver = new Driver();
             }
-            $error = $session->get('driverError');
             $form = $this->createForm(DriverType::class, $driver);
             $form->handleRequest($request);
             if($form->isSubmitted()&&$form->isValid()){
@@ -128,12 +145,39 @@ class DriverController extends AbstractController
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'error' => $error,
             ]);
         }else{
-            $session->remove('driver');
+            $session->clear();
+            $session->getFlashBag()->add('missionCancel', "The process for creating the mission has been canceled by the user!");
             return $this->redirectToRoute('allMissions');
         }
     }
+
+    public function isBusy($driver){
+        if($driver->getMissions()==null || $driver->getMissions()->isEmpty()){
+            return false;
+        }
+        foreach ($driver->getMissions() as $mission) {
+            if(!$mission->getFinished()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @Route("/driver/{id}/mission/new", name="addMissionToDriver")
+     */
+    public function addMissionToDriver(Driver $driver=null, SessionInterface $session){
+        if($driver && $driver->getBusy()){
+            $session->set('driver', $driver);
+            return $this->redirectToRoute('stepOne');
+        }
+        $session->getFlashBag()->add('driverError', "The driver ".$driver->getFirstName()." is not busy, he has a mission not finished!");
+        return $this->redirectToRoute('allDrivers');
+    }
     
+    public function filterDrivers(Request $request){
+        dd($request);
+    }
 }

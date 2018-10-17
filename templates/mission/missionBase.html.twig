@@ -23,7 +23,7 @@
     <a href="#" class="link">Export data</a>
 {% endblock %}
 {% block center_column %}
-<div class="top-bar"> <a title="Add new Mission" href="/mission/new" class="button">ADD NEW </a>
+<div class="top-bar"> <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW </a>
         <h1>Contents</h1><br>
         <div class="breadcrumbs">
         {% block path %}
@@ -31,31 +31,28 @@
         {% endblock %}
         </div>
     </div>
-    <br>
     <hr>
+    {% if app.session.flashBag.has('missionSuccess') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('missionSuccess') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if app.session.flashBag.has('missionCancel') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('missionCancel') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
     <br>
-    <form action="" method="GET">
-            <table>
-                <tr class="bg">
-                    <td class="first">Filter</td>
-                    <td class="last">
-                        <select name="filter" id="filterMission">
-                            <option value="0">All</option>
-                            <option value="1">Finished</option>
-                            <option value="2">Not Finished</option>
-                        </select>
-                    </td>
-                    <td class="last"><button type="submit">Get Result</button></td>
-                </tr>
-            </table>
-        </form>
-        <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
         {% if missions is empty or missions is null %}
                 <tr class="bg">
-                    <td class="first" style="text-align:center;font-weight: bold;">There is no missions add some <a href="/mission/new" style="color:red;text-decoration: underline black;">here</a></td>
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no missions add some <a href="{{path('stepOne')}}" style="color:red;text-decoration: underline black;">here</a></td>
                 </tr>
             {% else %}
             <tr>
@@ -84,9 +81,5 @@
             {% endfor %}
             {% endif %}
         </table>
-        <br>
-        {% if missions is not empty and missions is not null %}
-            <div class="first"><a class="button" href="{{ path('deleteAll') }}" onclick="return confirm('Are u sure, You want to delete all missions?')" >Delete All</a></div>
-            {% endif %}
     </div>
 {% endblock %}

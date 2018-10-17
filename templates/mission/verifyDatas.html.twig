@@ -175,8 +175,8 @@
     
     </div>
         <a href="#" title="Next" class="link button" id="next">Next</a>
+        <a href="{{ path('createMission')}}" class="button" id="validate" style="display:none;">Create</a>
         <a href="#" title="Back" class="link button" id="back">Back</a>
-        <a href="{{ path('createMission')}}" class="" id="validate">link button</a>
 {% endblock %}
 
 {% block javascripts %}
@@ -186,11 +186,13 @@
             $("#missionAndRent").hide();
             $("#vehicleAndDriver").show();
             $(this).hide();
+            $("#validate").show();
         });
         $("#back").click(function(){
             $("#missionAndRent").show();
             $("#vehicleAndDriver").hide();
             $("#next").show();
+            $("#validate").hide();
         });
     });
 </script>

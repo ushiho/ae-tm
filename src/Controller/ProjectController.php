@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -31,7 +32,7 @@ class ProjectController extends AbstractController
 
     /**
      * @Route("/project/new", name="addProject")
-     * @Route("project/edit/{id}", name="editProject")
+     * @Route("project/edit/{id}", name="editProject", requirements={"id"="\d+"})
      */
     public function action(Request $request, ObjectManager $manager, Project $project=null){
         if($project==null){
@@ -43,6 +44,7 @@ class ProjectController extends AbstractController
             $project->setCreatedAt(new \DateTime());
             $manager->persist($project);
             $manager->flush();
+            $request->getSession()->getFlashBag()->add('projectSuccess', "Your project is successfully added, link some mission to it!");
             return $this->redirectToRoute('allProjects');
         }
         return $this->render('project/projectForm.html.twig', [
@@ -54,7 +56,7 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/project/delete/{id}", name="deleteProject")
+     * @Route("/project/delete/{id}", name="deleteProject", requirements={"id"="\d+"})
      */
     public function delete(Project $project, ObjectManager $manager, ProjectRepository $repo,
      MissionRepository $missionRepo){
@@ -79,7 +81,7 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("project/show/{id}", name="showProject")
+     * @Route("project/show/{id}", name="showProject", requirements={"id"="\d+"})
      */
     public function showDetails(Project $project=null){
         if($project){
@@ -102,6 +104,17 @@ class ProjectController extends AbstractController
             }
             $manager->remove($project);
             $manager->flush();
+        }
+        return $this->redirectToRoute('allProjects');
+    }
+
+    /**
+     * @Route("/project/{id}/mission/add", name="addMissionToProject", requirements={"id"="\d+"})
+     */
+    public function createMission(SessionInterface $session, Project $project=null){
+        if($project){
+            $session->set('project', $project);
+            return $this->redirectToRoute('stepOne');
         }
         return $this->redirectToRoute('allProjects');
     }

@@ -32,8 +32,8 @@
     </div>
     <br>
     <br>
-     {% for msg in app.session.flashBag.get('success') %}
          <hr>
+     {% for msg in app.session.flashBag.get('success') %}
                 <div class="alert alert-success">
                     {{ msg }}
                 </div>

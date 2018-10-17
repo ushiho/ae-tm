@@ -19,7 +19,7 @@ class RentController extends AbstractController
 {
     /**
      * @Route("/rent", name="allRents")
-     * @Route("/rent/supplier/{id}", name="showRentsBySupplier")
+     * @Route("/rent/supplier/{id}", name="showRentsBySupplier", requirements={"id"="\d+"})
      */
     public function show(AllocateRepository $repo, Supplier $supplier=null, 
     SupplierRepository $supplierRepo)
@@ -38,8 +38,8 @@ class RentController extends AbstractController
 
     /**
      * @Route("/rent/new", name="addRent")
-     * @Route("/rent/edit/{id}", name="editRent")
-     * @Route("/rent/mission/{idMission}", name="addForMission")
+     * @Route("/rent/edit/{id}", name="editRent", requirements={"id"="\d+"})
+     * @Route("/rent/mission/{idMission}", name="addForMission", requirements={"idMission"="\d+"})
      */
     public function action(Request $request, ObjectManager $manager, Allocate $rent=null, $idMission=null,
                     MissionRepository $missionRepo){
@@ -66,7 +66,7 @@ class RentController extends AbstractController
     }
 
     /**
-     * @Route("/rent/delete/{id}", name="deleteRent")
+     * @Route("/rent/delete/{id}", name="deleteRent", requirements={"id"="\d+"})
      */
     public function delete($id, AllocateRepository $repo, ObjectManager $manager){
         $manager->remove($repo->find($id));
@@ -75,9 +75,10 @@ class RentController extends AbstractController
     }
 
     /**
-     * @Route("/rent/show/{idRent}", name="showRent")
+     * @Route("/rent/show/{idRent}", name="showRent", requirements={"idRent"="\d+"})
      */
-    public function showDetails(Allocate $rent=null){
+    public function showDetails(AllocateRepository $repo, $idRent=0){
+        $rent = $repo->find($idRent);
         if($rent){
             return $this->render('rent/show.html.twig', [
                 'rent' => $rent,
@@ -109,7 +110,6 @@ class RentController extends AbstractController
             }else{
                 $rent = new Allocate();
             }
-            $error = $session->get('rentError');
             $form = $this->createForm(RentType::class, $rent);
             $form->handleRequest($request);
 
@@ -120,10 +120,9 @@ class RentController extends AbstractController
             return $this->render('mission/rentForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'error' => $error,
             ]);
         }else{
-            $session->set('vehicleError', "You must add the vehicle Information to continue!");
+            $session->getFlushBag()->add('vehicleError', "You must add the vehicle Information to continue!");
             return $this->redirectToRoute('stepTwo');
         }
     }

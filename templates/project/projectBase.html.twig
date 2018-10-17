@@ -37,6 +37,20 @@
     </div>
     <br>
     <hr>
+    {% if app.session.flashBag.has('projectError') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('projectError') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if app.session.flashBag.has('projectSuccess') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('projectSuccess') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
     <br>
     <div class="table"> 
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
@@ -66,15 +80,11 @@
                 onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" /></a>&nbsp;
                 <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>&nbsp;
                 <a href="{{ path('showProject', {'id': project.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="More Details" /></a>&nbsp;
-                <a href="{{ path('addMissionForProject', {'idProject': project.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Add a mission for this project" /></a>&nbsp;
+                <a href="{{ path('addMissionToProject', {'id': project.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Add a mission to this project" /></a>&nbsp;
                 </td>
             </tr>
             {% endfor %}
             {% endif %}
         </table>
-        <br>
-        {% if projects is not empty and projects is not null %}
-            <div class="first"><a class="button" href="{{ path('deleteAllProjects') }}" onclick="return confirm('Are u sure, You want to delete all Projects? Note that all rents, missions and payments infos will be deleted!')" >Delete All</a></div>
-        {% endif %}
     </div>
 {% endblock %}

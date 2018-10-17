@@ -36,6 +36,7 @@ class SupplierController extends AbstractController
         if($form->isSubmitted()&&$form->isValid()){
             $manager->persist($supplier);
             $manager->flush();
+            $request->getSession()->getFlashBag()->add('supplierSuccess', 'The supplier '.$supplier->getFirstName().' is added successfully!');
             return $this->redirectToRoute('allSuppliers');
         }
         return $this->render('supplier/supplierForm.html.twig', [
@@ -45,6 +46,15 @@ class SupplierController extends AbstractController
         ]);
     }
 
+    public function customizeMsg(Request $request){
+        if($request->attributes->get('_route')=="addSupplier"){
+            return "added";
+        }else if($request->attributes->get('_route')=="editSupplier"){
+            return "updated";
+        }else{
+            return "deleted";
+        }
+    }
     /**
      * @Route("supplier/delete/{id}", name="deleteSupplier")
      */

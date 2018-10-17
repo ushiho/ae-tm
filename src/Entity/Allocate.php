@@ -41,7 +41,7 @@ class Allocate
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="allocates")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="allocates", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $supplier;

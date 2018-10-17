@@ -18,7 +18,6 @@
     <h3>DRIVERS MANAGMENT</h3>
                 <a href="{{ path('addDriver') }}" class="link">Add Driver</a>
                 <a href="{{ path('allDrivers') }}" class="link">Show all Drivers</a>
-                <a href="#" class="link">Search</a>
 {% endblock %}
 
 {% block center_column  %}
@@ -32,22 +31,15 @@
     </div>
     <br>
         <hr>
+         <div class="error"> 
+            <strong>{% if app.session.flashBag.has('driverError') %}
+            <div class="alert alert-success">
+                {% for msg in app.session.flashBag.get('driverError') %}
+                    {{ msg }}
+                {% endfor %}
+            </div>{% endif %}</strong>
+        </div>
         <br>
-        <form action="" method="GET">
-            <table>
-                <tr class="bg">
-                    <td class="first">Filter</td>
-                    <td class="last">
-                        <select name="filter" id="filterMission">
-                            <option value="0">All</option>
-                            <option value="1">With Mission</option>
-                            <option value="2">Without Mission</option>
-                        </select>
-                    </td>
-                    <td class="last"><button type="submit">Get Result</button></td>
-                </tr>
-            </table>
-        </form>
     <div class="table"> <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
         <table class="listing" cellpadding="0" cellspacing="0">
         {% if drivers is empty or drivers is null %}
@@ -63,29 +55,30 @@
                 <th>Licence Number</th>
                 <th>Actions</th>
             </tr>
+            <tbody id="driver">
             {% for driver in drivers %}
-            <tr class="bg">
-                <td class="first">{{ driver.firstname }}</td>
-                <td class="first">{{ driver.lastname }}</td>
-                <td class="first">
-                {% if driver.gender==1 %}Female{% else %}Male{% endif %}
-                </td>
-                <td class="first">{{ driver.cin }}</td>
-                <td class="first">{{ driver.licenceNumber }}</td>
-                <td>
-                <a href="{{ path('deleteDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
-                <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
-                <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
-                <a href="{{ path('showDriver', {'id': driver.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>                
-                </td>
-            </tr>
+                <tr class="bg">
+                    <td class="first">{{ driver.firstname }}</td>
+                    <td class="first">{{ driver.lastname }}</td>
+                    <td class="first">
+                    {% if driver.gender==1 %}Female{% else %}Male{% endif %}
+                    </td>
+                    <td class="first">{{ driver.cin }}</td>
+                    <td class="first">{{ driver.licenceNumber }}</td>
+                    <td>
+                    <a href="{{ path('deleteDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
+                    <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                    <a href="{{ path('editDriver', {'id': driver.id}) }}" onclick="return confirm('Are u sure, You want to delete this Driver?')">
+                    <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
+                    <a href="{{ path('showDriver', {'id': driver.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details" /></a>
+                    {% if driver.busy == false %}             
+                    <a href="{{ path('addMissionToDriver', {'id': driver.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Add a missin to this driver" /></a>
+                    {% endif %}              
+                    </td>
+                </tr>
             {% endfor %}
+            </tbody>
             {% endif %}
         </table>
-        <br>
-        {% if drivers is not empty and drivers is not null %}
-            <div class="first"><a class="button" href="{{ path('deleteAllDrivers') }}" onclick="return confirm('Are u sure, You want to delete all Drivers? Note that all missions payments Infos will be deleted!')" >Delete All</a></div>
-        {% endif %}
     </div>
 {% endblock %}

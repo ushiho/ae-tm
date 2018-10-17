@@ -7,7 +7,14 @@
 {% endblock %}
 {{ form_start(form) }}
 <hr>
-<div class="error"> <strong>{{ error }}</strong></div>
+        <div class="error"> 
+            <strong>{% if app.session.flashBag.has('vehicleError') %}
+            <div class="alert alert-success">
+                {% for msg in app.session.flashBag.get('vehicleError') %}
+                    {{ msg }}
+                {% endfor %}
+            </div>{% endif %}</strong>
+        </div>
 <br>
         <div class="table"> 
             <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 

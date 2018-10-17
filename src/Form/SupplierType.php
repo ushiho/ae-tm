@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 
 class SupplierType extends AbstractType
@@ -21,7 +22,12 @@ class SupplierType extends AbstractType
             ->add('lastName', TextType::class)
             ->add('email', EmailType::class)
             ->add('phoneNumber', TelType::class)
-            ->add('adress', TextType::class)
+            ->add('adress', TextareaType::class, array(
+                'attr' =>array(
+                    'cols' => 35,
+                    'rows' => 2,
+                )
+            ))
         ;
     }
 

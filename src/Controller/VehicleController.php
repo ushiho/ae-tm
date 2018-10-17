@@ -17,7 +17,7 @@ class VehicleController extends AbstractController
 {
     /**
      * @Route("/vehicle", name="allVehicles")
-     * @Route("/vehicle/type/{idType}", name="showVehiclesByType")
+     * @Route("/vehicle/type/{idType}", name="showVehiclesByType", requirements={"idType"="\d+"})
      */
     public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo,
     VehicleType $type=null, Request $request)
@@ -37,7 +37,7 @@ class VehicleController extends AbstractController
 
     /**
      * @Route("/vehicle/new", name="addVehicle")
-     * @Route("/vehicle/edit/{id}", name="editVehicle")
+     * @Route("/vehicle/edit/{id}", name="editVehicle", requirements={"id"="\d+"})
      * @Route("/vehicle/new/{idType}", name="addByType", requirements={"idType"="\d+"})
      */
     public function action($idType=null, Vehicle $vehicle=null, ObjectManager $manager, Request $request,
@@ -64,7 +64,7 @@ class VehicleController extends AbstractController
     }
 
     /**
-     * @Route("/vehicle/delete/{id}", name="deleteVehicle")
+     * @Route("/vehicle/delete/{id}", name="deleteVehicle", requirements={"id"="\d+"})
      */
     public function delete($id, VehicleRepository $repo, ObjectManager $manager){
         $manager->remove($repo->find($id));
@@ -73,7 +73,7 @@ class VehicleController extends AbstractController
     }
 
     /**
-     * @Route("/vehicle/show/{id}", name="showVehicle")
+     * @Route("/vehicle/show/{id}", name="showVehicle", requirements={"id"="\d+"})
      */
     public function showDetails(Vehicle $vehicle=null, VehicleTypeRepository $typeRepo){
         if($vehicle){
@@ -108,7 +108,6 @@ class VehicleController extends AbstractController
             }else{
                 $vehicle = new Vehicle();
             }
-            $error=$session->get('vehicleError');
             $form = $this->createForm(VehicleFormType::class, $vehicle);
             $form->handleRequest($request);
             if($form->isSubmitted()&&$form->isValid()){
@@ -116,17 +115,16 @@ class VehicleController extends AbstractController
                     $session->set('vehicle', $vehicle);
                     return $this->redirectToRoute('stepTree');
                 }else if($vehicle->getType()){
-                    $error = "The driver ".$session->get('driver')->getFirstName()." can't driver this type of vehicle (".$vehicle->getType()->getName()."), Please specify
-                    another type.";
+                    $session->getFlashBag()->add('vehicleError', "The driver ".$session->get('driver')->getFirstName()." can't driver this type of vehicle (".$vehicle->getType()->getName()."), Please specify
+                    another type.");
                 }
             }
             return $this->render('mission/vehicleForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'error' => $error,
             ]);
         }else{
-            $session->set('driverError',"Note: This is the first step for creating a mission!");
+            $session->getFlashBag()->add('driverError',"This is the first step in creating the mission process!");
             return $this->redirectToRoute('stepOne');
         }
     }

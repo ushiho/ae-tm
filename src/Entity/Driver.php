@@ -91,7 +91,7 @@ class Driver
     private $missions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleType", inversedBy="drivers")
+     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleType", inversedBy="drivers", cascade={"persist", "remove"})
      */
     private $vehicleType;
 
@@ -109,6 +109,11 @@ class Driver
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
     private $salairePerDay;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $busy;
 
 
     public function __construct()
@@ -351,6 +356,18 @@ class Driver
     public function setSalairePerDay($salairePerDay): self
     {
         $this->salairePerDay = $salairePerDay;
+
+        return $this;
+    }
+
+    public function getBusy(): ?bool
+    {
+        return $this->busy;
+    }
+
+    public function setBusy(?bool $busy): self
+    {
+        $this->busy = $busy;
 
         return $this;
     }
