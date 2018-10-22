@@ -78,4 +78,8 @@ class DepartmentController extends AbstractController
         }
         return $this->redirectToRoute('allDepartments');
     }
+
+    public function clone(Department $department){
+        
+    }
 }
