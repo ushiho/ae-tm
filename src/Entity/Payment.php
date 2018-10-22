@@ -21,17 +21,17 @@ class Payment
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPriceToPay=0;
+    private $totalPriceToPay=0; # total remaining price
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPricePaid=0;
+    private $totalPricePaid=0; # total amount paid = paymentDriever + paymentSupplier
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPrice=0;
+    private $totalPrice=0; # tatal amount = driver salary * number of days + supplier salary * number of days
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\PaymentDriver", mappedBy="payment")
@@ -47,6 +47,11 @@ class Payment
      * @ORM\OneToOne(targetEntity="App\Entity\Mission", mappedBy="payment", cascade={"persist", "remove"})
      */
     private $mission;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $finished;
 
     public function __construct()
     {
@@ -174,4 +179,20 @@ class Payment
 
         return $this;
     }
+
+    public function getFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(?bool $finished): self
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
+    public function __clone() {
+        $this->instance = ++self::$instances;
+      }
 }

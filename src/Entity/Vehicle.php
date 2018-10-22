@@ -115,4 +115,7 @@ class Vehicle
         return $this;
     }
 
+    public function __clone() {
+        $this->instance = ++self::$instances;
+      }
 }

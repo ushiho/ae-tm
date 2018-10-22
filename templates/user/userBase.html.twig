@@ -32,8 +32,8 @@
     </div>
     <br>
     <br>
-         <hr>
      {% for msg in app.session.flashBag.get('success') %}
+         <hr>
                 <div class="alert alert-success">
                     {{ msg }}
                 </div>
@@ -75,9 +75,5 @@
             {% endfor %}
             {% endif %}
         </table>
-        <br>
-        {% if users is not empty and users is not null %}
-            <div class="first"><a class="button" href="{{ path('deleteAllUsers') }}" onclick="return confirm('Are u sure, You want to delete all Users except you?')" >Delete All</a></div>
-        {% endif %}
     </div>
 {% endblock %}
