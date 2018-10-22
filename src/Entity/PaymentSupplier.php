@@ -194,7 +194,4 @@ class PaymentSupplier
         return $this;
     }
 
-    public function __clone() {
-        $this->instance = ++self::$instances;
-      }
 }

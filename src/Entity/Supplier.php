@@ -195,7 +195,4 @@ class Supplier
         return $this;
     }
 
-    public function __clone() {
-        $this->instance = ++self::$instances;
-      }
 }
