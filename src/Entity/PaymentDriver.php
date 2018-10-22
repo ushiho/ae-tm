@@ -24,22 +24,18 @@ class PaymentDriver
     /**
      * @ORM\Column(type="decimal", precision=50, scale=27)
      */
-    private $price;
+    private $price; # amount paid in this date
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $totalPrice;
+    private $totalPrice; # number of days * salary per day, calculated in creating mission process
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $pricePaid;
+    private $pricePaid = 0; # total amount paid
 
-    /**
-     * @ORM\Column(type="smallint")
-     */
-    private $period;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="paymentDrivers")
@@ -50,7 +46,7 @@ class PaymentDriver
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $remainingPrice;
+    private $remainingPrice; # ch7al ky tsalo driver, equal to the total price in the first time
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Payment", inversedBy="paymentDriver")
@@ -62,6 +58,12 @@ class PaymentDriver
      * @ORM\Column(type="text", nullable=true)
      */
     private $note;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $finished;
+
 
     public function getId(): ?int
     {
@@ -116,18 +118,6 @@ class PaymentDriver
         return $this;
     }
 
-    public function getPeriod(): ?int
-    {
-        return $this->period;
-    }
-
-    public function setPeriod(int $period): self
-    {
-        $this->period = $period;
-
-        return $this;
-    }
-
     public function getDriver(): ?Driver
     {
         return $this->driver;
@@ -175,4 +165,17 @@ class PaymentDriver
 
         return $this;
     }
+
+    public function getFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(?bool $finished): self
+    {
+        $this->finished = $finished;
+
+        return $this;
+    }
+
 }
