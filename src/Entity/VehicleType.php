@@ -114,4 +114,5 @@ class VehicleType
 
         return $this;
     }
+
 }

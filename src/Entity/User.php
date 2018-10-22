@@ -278,4 +278,7 @@ class User implements UserInterface
         return $this;
     }
 
+    public function __clone() {
+        $this->instance = ++self::$instances;
+      }
 }
