@@ -86,7 +86,7 @@ class Driver
     private $gender;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="driver")
+     * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="driver", cascade={"persist", "remove"})
      */
     private $missions;
 

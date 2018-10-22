@@ -67,7 +67,7 @@ class Mission
     private $allocate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="missions")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="missions", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Assert\Valid()
      */
