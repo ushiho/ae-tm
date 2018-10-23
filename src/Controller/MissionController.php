@@ -147,7 +147,7 @@ class MissionController extends AbstractController
     }
 
     private function verifyDates(Mission $mission, Allocate $rent){
-        return ($mission->getStartDate()->diff($rent->getStartDate())->days >= 0 && $mission->getEndDate()->diff($rent->getEndDate())->days <= 0);
+        return ($mission->getStartDate()->diff($rent->getStartDate())->days >= 0 && $mission->getEndDate()->diff($rent->getEndDate())->days >= 0);
     }
 
     public function daysBetween(String $dt1, String $dt2) {
