@@ -12,6 +12,7 @@ use App\Form\MissionType;
 use App\Entity\Department;
 use App\Controller\DriverController;
 use App\Repository\DriverRepository;
+use App\Controller\ProjectController;
 use App\Repository\MissionRepository;
 use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -192,7 +193,6 @@ class MissionController extends AbstractController
         $session->set('driver', $mission->getDriver());
         $session->set('vehicle', $mission->getVehicle());
         $session->set('rent', $mission->getAllocate());
-        dd($session);
         return $session;
     }
 
@@ -202,17 +202,17 @@ class MissionController extends AbstractController
             $data['mission']->setDriver($data['driver'])
                             ->setAllocate($data['rent'])
                             ->setPayment(new Payment())
-                            ->setProject($data['project'])
                             ->setCreatedAt(new \DateTime())
-                            ->setPayment(new Payment());
+                            ->setPayment(new Payment())
+                            ->setProject(ProjectController::clone($data['project']));
             $data['driver']->getMissions()->add($data['mission']);
             $data['driver']->setSalairePerDay(DriverController::salaryPerDay($data['driver']));
+            $data['driver']->setBusy(DriverController::isBusy($data['driver']));
             $data['vehicle']->setAllocate($data['rent']);
             $data['rent']->setCreatedAt(new \DateTime())
                          ->setMission($data['mission'])
                          ->setVehicle($data['vehicle']);
-            $data['project']->setCreatedAt(new \DateTime())
-                            ->getMission()->add($data['mission']);
+            $data['project']->getMission()->add($data['mission']);
             return $data;
 
         }else{
@@ -229,11 +229,10 @@ class MissionController extends AbstractController
             $session->set('driverError', 'This is the first step in creating the mission process!');
             return $this->redirectToRoute('stepOne');
         }
-        $data['driver']->setBusy(DriverController::isBusy($data['driver']));
+        // $manager->persist($data['vehicle']);
+        // $manager->persist($data['rent']);
+        // dd($data);
         $manager->persist($data['driver']);
-        $manager->persist($data['vehicle']);
-        $manager->persist($data['rent']);
-        $manager->persist($data['mission']);
         $manager->flush();
         $session->clear();
         $request->getSession()->getFlashBag()->add('missionSuccess', 'Your mission has been created successfully!');

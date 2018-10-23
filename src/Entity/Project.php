@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Project;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -74,6 +75,10 @@ class Project
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id){
+        $this->id = $id;
     }
 
     public function getStartDate(): ?\DateTimeInterface
@@ -152,6 +157,10 @@ class Project
         }
 
         return $this;
+    }
+
+    public function setMission(Collection $missions){
+        $this->mission = $missions;
     }
 
     public function removeMission(Mission $mission): self

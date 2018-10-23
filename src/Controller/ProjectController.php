@@ -118,4 +118,21 @@ class ProjectController extends AbstractController
         }
         return $this->redirectToRoute('allProjects');
     }
+
+    public function clone(Project $project){
+        if($project){
+        $clone = new Project();
+        $clone->setCreatedAt($project->getCreatedAt())
+             ->setFinished($project->getFinished())
+             ->setNote($project->getNote())
+             ->setMission($project->getMission());
+        $clone->setId($project->getId());
+        $clone->setOwner($project->getOwner());
+        $clone->setName($project->getName());
+        $clone->setStartDate($project->getStartDate());
+        $clone->setEndDate($project->getEndDate());
+        $clone->setBudget($project->getBudget());
+             return $clone;
+            }
+        }
 }
