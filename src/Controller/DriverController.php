@@ -149,7 +149,7 @@ class DriverController extends AbstractController
             ]);
         }else{
             $session->clear();
-            $session->getFlashBag()->add('missionCancel', "The process for creating the mission has been canceled by the user!");
+            $session->getFlashBag()->add('missionCancel', "The process has been canceled by the user!");
             return $this->redirectToRoute('allMissions');
         }
     }
@@ -178,10 +178,7 @@ class DriverController extends AbstractController
         return $this->redirectToRoute('allDrivers');
     }
     
-    public function filterDrivers(Request $request){
-        dd($request);
-    }
-
+    
     public function merge(Driver $driver, ObjectManager $manager){
         if($driver){
             $types = new ArrayCollection();

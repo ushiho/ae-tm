@@ -15,6 +15,7 @@ use App\Repository\DriverRepository;
 use App\Controller\ProjectController;
 use App\Repository\MissionRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\DepartmentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,16 +32,15 @@ class MissionController extends AbstractController
      * @Route("/mission/project/{idProject}", name="showMissionOfProject")
      * @Route("/mission/driver/{idDriver}", name="showMissionsByDriver")
      */
-    public function index(MissionRepository $repo, Department $department=null, Request $request,
-    Project $project=null, Driver $driver=null)
+    public function index(MissionRepository $repo,ProjectRepository $projectRepo, DepartmentRepository $depaRepo, DriverRepository $driverRepo, $idDepartment=null, Request $request, $idProject=null, $idDriver=null)
     {
         $missions = [];
-        if($department && $request->attributes->get('_route')=="showMissionOfDepartment"){
-            $missions = $repo->findByDepartment($department);
-        }else if(!$project && $request->attributes->get('_route')=="showMissionOfProject"){
-            $missions = $repo->findByProject($project);
-        }else if($driver && $request->attributes->get('_route')=="showMissionsByDriver"){
-            $missions = $repo->findByDriver($driver);
+        if($idDepartment && $request->attributes->get('_route')=="showMissionOfDepartment"){
+            $missions = $repo->findByDepartment($depaRepo->find($idDepartment));
+        }else if($idProject && $request->attributes->get('_route')=="showMissionOfProject"){
+            $missions = $repo->findByProject($projectRepo->find($idProject));
+        }else if($idDriver && $request->attributes->get('_route')=="showMissionsByDriver"){
+            $missions = $repo->findByDriver($driverRepo->find($idDriver));
         }
         else{
             $missions = $repo->findAll();
@@ -191,7 +191,7 @@ class MissionController extends AbstractController
         $session->set('mission', $mission);
         $session->set('project', $mission->getProject());
         $session->set('driver', $mission->getDriver());
-        $session->set('vehicle', $mission->getVehicle());
+        $session->set('vehicle', $mission->getAllocate()->getVehicle());
         $session->set('rent', $mission->getAllocate());
         return $session;
     }
@@ -225,6 +225,7 @@ class MissionController extends AbstractController
 
     /**
      * @Route("/project/mission/new/validate", name="createMission")
+     * @Route("/project/mission/{id}/edit", name="modifyMission")     * 
      */
     public function save(SessionInterface $session, ObjectManager $manager, Request $request){
         $data = $this->completeData($session, $manager);
@@ -240,10 +241,10 @@ class MissionController extends AbstractController
     }
 
     /**
-     * @Route("/project/mission/{id}/edit", name="editMission")
+     * @Route("/mission/{id}/edit", name="editMission")
      */
     public function edit(SessionInterface $session, Mission $mission=null){
-        if($mission && !isEmpty($mission)){
+        if($mission && $mission->getId()){
             $session = $this->setDatasToSession($session, $mission);
             return $this->redirectToRoute('stepOne');
         }

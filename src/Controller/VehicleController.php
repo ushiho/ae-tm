@@ -132,8 +132,8 @@ class VehicleController extends AbstractController
     }
     
     public function typeExistsInArray(Vehicle $vehicle, array $types){
-        for ($i=0; $i < count($types); $i++) { 
-            if($types[$i]->getId() == $vehicle->getType()->getId()){
+        foreach ($types as $value) {
+            if($value->getId() == $vehicle->getType()->getId()){
                 return true;
             }
         }

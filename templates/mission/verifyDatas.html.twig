@@ -175,9 +175,10 @@
     
     </div>
         <a href="#" title="Next" class="link button" id="next">Next</a>
-        <a href="{{ path('createMission')}}" title="Create this mission" class="button" id="validate" style="display:none;">Create</a>
+        <a href="{{ path('createMission')}}" title="Create this mission" class="button" id="validate" style="display:none;">
+        {% if mission and mission.id %}Modify{% else %}Create{% endif %}</a>
         <a href="#" title="Back" class="link button" id="back" style="display: none;">Back</a>
-        <a href="{{path('stepFour')}}" title="Back to modify your datas" class="link button" id="modify">Modify</a>
+        <a href="{{path('stepFour')}}" title="Back to modify your datas" class="link button" id="modify">Go Back</a>
 {% endblock %}
 
 {% block javascripts %}

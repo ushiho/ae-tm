@@ -45,7 +45,7 @@
                         <td class="first"><strong>Missions</strong></td>
                         <td class="last">
                         {% if project.mission and project.mission is not empty %}
-                        <a href="{{ path('showMission', {'id':project.id}) }}" class="link" title="Show all missions"><strong>Show Missions</strong></a>
+                        <a href="{{ path('showMissionOfProject', {'idProject':project.id}) }}" class="link" title="Show all missions linked to this project"><strong>Show Missions</strong></a>
                         {% endif %} Or 
                         <a href="{{ path('addMissionToProject', {'id': project.id})}}" class="link" title="Add a mission"><strong>Add One</strong></a>
                         </td>
