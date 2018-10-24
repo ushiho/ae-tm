@@ -35,7 +35,7 @@
     {% if app.session.flashBag.has('missionSuccess') %}
         <div class="alert alert-success error">
             {% for msg in app.session.flashBag.get('missionSuccess') %}
-                {{ msg }}
+                <strong>{{ msg }}</strong>
             {% endfor %}
         </div>
     {% endif %}

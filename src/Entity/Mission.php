@@ -129,7 +129,7 @@ class Mission
 
     public function getProject(): ?Project
     {
-        return $this->project;
+        return  $this->project;
     }
 
     public function setProject(?Project $project): self
@@ -165,7 +165,7 @@ class Mission
 
     public function getPayment(): ?Payment
     {
-        return $this->payment;
+        return  $this->payment;
     }
 
     public function setPayment(?Payment $payment): self
@@ -177,7 +177,7 @@ class Mission
 
     public function getAllocate(): ?Allocate
     {
-        return $this->allocate;
+        return  $this->allocate;
     }
 
     public function setAllocate(?Allocate $allocate): self
@@ -189,7 +189,7 @@ class Mission
 
     public function getDriver(): ?Driver
     {
-        return $this->driver;
+        return  $this->driver;
     }
 
     public function setDriver(?Driver $driver): self

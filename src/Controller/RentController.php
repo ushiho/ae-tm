@@ -122,9 +122,17 @@ class RentController extends AbstractController
                 'form' => $form->createView(),
             ]);
         }else{
-            $session->getFlushBag()->add('vehicleError', "You must add the vehicle Information to continue!");
+            $session->getFlashBag()->add('vehicleError', "You must add the vehicle Information to continue!");
             return $this->redirectToRoute('stepTwo');
         }
     }
 
+    public function merge(Allocate $rent, ObjectManager $manager){
+        if($rent){
+            $rent->setSupplier($manager->merge($rent->getSupplier()));
+            return $rent;
+        }else{
+            return null;
+        }
+    }
 }

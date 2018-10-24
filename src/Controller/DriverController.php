@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -131,7 +132,7 @@ class DriverController extends AbstractController
     public function addMissionStepOne(Request $request, SessionInterface $session, ObjectManager $manager){
         if($request->attributes->get('_route') == "stepOne"){
             $driver = $session->get('driver');
-            if($driver!=null){
+            if($driver){
             $driver = $manager->merge($driver);
             }else{
                 $driver = new Driver();
@@ -179,5 +180,17 @@ class DriverController extends AbstractController
     
     public function filterDrivers(Request $request){
         dd($request);
+    }
+
+    public function merge(Driver $driver, ObjectManager $manager){
+        if($driver){
+            $types = new ArrayCollection();
+            foreach ($driver->getVehicleType() as $type) {
+                $types[] = $manager->merge($type);
+            }
+            return $types;
+        }else{
+            return null;
+        }
     }
 }

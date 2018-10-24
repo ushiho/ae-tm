@@ -10,6 +10,7 @@ use App\Repository\VehicleTypeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -111,6 +112,7 @@ class VehicleController extends AbstractController
             $form = $this->createForm(VehicleFormType::class, $vehicle);
             $form->handleRequest($request);
             if($form->isSubmitted()&&$form->isValid()){
+                // dd($session->get('driver')->getVehicleType()->toArray()[0]->getId());
                 if($this->typeExistsInArray($vehicle, $session->get('driver')->getVehicleType()->toArray())){
                     $session->set('vehicle', $vehicle);
                     return $this->redirectToRoute('stepTree');
@@ -128,13 +130,22 @@ class VehicleController extends AbstractController
             return $this->redirectToRoute('stepOne');
         }
     }
-
+    
     public function typeExistsInArray(Vehicle $vehicle, array $types){
-        foreach ($types as $type) {
-            if($type->getId() == $vehicle->getType()->getId()){
+        for ($i=0; $i < count($types); $i++) { 
+            if($types[$i]->getId() == $vehicle->getType()->getId()){
                 return true;
             }
         }
         return false;
+    }
+
+    public function merge(Vehicle $vehicle, ObjectManager $manager){
+        if($vehicle){
+            $vehicle->setType($manager->merge($vehicle->getType()));
+            return $vehicle;
+        }else{
+            return null;
+        }
     }
 }

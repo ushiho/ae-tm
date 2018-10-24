@@ -148,7 +148,7 @@ class MissionController extends AbstractController
     }
 
     private function verifyDates(Mission $mission, Allocate $rent){
-        return ($mission->getStartDate()->diff($rent->getStartDate())->days >= 0 && $mission->getEndDate()->diff($rent->getEndDate())->days >= 0);
+        return ($mission->getStartDate()->format('U') >= $rent->getStartDate()->format('U') && $mission->getEndDate()->format('U') <= $rent->getEndDate()->format('U') );
     }
 
     public function daysBetween(String $dt1, String $dt2) {
@@ -196,22 +196,25 @@ class MissionController extends AbstractController
         return $session;
     }
 
-    private function completeData(SessionInterface $session){
+    private function completeData(SessionInterface $session, ObjectManager $manager){
         if($session->count() > 0){
             $data = $this->getDatasFromSession($session);
             $data['mission']->setDriver($data['driver'])
                             ->setAllocate($data['rent'])
                             ->setPayment(new Payment())
                             ->setCreatedAt(new \DateTime())
-                            ->setPayment(new Payment())
-                            ->setProject(ProjectController::clone($data['project']));
+                            ->setDepartment($manager->merge($data['mission']->getDepartment()))
+                            ->setProject($manager->merge($data['project']));
             $data['driver']->getMissions()->add($data['mission']);
             $data['driver']->setSalairePerDay(DriverController::salaryPerDay($data['driver']));
-            $data['driver']->setBusy(DriverController::isBusy($data['driver']));
-            $data['vehicle']->setAllocate($data['rent']);
+            $data['driver']->setBusy(DriverController::isBusy($data['driver']))
+                           ->setVehicleType(DriverController::merge($data['driver'], $manager));
+            $data['vehicle']->setAllocate($data['rent'])
+                            ->setType($manager->merge($data['vehicle']->getType()));
             $data['rent']->setCreatedAt(new \DateTime())
                          ->setMission($data['mission'])
-                         ->setVehicle($data['vehicle']);
+                         ->setVehicle($data['vehicle'])
+                         ->setSupplier($manager->merge($data['rent']->getSupplier()));
             $data['project']->getMission()->add($data['mission']);
             return $data;
 
@@ -224,15 +227,12 @@ class MissionController extends AbstractController
      * @Route("/project/mission/new/validate", name="createMission")
      */
     public function save(SessionInterface $session, ObjectManager $manager, Request $request){
-        $data = $this->completeData($session);
+        $data = $this->completeData($session, $manager);
         if(!$data){
-            $session->set('driverError', 'This is the first step in creating the mission process!');
+            $request->getSession()->getFlashBag()->add('driverError', 'This is the first step in creating mission process!');
             return $this->redirectToRoute('stepOne');
         }
-        // $manager->persist($data['vehicle']);
-        // $manager->persist($data['rent']);
-        // dd($data);
-        $manager->persist($data['driver']);
+        $manager->persist($data['mission']);
         $manager->flush();
         $session->clear();
         $request->getSession()->getFlashBag()->add('missionSuccess', 'Your mission has been created successfully!');
@@ -256,4 +256,5 @@ class MissionController extends AbstractController
         $request->getSession()->getFlashBag()->add('projectError', "Please specify the project to link the new mission!");
         return $this->redirectToRoute('allProjects');
     }
+
 }

@@ -40,7 +40,7 @@
     {% if app.session.flashBag.has('projectError') %}
         <div class="alert alert-success error">
             {% for msg in app.session.flashBag.get('projectError') %}
-                {{ msg }}
+                <strong>{{ msg }}</strong>
             {% endfor %}
         </div>
     {% endif %}

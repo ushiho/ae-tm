@@ -324,6 +324,11 @@ class Driver
         return $this;
     }
 
+    public function setVehicleType(ArrayCollection $types){
+        $this->vehicleType = $types;
+        return $this;
+    }
+
     public function getSalaire()
     {
         return $this->salaire;
