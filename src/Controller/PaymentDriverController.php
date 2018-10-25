@@ -21,9 +21,11 @@ class PaymentDriverController extends AbstractController
         ]);
     }
 
-    public function calculateTotalPrice(Driver $driver, Mission $mission){
-        if($driver && $mission){
-            return $driver->getSalairePerDay() * ($mission->getEndDate() - $mission->getStartDate());
+    public function calculateTotalPrice(Mission $mission){
+        if($mission){
+            return $mission->getDriver()->getSalairePerDay() * $mission->getEndDate()->diff($mission->getStartDate())->days;
+        }else{
+            return null;
         }
     }
 
@@ -34,6 +36,17 @@ class PaymentDriverController extends AbstractController
             }else{
                 dd('The price is greater than the remaining price! do you want to  continue this process?');
             }
+        }
+    }
+
+    public function init(Mission $mission){
+        if($mission){
+            $paymentDriver = new PaymentDriver();
+            $paymentDriver->setTotalPrice(PaymentDriverController::calculateTotalPrice($mission));
+            $paymentDriver->setRemainingPrice(PaymentDriverController::calculateTotalPrice($mission));
+            return $paymentDriver;
+        }else{
+            return null;
         }
     }
 }

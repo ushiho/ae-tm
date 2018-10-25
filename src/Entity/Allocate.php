@@ -77,6 +77,11 @@ class Allocate
      */
     private $mission;
 
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $pricePerDay;
+
     public function __construct()
     {
         $this->paymentSuppliers = new ArrayCollection();
@@ -241,6 +246,18 @@ class Allocate
         if ($newAllocate !== $mission->getAllocate()) {
             $mission->setAllocate($newAllocate);
         }
+
+        return $this;
+    }
+
+    public function getPricePerDay()
+    {
+        return $this->pricePerDay;
+    }
+
+    public function setPricePerDay($pricePerDay): self
+    {
+        $this->pricePerDay = $pricePerDay;
 
         return $this;
     }

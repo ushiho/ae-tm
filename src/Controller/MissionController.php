@@ -10,8 +10,10 @@ use App\Entity\Project;
 use App\Entity\Allocate;
 use App\Form\MissionType;
 use App\Entity\Department;
+use App\Controller\RentController;
 use App\Controller\DriverController;
 use App\Repository\DriverRepository;
+use App\Controller\PaymentController;
 use App\Controller\ProjectController;
 use App\Repository\MissionRepository;
 use App\Repository\ProjectRepository;
@@ -199,12 +201,6 @@ class MissionController extends AbstractController
     private function completeData(SessionInterface $session, ObjectManager $manager){
         if($session->count() > 0){
             $data = $this->getDatasFromSession($session);
-            $data['mission']->setDriver($data['driver'])
-                            ->setAllocate($data['rent'])
-                            ->setPayment(new Payment())
-                            ->setCreatedAt(new \DateTime())
-                            ->setDepartment($manager->merge($data['mission']->getDepartment()))
-                            ->setProject($manager->merge($data['project']));
             $data['driver']->getMissions()->add($data['mission']);
             $data['driver']->setSalairePerDay(DriverController::salaryPerDay($data['driver']));
             $data['driver']->setBusy(DriverController::isBusy($data['driver']))
@@ -215,7 +211,14 @@ class MissionController extends AbstractController
                          ->setMission($data['mission'])
                          ->setVehicle($data['vehicle'])
                          ->setSupplier($manager->merge($data['rent']->getSupplier()));
+            $data['rent']->setPricePerDay(RentController::pricePerDay($data['rent']));
             $data['project']->getMission()->add($data['mission']);
+            $data['mission']->setDriver($data['driver'])
+                            ->setAllocate($data['rent'])
+                            ->setCreatedAt(new \DateTime())
+                            ->setDepartment($manager->merge($data['mission']->getDepartment()))
+                            ->setProject($manager->merge($data['project']))
+                            ->setPayment(PaymentController::init($data['mission']));
             return $data;
 
         }else{

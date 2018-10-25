@@ -103,9 +103,9 @@ class RentController extends AbstractController
      * @Route("/project/mission/new/add_rent", name="stepTree")    * 
      */
     public function addMissionStepTree(Request $request, SessionInterface $session, ObjectManager $manager){
-        if($session->get('vehicle')){
+        if($session->get('vehicle') && $request->get('_route')=="stepTree"){
             $rent = $session->get('rent');
-            if($rent){
+            if($rent && !empty((array) $rent)){
                 $rent = $manager->merge($rent);
             }else{
                 $rent = new Allocate();
@@ -134,5 +134,19 @@ class RentController extends AbstractController
         }else{
             return null;
         }
+    }
+
+    public function pricePerDay(Allocate $rent){
+        $salary = 0;
+        if($rent){
+            if($rent->getPeriod()==1){
+                $salary = $rent->getPrice();
+            }else if($rent->getPeriod()==2){
+                $salary = $rent->getPrice()/7;                
+            }else{
+                $salary = $rent->getPrice()/30;
+            }
+        }
+        return $salary;
     }
 }

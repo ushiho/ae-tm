@@ -37,9 +37,16 @@
                         {% else %}Add Rent Info{% endif %}</a></td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Payment Info</strong></td>
-                        {# <td class="last"><a href="{{ path('showPayment', {'id':mission.payment.id}) }}" class="link">Show Payment's Info</a></td> #}
-                        <td class="last">here</td>
+                        <td class="first"><strong>To Pay To The Driver</strong></td>
+                        <td class="last">{{mission.payment.totalPriceToPayToDriver}} DH</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>To Pay To The Supplier</strong></td>
+                        <td class="last">{{mission.payment.totalPriceToPayToSupplier}} DH</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Total Amount To Pay</strong></td>
+                        <td class="last">{{mission.payment.totalPrice}} DH</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Project</strong></td>

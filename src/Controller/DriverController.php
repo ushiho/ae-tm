@@ -116,7 +116,7 @@ class DriverController extends AbstractController
         if($driver){
             if($driver->getPeriodOfTravel()==1){
                 $salary = $driver->getSalaire();
-            }else if($driver->getPeriodOfTravel()==20){
+            }else if($driver->getPeriodOfTravel()==2){
                 $salary = $driver->getSalaire()/7;                
             }else{
                 $salary = $driver->getSalaire()/30;

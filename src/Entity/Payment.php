@@ -21,25 +21,20 @@ class Payment
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPriceToPay=0; # total remaining price
+    private $totalPricePaid; # total amount paid = paymentDriever + paymentSupplier
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
      */
-    private $totalPricePaid=0; # total amount paid = paymentDriever + paymentSupplier
+    private $totalPrice; # 
 
     /**
-     * @ORM\Column(type="decimal", precision=60, scale=2)
-     */
-    private $totalPrice=0; # tatal amount = driver salary * number of days + supplier salary * number of days
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentDriver", mappedBy="payment")
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentDriver", mappedBy="payment", cascade={"persist", "remove"})
      */
     private $paymentDriver;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="payment")
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="payment", cascade={"persist", "remove"})
      */
     private $paymentSupplier;
 
@@ -53,6 +48,21 @@ class Payment
      */
     private $finished;
 
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $totalPriceToPayToDriver;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $totalPriceToPayToSupplier;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $remainingPrice;
+
     public function __construct()
     {
         $this->paymentDriver = new ArrayCollection();
@@ -64,17 +74,6 @@ class Payment
         return $this->id;
     }
 
-    public function getTotalPriceToPay()
-    {
-        return $this->totalPriceToPay;
-    }
-
-    public function setTotalPriceToPay($totalPriceToPay): self
-    {
-        $this->totalPriceToPay = $totalPriceToPay;
-
-        return $this;
-    }
 
     public function getTotalPricePaid()
     {
@@ -188,6 +187,42 @@ class Payment
     public function setFinished(?bool $finished): self
     {
         $this->finished = $finished;
+
+        return $this;
+    }
+
+    public function getTotalPriceToPayToDriver()
+    {
+        return $this->totalPriceToPayToDriver;
+    }
+
+    public function setTotalPriceToPayToDriver($totalPriceToPayToDriver): self
+    {
+        $this->totalPriceToPayToDriver = $totalPriceToPayToDriver;
+
+        return $this;
+    }
+
+    public function getTotalPriceToPayToSupplier()
+    {
+        return $this->totalPriceToPayToSupplier;
+    }
+
+    public function setTotalPriceToPayToSupplier($totalPriceToPayToSupplier): self
+    {
+        $this->totalPriceToPayToSupplier = $totalPriceToPayToSupplier;
+
+        return $this;
+    }
+
+    public function getRemainingPrice()
+    {
+        return $this->remainingPrice;
+    }
+
+    public function setRemainingPrice($remainingPrice): self
+    {
+        $this->remainingPrice = $remainingPrice;
 
         return $this;
     }
