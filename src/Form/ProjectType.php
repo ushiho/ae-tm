@@ -17,8 +17,12 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('startDate', DateType::class)
-            ->add('endDate', DateType::class)
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
             ->add('budget', NumberType::class)
             ->add('name', TextType::class)
             ->add('owner', TextType::class)

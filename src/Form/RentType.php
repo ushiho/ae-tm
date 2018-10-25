@@ -22,8 +22,12 @@ class RentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('startDate', DateType::class)
-            ->add('endDate', DateType::class)
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+            ])
             ->add('period', ChoiceType::class, array(
                 'choices' => [
                     'Daily' => 1,
