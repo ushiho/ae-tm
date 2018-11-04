@@ -49,8 +49,11 @@ class DepartmentController extends AbstractController
     /**
      * @Route("/department/delete/{id}", name="deleteDepartment")
      */
-    public function delete($id, ObjectManager $manager, DepartmentRepository $repo){
-        $manager->remove($repo->find($id));
+    public function delete(Department $department, ObjectManager $manager){
+        foreach ($department->getMissions() as $mission) {
+        $manager->remove($mission);
+        }
+        $manager->remove($department);
         $manager->flush();
         return $this->redirectToRoute('allDepartments');
     }

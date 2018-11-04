@@ -29,7 +29,7 @@ class VehicleType
     private $vehicles;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Driver", mappedBy="vehicleType", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Driver", mappedBy="vehicleType", cascade={"persist"})
      */
     private $drivers;
 

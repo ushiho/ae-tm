@@ -104,7 +104,7 @@ class VehicleController extends AbstractController
     public function addMissionStepTwo(Request $request, SessionInterface $session, ObjectManager $manager){
         if($session->get('driver')){
             $vehicle = $session->get('vehicle');
-            if($vehicle){
+            if($vehicle && !empty($vehicle)){
                 $vehicle = $manager->merge($vehicle);
             }else{
                 $vehicle = new Vehicle();
@@ -112,7 +112,6 @@ class VehicleController extends AbstractController
             $form = $this->createForm(VehicleFormType::class, $vehicle);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
-                // dd($session->get('driver')->getVehicleType()->toArray()[0]->getId());
                 if($this->typeExistsInArray($vehicle, $session->get('driver')->getVehicleType()->toArray())){
                     $session->set('vehicle', $vehicle);
                     return $this->redirectToRoute('stepTree');

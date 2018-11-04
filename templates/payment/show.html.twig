@@ -1,5 +1,148 @@
 {% extends 'payment/paymentBase.html.twig' %}
-
 {% block center_column %}
-    <h1>Show Payment here!</h1>
+    <div class="top-bar">
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+            {% block path %}
+                {{ parent()}}
+                &nbsp;/&nbsp;
+                <a href="#" class="path">
+                    Details</a>
+            {% endblock %}
+        </div>
+        </div>
+    <hr><br>
+    <div class="table">
+        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+        <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+        <table class="listing form" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="full" colspan="2">Details</th>
+            </tr>
+            <tr class="bg">
+                <td class="first" width="220;">
+                    <strong>Task's Expenses</strong>
+                </td>
+                <td class="last">{{ payment.totalPrice }}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Total Price Paid</strong>
+                </td>
+                <td class="last">{{ payment.totalPricePaid}}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Remaining Expenses</strong>
+                </td>
+            <td class="last">{{ payment.remainingPrice}}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Finished</strong>
+                </td>
+                <td class="last">
+                {% if payment.finished %}
+                    Yes                    
+                {% else %}
+                    No
+                {% endif %}
+                </td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Mission</strong>
+                </td>
+                <td class="last">
+                {% if payment.mission and payment.mission is not empty %}
+                <a href="{{path('showMission', {'id': payment.mission.id})}}" class="link">Show Mission</a> 
+                {% else %}No Mission linked</td>{% endif %}
+            </tr>
+            </table>
+    </div>
+
+<div class="table">
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+    <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+    <table class="listing form" cellpadding="0" cellspacing="0">
+        <tr>
+            <th class="full" colspan="2">Payment Driver Details</th>
+        </tr>
+        <tr class="bg">
+                <td class="first" width="220;">
+                <strong>Driver's Expenses</strong>
+                </td>
+                <td class="last">{{ payment.totalPriceToPayToDriver}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                    <strong>Total Price Paid To The Driver</strong>
+                </td>
+                <td class="last">{{ payment.totalPricePaidToDriver}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                    <strong>Remaining Driver Expenses</strong>
+                </td>
+            <td class="last">{{ payment.remainingPriceToDriver}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                <strong title="Payments Driver Info">Payments Driver</strong>
+                </td>
+                <td class="last">
+                {% if payment.paymentDriver and payment.paymentDriver is not empty %}
+                    <span id="showPaymentDriver">Show</span>
+                {% else %}
+                    {# <a href="{{path('addPaymentDriver', {'payment': payment})}}">Add One</a> #}
+                    Add
+                {% endif %}
+                </td>
+        </tr>
+        </table>
+    </div>
+
+<div class="table">
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+    <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+    <table class="listing form" cellpadding="0" cellspacing="0">
+        <tr>
+            <th class="full" colspan="2">Payment Supplier Details</th>
+        </tr>
+        <tr class="bg">
+                <td class="first" width="220;">
+                <strong>Supplier's Expenses</strong>
+                </td>
+                <td class="last">{{ payment.totalPriceToPayToSupplier }}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                    <strong>Total Price Paid To The Supplier</strong>
+                </td>
+                <td class="last">{{ payment.totalPricePaidToSupplier}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                    <strong>Remaining Supplier Expenses</strong>
+                </td>
+            <td class="last">{{ payment.remainigPriceToSupplier}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+                <td class="first">
+                    <strong>Payments Supplier</strong>
+                </td>
+                <td class="last">
+                {% if payment.paymentSupplier and payment.paymentSupplier is not empty %}
+                    <a href="{{path('paymentSupplierByPayment', {'idPayment': payment.id })}}" class="link" >Show</a>
+                {% endif %}
+                {% if payment.remainigPriceToSupplier != 0 %}
+                &nbsp;Or&nbsp;
+                <a href="{{path('addPaymentSupplier')}}{{ app.session.set('payment', payment)}}">Add One</a>
+                {% endif %}
+                </td>
+        </tr>
+    </table>
+</div>
+<a title="Show All payments" href="{{ path('allPayments') }}" class="button">Back</a>
+
 {% endblock %}

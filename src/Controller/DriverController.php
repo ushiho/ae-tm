@@ -21,7 +21,6 @@ class DriverController extends AbstractController
     /**
      * @Route("/driver", name="allDrivers")
      * @Route("/driver/type/{id}", name="showDriverByType")
-     * @Route("/driver/filter", name="filterDriver")
      */
     public function show(DriverRepository $repo, Request $request, VehicleType $type=null){
         $drivers = [];

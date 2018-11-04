@@ -1,0 +1,84 @@
+{% extends 'payment/paymentBase.html.twig' %}
+
+{% block center_column %}
+        <div class="top-bar">
+            <h1>Contents</h1><br>
+            <div class="breadcrumbs">
+                {% block path %}
+                    {{parent()}}
+            &nbsp;/&nbsp;<a class="path" href="{{path('allPaymentsSupplier')}}">Payments Supplier</a>
+                {% endblock %}
+            </div>
+        </div>
+<hr><br>
+<div class="table">
+    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+    <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+    <table class="listing form" cellpadding="0" cellspacing="0">
+        <tr>
+            <th class="full" colspan="2">Details</th>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Payment Date</strong>
+            </td>
+            <td class="last">{{ paymentSupplier.datePayment|date('d-M-Y')}}</td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Price</strong>
+            </td>
+            <td class="last">{{ paymentSupplier.price }}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+            <td class="first" width="250px;">
+                <strong>Total Expenses Paid</strong>
+            </td>
+            <td class="last">{{ paymentSupplier.totalPricePaid }}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Remaining Expenses</strong>
+            </td>
+            <td class="last">{{ paymentSupplier.remainingPrice}}&nbsp;DH</td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Payment Info</strong>
+            </td>
+            <td class="last">
+            {% if paymentSupplier.payment %} <a href="{{path('showPayment', {'id':paymentSupplier.payment.id})}}" class="link">Show </a> {% endif %}
+            </td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong title="Rent Info">Rent Info</strong>
+            </td>
+            <td class="last">
+                {% if paymentSupplier.payment.mission.allocate and paymentSupplier.payment.mission.allocate is not empty %}
+                    <a href="{{path('showRent', {'idRent':paymentSupplier.payment.mission.allocate.id})}}" class="link">Show</a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Supplier Info</strong>
+            </td>
+            <td class="last">
+                {% if paymentSupplier.supplier and paymentSupplier.supplier is not empty %}
+                    <a href="{{path('showSupplier', {'id': paymentSupplier.supplier.id })}}" class="link">Show</a>
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="bg">
+            <td class="first">
+                <strong>Note</strong>
+            </td>
+            <td class="last">{{paymentSupplier.note}}</td>
+        </tr>
+    </table>
+    <br>
+    <a title="Show All payments" href="{{ path('allPayments') }}" class="button">Back</a>
+</td>
+</div>
+{% endblock %}

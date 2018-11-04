@@ -1,17 +1,54 @@
-{% extends 'base.html.twig' %}
+{% extends 'payment/base.html.twig' %}
 
-
-{% block header %}
-    <li><span><span><a href="{{ path('allProjects') }}">Projects</a></span></span></li>
-    <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
-    <li><span><span><a href="{{path('allRents')}}">Rent</a></span></span></li>
-    <li><span><span><a href="{{path('allSuppliers')}}">Suppliers</a></span></span></li>
-    <li><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
-    <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
-    <li><span><span><a href="{{path('allVehicles')}}">Vehicles</a></span></span></li>
-    <li><span><span><a href="{{path('allTypes')}}">Vehicles Type</a></span></span></li>
-    <li class="active"><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
-    {% if connectedUser.role == 1 %}
-    <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
-    {% endif %}
+{% block center_column %}
+        <div class="top-bar">
+            <h1>Contents</h1><br>
+            <div class="breadcrumbs">
+                {% block path %}
+                {{parent()}}
+                    &nbsp;/&nbsp;<a class="path" href="{{path('allPayments')}}">All Payments</a>
+                {% endblock %}
+            </div>
+        </div>
+    <br>
+    <hr>
+    {% block content %}
+        {% if app.session.flashBag.has('paymentMsg') %}
+            <div class="alert alert-success error">
+                {% for msg in app.session.flashBag.get('paymentMsg') %}
+                    <strong>{{ msg }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <br>
+        <div class="table"> 
+        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
+            <table class="listing" cellpadding="0" cellspacing="0">
+            {% if payments is empty or payments is null %}
+                    <tr class="bg">
+                        <td class="first" style="text-align:center;font-weight: bold;">There is no payments add some <a href="{{path('addMission')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                    </tr>
+                {% else %}
+                <tr>
+                    <th width="90px" title="Total Task/Mission expenses">Total Price </th>
+                    <th title="Total Amount Paid">Total Price Paid</th>
+                    <th title="Total Remaining Amount">Remaining Price</th>
+                    <th title="State of Payment">Finished</th>
+                    <th class="last">Actions</th>
+                </tr>
+                {% for payment in payments %}
+                <tr class="bg">
+                    <td class="first" >{{ payment.totalPrice }}&nbsp;DH</td>
+                    <td class="first" >{{ payment.totalPricePaid }}&nbsp;DH</td>
+                    <td class="first">{{ payment.remainingPrice }}&nbsp;DH</td>
+                    <td class="first"> {% if payment.finished %} Yes {% else %}No {% endif %} </td>
+                    <td>
+                    <a href="{{ path('showPayment', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details" /></a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+        </div>
+    {% endblock %}
 {% endblock %}

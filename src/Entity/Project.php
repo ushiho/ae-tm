@@ -47,7 +47,7 @@ class Project
     private $owner;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="project", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="project", cascade={"persist"})
      */
     private $mission;
 

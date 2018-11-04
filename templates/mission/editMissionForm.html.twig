@@ -1,12 +1,18 @@
 {% extends 'mission/missionBase.html.twig' %}
 
 {% block center_column %}
-{% set error = "" %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }}
 <a class="path" href="{% if mission.id == null %}{{ path('addMission') }} {% else %}{{path('editMission', {'id': mission.id })}}{% endif %}">
  / {% if mission.id == null %}Create mission{% else %}Edit mission{% endif %}</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(missionForm) }}
 <hr>
 <br>
@@ -74,7 +80,6 @@
             <button type="submit" class="button">{% if mission.id %}Update{% else %}Create{% endif %}</button>
             <button class="button" formnovalidate><a href="{{ path('allMissions') }}" class="link" >Cancel</a></button>
         </div>
-        <div id="error" style="display:none;color:red;"><strong>{{ error }}</strong></div>
         {# 
                 Driver Form is here!
         #}

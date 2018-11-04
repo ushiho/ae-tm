@@ -1,10 +1,17 @@
 {% extends 'mission/missionBase.html.twig' %}
 
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }} <br><br>
 <a class="path" href="#">Step Four: Create Mission</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(form) }}
 <hr>
     <div class="error"> 
@@ -58,7 +65,7 @@
             </table>
             <br>
             <button type="submit" class="button" title="Verify your given datas">Next</button>
-            <button class="button" id="cancel" formnovalidate title="Back to rent"><a href="{{ path('stepTree') }}" class="link" >Back</a></button>
+            <a href="{{ path('stepTree') }}" class="link button" title="Back to rent" >Back</a>
         </div>
 
         {{ form_end(form) }}

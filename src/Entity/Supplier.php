@@ -57,7 +57,7 @@ class Supplier
     private $allocates;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="supplier")
+     * @ORM\OneToMany(targetEntity="App\Entity\PaymentSupplier", mappedBy="supplier", cascade={"persist"})
      */
     private $paymentSupplier;
 

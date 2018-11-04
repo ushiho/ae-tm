@@ -23,30 +23,9 @@ class DriverType extends AbstractType
         $builder
             ->add('firstName')
             ->add('lastName')
-            ->add('email', EmailType::class)
             ->add('numberPhone', TelType::class)
             ->add('cin')
-            ->add('adress', TextareaType::class, array(
-                'attr' => array(
-                    'cols' => '60',
-                    'rows' => '3',
-                )
-            ))
             ->add('licenceNumber')
-            ->add('gender', ChoiceType::class, array(
-                'label' => 'Gender',
-                'choices' => array(
-                    'Femal' => 1,
-                    'Male' => 2,
-                ),
-                'attr' => array(
-                    'style'=>'width:270px;',
-                ),
-                'placeholder' => '--Select Gender--',
-                'required' => true,
-                'multiple' => false,
-                
-            ))
             ->add('vehicleType', EntityType::class, array(
                 'class' => VehicleType::class,
                 'placeholder' => '--Select the type--',

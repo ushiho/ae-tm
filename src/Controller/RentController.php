@@ -14,6 +14,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 
 class RentController extends AbstractController
 {
@@ -100,11 +101,11 @@ class RentController extends AbstractController
     }
 
     /**
-     * @Route("/project/mission/new/add_rent", name="stepTree")    * 
+     * @Route("/project/mission/new/add_rent", name="stepTree")
      */
-    public function addMissionStepTree(Request $request, SessionInterface $session, ObjectManager $manager){
-        if($session->get('vehicle') && $request->get('_route')=="stepTree"){
-            $rent = $session->get('rent');
+    public function addMissionStepTree(Request $request, ObjectManager $manager){
+        if($request->getSession()->get('vehicle') && $request->get('_route')=="stepTree"){
+            $rent = $request->getSession()->get('rent');
             if($rent && !empty((array) $rent)){
                 $rent = $manager->merge($rent);
             }else{
@@ -112,17 +113,18 @@ class RentController extends AbstractController
             }
             $form = $this->createForm(RentType::class, $rent);
             $form->handleRequest($request);
-
-            if($form->isSubmitted()&&$form->isValid()){
-                $session->set('rent', $rent);
-                return $this->redirectToRoute('stepFour');
+            if($form->isSubmitted() && $form->isValid()){
+                if($this->generateMsg($request->getSession(), $rent)){
+                    $request->getSession()->set('rent', $rent);
+                    return $this->redirectToRoute('stepFour');
+                }
             }
             return $this->render('mission/rentForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
             ]);
         }else{
-            $session->getFlashBag()->add('vehicleError', "You must add the vehicle Information to continue!");
+            $request->getSession()->getFlashBag()->add('vehicleError', "You must add the vehicle Information to continue!");
             return $this->redirectToRoute('stepTwo');
         }
     }
@@ -148,5 +150,22 @@ class RentController extends AbstractController
             }
         }
         return $salary;
+    }
+
+    public function generateMsg(SessionInterface $session, Allocate $rent){
+        $driver = $session->get('driver');
+        if($driver && $rent){
+            if ($rent->getWithDriver() && ($driver->getSalaire()==0&&$rent->getPeriod()==$driver->getPeriodOfTravel())) {
+                return true;
+            }if(!$rent->getWithDriver() && $driver->getSalaire()!=0) {
+                return true;
+            }if($rent->getWithDriver() && ($driver->getSalaire()!=0 || $driver->getPeriodOfTravel()!=$rent->getPeriod())){
+                $session->getFlashBag()->add('rentMsg', "The vehicle was rented with the driver but the driver's salary was set or the period of work the driver and the period of rent are not matching, you must change the driver's salary or the period of work or change the rent's info to continue the process!");
+                return false;
+            }if(!$rent->getWithDriver() && $driver->getSalaire()==0) {
+                $session->getFlashBag()->add('rentMsg', "The vehicle was not rented with driver but the driver's salary was not set, you must change the driver's salary or change the state of the rent!");
+                return false;
+            }
+        }
     }
 }

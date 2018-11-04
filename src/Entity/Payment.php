@@ -63,6 +63,26 @@ class Payment
      */
     private $remainingPrice;
 
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $remainigPriceToSupplier;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $remainingPriceToDriver;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $totalPricePaidToSupplier;
+
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $totalPricePaidToDriver;
+
     public function __construct()
     {
         $this->paymentDriver = new ArrayCollection();
@@ -227,4 +247,56 @@ class Payment
         return $this;
     }
 
+    public function getRemainigPriceToSupplier()
+    {
+        return $this->remainigPriceToSupplier;
+    }
+
+    public function setRemainigPriceToSupplier($remainigPriceToSupplier): self
+    {
+        $this->remainigPriceToSupplier = $remainigPriceToSupplier;
+
+        return $this;
+    }
+
+    public function getRemainingPriceToDriver()
+    {
+        return $this->remainingPriceToDriver;
+    }
+
+    public function setRemainingPriceToDriver($remainingPriceToDriver): self
+    {
+        $this->remainingPriceToDriver = $remainingPriceToDriver;
+
+        return $this;
+    }
+
+    public function getTotalPricePaidToSupplier()
+    {
+        return $this->totalPricePaidToSupplier;
+    }
+
+    public function setTotalPricePaidToSupplier($totalPricePaidToSupplier): self
+    {
+        $this->totalPricePaidToSupplier = $totalPricePaidToSupplier;
+
+        return $this;
+    }
+
+    public function getTotalPricePaidToDriver()
+    {
+        return $this->totalPricePaidToDriver;
+    }
+
+    public function setTotalPricePaidToDriver($totalPricePaidToDriver): self
+    {
+        $this->totalPricePaidToDriver = $totalPricePaidToDriver;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return '';
+    }
 }

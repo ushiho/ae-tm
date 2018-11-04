@@ -21,10 +21,6 @@
                         <td class="last">{{ driver.lastName }}</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Gender</strong></td>
-                        <td class="last">{% if driver.gender == 1 %}Female{% else %} Male{% endif %}</td>
-                    </tr>
-                    <tr class="bg">
                         <td class="first"><strong>CIN</strong></td>
                         <td class="last">{{ driver.cin }}</td>
                     </tr>
@@ -35,8 +31,9 @@
                     <tr class="bg">
                         <td class="first"><strong>Vehicle Type</strong></td>
                         <td class="last">
-                        {# <a title="All vehicle type for this driver" href="{{path('showVehicleTypeByDriver', {'vehicleTypes': driver.vehicleType })}}">Show</a> #}
-                        add an array in path function twig
+                        {% for type in driver.vehicleType %}
+                            <strong style="color:red;">{{type.name}} &nbsp;</strong>
+                        {% endfor %}
                         </td>
                     </tr>
                     <tr class="bg">
@@ -51,16 +48,8 @@
                         {% else %}Not Specified {% endif %}</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Email</strong></td>
-                        <td class="last">{{ driver.email }}</td>
-                    </tr>
-                    <tr class="bg">
                         <td class="first"><strong>Phone Number</strong></td>
                         <td class="last">{{driver.numberPhone}}</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Address</strong></td>
-                        <td class="last">{{ driver.adress }}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Payment</strong></td>
@@ -76,8 +65,8 @@
                     </tr> 
                     </table>
                     <p>&nbsp;</p>
-                    <a title="Show All Rents" href="{{ path('allDrivers') }}" class="button">Back </a>
-                    <a title="Edit This Rent" href="{{ path('editDriver', { 'id' : driver.id }) }}" class="button">EDIT </a></td>
+                    <a title="Show All Drivers" href="{{ path('allDrivers') }}" class="button">Back </a>
+                    <a title="Edit This Driver" href="{{ path('editDriver', { 'id' : driver.id }) }}" class="button">EDIT </a></td>
                 </div>
 
 {% endblock %}

@@ -91,10 +91,16 @@ class MissionController extends AbstractController
     /**
      * @Route("/mission/delete/{id}", name="deleteMission")
      */
-    public function delete($id, ObjectManager $manager, MissionRepository $repo){
-        $manager->remove($repo->find($id));
-        $manager->flush();
-        return $this->redirectToRoute('allMissions');
+    public function delete($id, ObjectManager $manager, MissionRepository $repo, Request $request){
+        $mission = $repo->find($id);
+        if($mission){
+                $manager->remove($mission);
+                $manager->flush();
+                return $this->redirectToRoute('allMissions');
+        }else{
+            $request->getSession()->getFlashBag()->add('missionError', "There is no selected mission to delete!");
+            return $this->redirectToRoute('allMissions');
+        }
     }
 
     /**

@@ -52,8 +52,8 @@
                     {'placeholder':'Address', 'class':'text' }}) }}</td>
                 </tr>
             </table>
+        </div>
             <button type="submit" class="button">{% if supplier.id %}Update{% else %}Create{% endif %}</button>
             <button class="button" formnovalidate><a href="{{ path('allSuppliers') }}" >Cancel</a></button>
-        </div>
         {{ form_end(form) }}
 {% endblock %}

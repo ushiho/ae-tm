@@ -1,0 +1,60 @@
+{% extends 'payment/base.html.twig' %}
+
+{% block center_column %}
+        <div class="top-bar">
+            <h1>Contents</h1><br>
+            <div class="breadcrumbs">
+            {% block path %}
+            {{parent()}}
+                &nbsp;/&nbsp;<a class="path" href="#">Payments Supplier</a>
+            {% endblock %}
+                </div>
+            </div>
+    {% block content %}
+    <br>
+    <hr>
+    {% if app.session.flashBag.has('paymentSupplierMsg') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('paymentSupplierMsg') %}
+                <strong>{{ msg }}</strong>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <br>
+    <div class="table">
+        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+        <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+        <table class="listing" cellpadding="0" cellspacing="0">
+            {% if paymentSupplier is empty or paymentSupplier is null %}
+                <tr class="bg">
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no Payments Supplier add one
+                        <a href="{{path('addPaymentSupplier')}}" style="color:red;text-decoration: underline black;">here</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th class="first">Payment Date</th>
+                    <th width="90px" title="Total Rent expenses">Total Price</th>
+                    <th title="The amount paid in this date" >Price</th>
+                    <th title="Total Remaining Amount">Remaining Price</th>
+                    <th class="last">Actions</th>
+                </tr>
+                {% for payment in paymentSupplier %}
+                    <tr class="bg">
+                        <td class="first">{{ payment.datePayment|date('d-M-Y') }}</td>
+                        <td class="first">{{ payment.totalPriceToPay }} &nbsp;DH</td>
+                        <td class="first">{{ payment.totalPricePaid }} &nbsp;DH</td>
+                        <td class="first">{{ payment.remainingPrice }} &nbsp;DH</td>
+                        <td>
+<a href="{{ path('deletePaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this Payment?')">
+                            <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"/></a>
+                            <a href="{{ path('editPaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
+                            <a href="{{ path('showPaymentSupplier', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details"/></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+    {% endblock %}
+{% endblock %}

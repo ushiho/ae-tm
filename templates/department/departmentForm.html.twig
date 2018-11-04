@@ -1,11 +1,18 @@
 {% extends 'department/departmentBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Department" href="/department/new" class="button">ADD NEW
+    </a>
+    <h1>Department</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }}
 <a class="path" href="{% if department.id == null %}{{ path('addDepartment') }} {% else %}{{path('editDepartment', {'id': department.id })}}{% endif %}">
  / {% if department.id == null %}Create Department{% else %}Edit Department{% endif %}</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(form) }}
 <hr>
 <br>
@@ -38,8 +45,8 @@
                     {'placeholder':'Add a note', 'class':'text', 'cols':'70', 'rows':'3' }}) }}</td>
                 </tr>
             </table>
+        </div>
             <button type="submit" class="button">{% if department.id %}Update{% else %}Create{% endif %}</button>
             <button class="button" formnovalidate><a href="{{ path('allDepartments') }}" >Cancel</a></button>
-        </div>
         {{ form_end(form) }}
 {% endblock %}

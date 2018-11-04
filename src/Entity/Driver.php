@@ -12,10 +12,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DriverRepository")
  * @UniqueEntity(
- *   fields={"email"},
- *   message=": There is a driver with this email!"
- * )
- * @UniqueEntity(
  *   fields={"cin"},
  *   message=": There is a driver with this cin!"
  * )
@@ -44,10 +40,6 @@ class Driver
      */
     private $lastName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -68,11 +60,6 @@ class Driver
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $adress;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $licenceNumber;
 
     /**
@@ -81,17 +68,12 @@ class Driver
     private $paymentDrivers;
 
     /**
-     * @ORM\Column(type="smallint")
-     */
-    private $gender;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Mission", mappedBy="driver", cascade={"persist", "remove"})
      */
     private $missions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleType", inversedBy="drivers", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\VehicleType", inversedBy="drivers", cascade={"persist"})
      */
     private $vehicleType;
 

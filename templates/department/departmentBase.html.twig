@@ -25,7 +25,7 @@
         <h1>Department</h1><br>
         <div class="breadcrumbs">
         {% block path %}
-            <a class="path" href="/department">Departments</a>
+            <a class="path" href="/department">Contents</a>
         {% endblock %}
         </div>
     </div>
@@ -50,11 +50,11 @@
                 <td class="first">{{ department.name }}</td>
                 <td class="first">{{ department.adress }}</td>
                 <td>
-                <a href="{{ path('deleteDepartment', {'id': department.id}) }}" onclick="return confirm('Are u sure, You want to delete this Department?')">
+                <a href="{{ path('deleteDepartment', {'id': department.id}) }}" onclick="return confirm('Are u sure, You want to delete this Department? Note that all missions linked to that department will be deleted!')">
                 <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editDepartment', {'id': department.id}) }}" onclick="return confirm('Are u sure, You want to edit this Department?')">
                 <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
-                <a href="{{ path('showDepartment', {'id': department.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>
+                <a href="{{ path('showDepartment', {'id': department.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details" /></a>
                 </td>
             </tr>
             {% endfor %}

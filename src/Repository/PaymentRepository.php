@@ -22,20 +22,30 @@ class PaymentRepository extends ServiceEntityRepository
 //    /**
 //     * @return Payment[] Returns an array of Payment objects
 //     */
-    /*
-    public function findByExampleField($value)
+    
+    public function findByMission($mission)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('p.mission = :val')
+            ->setParameter('val', $mission)
             ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            // ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
+    public function findByProject($project)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.project = :val')
+            ->setParameter('val', $project)
+            ->orderBy('p.id', 'ASC')
+            // ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     /*
     public function findOneBySomeField($value): ?Payment
     {

@@ -1,13 +1,27 @@
 {% extends 'mission/missionBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }}
 <br><br>
 <a class="path" href="">Step Tree: Create Rent</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(form) }}
 <hr>
+{% if app.session.flashBag.has('rentMsg') %}
+    <div class="alert alert-success error">
+        {% for msg in app.session.flashBag.get('rentMsg') %}
+            <strong>{{ msg }}</strong>
+        {% endfor %}
+    </div>
+{% endif %}
 <br>
         <div class="table"> 
             <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
@@ -66,7 +80,7 @@
             </table>
             <br>
             <button type="submit" class="button">Next</button>
-            <button class="button" formnovalidate><a href="{{ path('stepTwo') }}" >Back</a></button>
+            <a class="button" href="{{ path('stepTwo') }}" >Back</a>
         </div>
         {{ form_end(form) }}
 {% endblock %}

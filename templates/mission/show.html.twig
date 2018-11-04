@@ -1,8 +1,15 @@
 {% extends 'mission/missionBase.html.twig' %}
 {% block center_column %}
-{% block path %}
-    {{ parent()}} / <a href="#" class="path"> Details</a>
-{% endblock %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
+    {% block path %}
+        {{ parent()}} / <a href="#" class="path"> Details</a>
+    {% endblock %}
+    </div>
+</div>
 <hr><br>
             <div class="table"> 
                 <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
@@ -37,20 +44,45 @@
                         {% else %}Add Rent Info{% endif %}</a></td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>To Pay To The Driver</strong></td>
+                        <td class="first"><strong>Driver Expenses</strong></td>
                         <td class="last">{{mission.payment.totalPriceToPayToDriver}} DH</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>To Pay To The Supplier</strong></td>
+                        <td class="first"><strong>Supplier Expenses</strong></td>
                         <td class="last">{{mission.payment.totalPriceToPayToSupplier}} DH</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Total Amount To Pay</strong></td>
+                        <td class="first"><strong>Total Task Expenses</strong></td>
                         <td class="last">{{mission.payment.totalPrice}} DH</td>
                     </tr>
+                <tr class="bg">
+                    <td class="first">
+                        <strong>Payment Supplier</strong>
+                    </td>
+                    <td class="last">
+                    {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
+                        <a href="" class="link">Show</a> &nbsp; Or &nbsp; 
+                    {% else %}
+                    <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                    {% endif %}
+                    </td>
+                </tr>
+                <tr class="bg">
+                    <td class="first">
+                        <strong>Payment Driver</strong>
+                    </td>
+                    <td class="last">
+                    {% if mission.payment.paymentDriver and mission.payment.paymentDriver is not empty %}
+                        <a href="" class="link">Show</a>
+                        &nbsp;Or&nbsp;
+                    {% else %}
+                        <a href="" class="link">Add</a>
+                    {% endif %}
+                    </td>
+                </tr>
                     <tr class="bg">
                         <td class="first"><strong>Project</strong></td>
-                        <td class="last"><a href="{{ path('showProject', {'id':mission.project.id}) }}" class="link">Show Projetc's Info</a></td>
+                        <td class="last"><a href="{{ path('showProject', {'id':mission.project.id}) }}" class="link">Show</a></td>
                     </tr>
                     <tr class="bg">
                     <td class="first"><strong>Is Finished?</strong></td>
@@ -60,7 +92,6 @@
                     <td class="first"><strong>Note</strong></td>
                     <td class="last">{{mission.note}}</td>
                     </tr>
-                    <tr class="br">
                     </table>
                     <br>
                     <a title="Show All Missions" href="{{ path('allMissions') }}" class="button">Back </a>

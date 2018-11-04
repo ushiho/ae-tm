@@ -1,9 +1,15 @@
 {% extends 'department/departmentBase.html.twig' %}
 {% block center_column %}
-
+<div class="top-bar">
+    <a title="Add new Department" href="/department/new" class="button">ADD NEW
+    </a>
+    <h1>Department</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
     {{ parent()}} / <a href="#" class="path"> Details</a>
 {% endblock %}
+</div>
+</div>
 <hr><br>
             <div class="table"> 
                 <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
@@ -31,9 +37,8 @@
                         <td class="last">{{ department.note }}</td>
                     </tr> 
                     </table>
-                    <br>
+                </div>
                     <a title="Show All Rents" href="{{ path('allDepartments') }}" class="button">Back </a>
                     <a title="Edit This Rent" href="{{ path('editDepartment', { 'id' : department.id }) }}" class="button">EDIT </a>
-                </div>
 
 {% endblock %}

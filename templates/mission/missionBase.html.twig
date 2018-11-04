@@ -42,7 +42,7 @@
     {% if app.session.flashBag.has('missionCancel') %}
         <div class="alert alert-success error">
             {% for msg in app.session.flashBag.get('missionCancel') %}
-                {{ msg }}
+                <strong>{{ msg }}</strong>
             {% endfor %}
         </div>
     {% endif %}
@@ -52,30 +52,36 @@
         <table class="listing" cellpadding="0" cellspacing="0">
         {% if missions is empty or missions is null %}
                 <tr class="bg">
-                    <td class="first" style="text-align:center;font-weight: bold;">There is no missions add some <a href="{{path('stepOne')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no missions add some <a href="{{path('addMission')}}" style="color:red;text-decoration: underline black;">here</a></td>
                 </tr>
             {% else %}
             <tr>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th width="75px">Start Date</th>
+                <th width="75px">End Date</th>
                 <th>Driver</th>
                 <th>Department</th>
                 <th>Project</th>
-                <th>Finished</th>
+                <th>Task Expenses</th>
                 <th class="last">Actions</th>
             </tr>
             {% for mission in missions %}
             <tr class="bg">
-                <td class="first" width="57px">{{ mission.startDate|date('d-m-Y') }}</td>
-                <td class="first" width="57px">{{ mission.endDate|date('d-m-Y') }}</td>
+                <td class="first" >{{ mission.startDate|date('d-m-Y') }}</td>
+                <td class="first" >{{ mission.endDate|date('d-m-Y') }}</td>
                 <td class="first"><a href="{{path('showDriver', {'id': mission.driver.id})}}" title="More Details">{{ mission.driver.firstName }}</a></td>
                 <td class="first"><a href="{{path('showDepartment', {'id': mission.department.id})}}" title="More Details">{{ mission.department.name }}</a></td>
                 <td class="first"><a href="{{path('showProject', {'id': mission.project.id})}}" title="More Details">{{ mission.project.name }}</td>
-                <td class="first"> {% if mission.finished %}Yes{% else %}No{% endif %}</td>
+                <td class="first">
+                    {% if mission.payment %}
+                        {{mission.payment.totalPrice}}&nbsp;DH
+                    {% else %}
+                        No Payment
+                    {% endif %}
+                </td>
                 <td>
                 <a href="{{ path('deleteMission', {'id': mission.id}) }}" onclick="return confirm('Are u sure, You want to delete this mission?')"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editMission', {'id': mission.id}) }}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
-                <a href="{{ path('showMission', {'id': mission.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>
+                <a href="{{ path('showMission', {'id': mission.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details" /></a>
                 </td>
             </tr>
             {% endfor %}

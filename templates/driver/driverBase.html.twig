@@ -50,7 +50,6 @@
             <tr>
                 <th class="first">Firstname</th>
                 <th>Lastname</th>
-                <th>Gender</th>
                 <th>CIN</th>
                 <th>Licence Number</th>
                 <th>Actions</th>
@@ -60,9 +59,6 @@
                 <tr class="bg">
                     <td class="first">{{ driver.firstname }}</td>
                     <td class="first">{{ driver.lastname }}</td>
-                    <td class="first">
-                    {% if driver.gender==1 %}Female{% else %}Male{% endif %}
-                    </td>
                     <td class="first">{{ driver.cin }}</td>
                     <td class="first">{{ driver.licenceNumber }}</td>
                     <td>

@@ -39,9 +39,9 @@
     <hr>
     {% if app.session.flashBag.has('projectError') %}
         <div class="alert alert-success error">
-            {% for msg in app.session.flashBag.get('projectError') %}
-                <strong>{{ msg }}</strong>
-            {% endfor %}
+            <strong>{% for msg in app.session.flashBag.get('projectError') %}
+                {{ msg }}
+            {% endfor %}</strong>
         </div>
     {% endif %}
     {% if app.session.flashBag.has('projectSuccess') %}

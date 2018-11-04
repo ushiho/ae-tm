@@ -58,9 +58,17 @@ class SupplierController extends AbstractController
     /**
      * @Route("supplier/delete/{id}", name="deleteSupplier")
      */
-    public function delete($id, SupplierRepository $repo, ObjectManager $manager){
-        $manager->remove($repo->find($id));
-        $manager->flush();
+    public function delete(Supplier $supplier, ObjectManager $manager, Request $request){
+        if($supplier){
+            foreach ($supplier->getAllocates() as $rent) {
+                $manager->remove($rent);
+            }
+            $manager->remove($supplier);
+            $manager->flush();
+            $request->getSession()->getFlashBag()->add('supplierSuccess', 'The Supplier is deleted successfully!');
+        }else{
+            $request->getSession()->getFlashBag()->add('supplierSuccess', 'No selected Supplier to delete!');
+        }
         return $this->redirectToRoute('allSuppliers');
     }
 
@@ -68,13 +76,12 @@ class SupplierController extends AbstractController
      * @Route("/supplier/show/{id}", name="showSupplier")
      */
     public function showDetails(Supplier $supplier=null){
-        if($supplier)
-        {
+        if($supplier){
             return $this->render('/supplier/show.html.twig', [
             'connectedUser' => $this->getUser(),
             'supplier' => $supplier,
         ]);
-    }
+        }
     }
 
     /**

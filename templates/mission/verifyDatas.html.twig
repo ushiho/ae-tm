@@ -1,10 +1,17 @@
 {% extends 'mission/missionBase.html.twig' %}
 
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }} <br><br>
 <a class="path" href="#">Step Five: Verify Datas</a>
 {% endblock %}
+</div>
+</div>
 <hr>
 <br>
     <div id="missionAndRent">
@@ -45,7 +52,7 @@
                         <td class="first" width="172">
                             <strong>Note</strong>
                         </td>
-                        <td class="last" formnovalidate>{% if mission.note == "" %}-----------{% endif %}</td>
+                        <td class="last" >{{mission.note}}</td>
                     </tr>
             </table>
             
@@ -60,7 +67,7 @@
                         <th class="full" colspan="2">Rent information</th>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Start Date</strong></td>
+                        <td width="172px;" class="first"><strong>Start Date</strong></td>
                         <td class="last">{{ rent.startDate|date('d-m-Y')}}</td>
                     </tr>
                     <tr class="bg">
@@ -82,6 +89,10 @@
                     <tr class="bg">
                         <td class="first"><strong>With driver</strong></td>
                         <td class="last">{% if rent.withDriver %}Yes{% else %} No {% endif %}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first"><strong>Note</strong></td>
+                        <td class="last">{{rent.note}}</td>
                     </tr>
                     </table>
                 </div>
@@ -128,10 +139,6 @@
                         <td class="last">{{ driver.lastName }}</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Gender</strong></td>
-                        <td class="last">{% if driver.gender == 1 %}Female{% else %} Male{% endif %}</td>
-                    </tr>
-                    <tr class="bg">
                         <td class="first"><strong>CIN</strong></td>
                         <td class="last">{{ driver.cin }}</td>
                     </tr>
@@ -159,16 +166,8 @@
                         {% else %}Not Specified {% endif %}</td>
                     </tr>
                     <tr class="bg">
-                        <td class="first"><strong>Email</strong></td>
-                        <td class="last">{{ driver.email }}</td>
-                    </tr>
-                    <tr class="bg">
                         <td class="first"><strong>Phone Number</strong></td>
                         <td class="last">{{driver.numberPhone}}</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Address</strong></td>
-                        <td class="last">{{ driver.adress }}</td>
                     </tr>
                     </table>
         </div>

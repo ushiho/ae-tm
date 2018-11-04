@@ -1,10 +1,17 @@
 {% extends 'mission/missionBase.html.twig'  %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }} <br><br>
 <a class="path" href="#" >Step Two: Create Vehicle</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(form) }}
 <hr>
         <div class="error"> 
@@ -53,7 +60,7 @@
             </table>
             <br>
             <button type="submit" class="button">Next</button>
-            <button class="button" formnovalidate><a href="{{ path('stepOne') }}" >Back</a></button>
+            <a class="button" href="{{ path('stepOne') }}" >Back</a>
         </div>
         {{ form_end(form) }}
 {% endblock %}

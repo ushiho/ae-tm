@@ -1,10 +1,17 @@
 {% extends 'mission/missionBase.html.twig'  %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
+<div class="top-bar">
+    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+    </a>
+    <h1>Contents</h1><br>
+    <div class="breadcrumbs">
 {% block path %}
 {{ parent() }} <br><br>
 <a class="path" href="#">Step One: Create the driver</a>
 {% endblock %}
+</div>
+</div>
 {{ form_start(form) }}
 <hr>
         <div class="error"> 
@@ -39,13 +46,6 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.gender) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.gender, {'attr' : 
-                    {'placeholder':'Gender', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
                         <strong>{{ form_label(form.cin) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.cin, {'attr' : 
@@ -76,29 +76,15 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.email) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.email, {
-                        'attr' : {'placeholder':'Email address', 'class':'text',}})}}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
                         <strong>{{ form_label(form.numberPhone) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.numberPhone, {
                         'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
                 </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.adress) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.adress, {
-                        'attr' : {'placeholder':'Address', 'class':'text',}})}}</td>
-                </tr>
             </table>
             <br>
             <button type="submit" class="button">Next</button>
-            <button class="button" formnovalidate><a href="{{ path('cancelStepOne') }}" >Cancel</a></button>
+            <a class="button" href="{{ path('cancelStepOne') }}" >Cancel</a>
         </div>
         {{ form_end(form) }}
 {% endblock %}

@@ -59,14 +59,10 @@ class PaymentSupplier
     private $note;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="paymentSupplier")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="paymentSupplier", cascade={"persist"})
      */
     private $supplier;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $finished;
 
     
     public function getId(): ?int
@@ -178,18 +174,6 @@ class PaymentSupplier
     public function setSupplier(?Supplier $supplier): self
     {
         $this->supplier = $supplier;
-
-        return $this;
-    }
-
-    public function getFinished(): ?bool
-    {
-        return $this->finished;
-    }
-
-    public function setFinished(?bool $finished): self
-    {
-        $this->finished = $finished;
 
         return $this;
     }

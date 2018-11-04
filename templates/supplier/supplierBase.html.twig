@@ -61,7 +61,7 @@
                 <td class="first">{{ supplier.lastName }}</td>
                 <td class="first">{{ supplier.email }}</td>
                 <td>
-                <a href="{{ path('deleteSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
+                <a href="{{ path('deleteSupplier', {'id': supplier.id}) }}" onclick="return confirm('Are u sure? All missions linked to that supplier will be deleted!')"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
                 <a href="{{ path('editSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
                 <a href="{{ path('showSupplier', {'id': supplier.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>            
                 </td>
@@ -70,8 +70,8 @@
             {% endif %}
         </table>
         <br>
-        {% if suppliers is not empty and suppliers is not null %}
+        {# {% if suppliers is not empty and suppliers is not null %}
             <div class="first"><a class="button" href="{{ path('deleteAllSuppliers') }}" onclick="return confirm('Are u sure, You want to delete all Suppliers? Note That all payments and rents infos will be deleted!')" >Delete All</a></div>
-        {% endif %}
+        {% endif %} #}
     </div>
 {% endblock %}

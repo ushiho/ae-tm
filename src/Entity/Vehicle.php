@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VehicleRepository")
+ *  @UniqueEntity(
+ *   fields={"matricule"},
+ *   message=": There is a vahicle with this number!"
+ * )
  */
 class Vehicle
 {
@@ -29,7 +34,7 @@ class Vehicle
     private $allocate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType", inversedBy="vehicles", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\VehicleType", inversedBy="vehicles", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;
