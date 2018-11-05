@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Payment;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Payment|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,13 +27,11 @@ class PaymentRepository extends ServiceEntityRepository
     public function findByMission($mission)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.mission = :val')
-            ->setParameter('val', $mission)
-            ->orderBy('p.id', 'ASC')
-            // ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'p = m.payment')
+                    ->andWhere('m = :val')
+                    ->setParameter('val', $mission)
+                    ->getQuery()
+                    ->getResult();
     }
 
     public function findByProject($project)

@@ -59,7 +59,7 @@ class PaymentSupplier
     private $note;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="paymentSupplier", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Supplier", inversedBy="paymentSupplier")
      */
     private $supplier;
 

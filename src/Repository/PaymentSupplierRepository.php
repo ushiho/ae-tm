@@ -36,15 +36,39 @@ class PaymentSupplierRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?PaymentSupplier
+    // public function findByMission($mission): ?PaymentSupplier
+    // {
+    //     return $this->createQueryBuilder('p')
+    //         ->andWhere('p.allocate = :val')
+    //         ->setParameter('val', $mission->getAllocate())
+    //         ->getQuery()
+    //         ->getOneOrNullResult()
+    //     ;
+    // }
+
+    public function findByMission($mission)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('p.allocate = :val')
+            ->setParameter('val', $mission->getAllocate())
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+
+    //Joint two tables: allocate & paymentSupplier where rent.idSupplier = paymentSupplier.idSupplier
+    public function findByPayment($payment){
+        return $this->createQueryBuilder('p')
+                    ->andWhere('p.payment = :val')
+                    ->setParameter('val', $payment)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    /**
+     * Set an array in Query builder
+     * $builder->andWhere('type IN (:string)');
+     * $builder->setParameter('string', array('first','second'), \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+     */
+
 }

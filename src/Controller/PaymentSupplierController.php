@@ -58,6 +58,7 @@ class PaymentSupplierController extends AbstractController
         }else{
             $paymentSupplier = $repo->findAll();
         }
+        
         return $this->render('payment/paymentSupplierBase.html.twig', [
             'connectedUser' => $this->getUser(),
             'paymentSupplier' => $paymentSupplier,
@@ -68,27 +69,23 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/add", name="addPaymentSupplier")
      * @Route("/payment/paymentSupplier/{id}/edit", name="editPaymentSupplier", requirements={"id"="\d+"})
      */
-    public function action($paymentSupplier=null, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
-        $payment = $request->getSession()->get('payment');
-        if($payment){
-                if($payment->getRemainigPriceToSupplier()==0){
+    public function action($id=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
+        $payment = $request->getSession()->get('payment');// !=null => create a payment
+        $paymentSupplier = $repo->find($id); // !=null modify/ update
+        if($payment || $paymentSupplier){
+                if($payment && $payment->getRemainigPriceToSupplier()==0){
                     $request->getSession()->getFlashBag()->add('paymentError', "All supplier expenses are paid, you can not add one! ");
                 }else if($paymentSupplier==null){
                     $paymentSupplier = new PaymentSupplier();
+                }else{
+                    $payment = $paymentSupplier->getPayment();
                 }
                 $form = $this->createForm(PaymentSupplierType::class, $paymentSupplier);
                 $form->handleRequest($request);
                 if($form->isSubmitted() && $form->isValid()){
                     if($paymentSupplier->getPrice() <= $payment->getTotalPriceToPayToSupplier()){
-                        $paymentSupplier = $this->completeDatas($paymentSupplier, $payment, $rentRepo, $supplierRepo);
-                        $payment = PaymentController::addPaymentSupplier($paymentSupplier, $payment);
-                        $payment->addPaymentSupplier($paymentSupplier);                        
-                        $manager->persist($manager->merge($payment));
-                        // $manager->persist($rentRepo->find($payment->getMission()->getAllocate()->getId())->getSupplier());
-                        $manager->persist($manager->merge($paymentSupplier));
-                        $manager->flush();
-                        $request->getSession()->clear();
-                        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment supplier was successfully added!");
+                        $paymentSupplier = $this->completeDatas($paymentSupplier, $payment, $rentRepo, $supplierRepo);                        
+                        $this->save($manager, $paymentSupplier, $payment, $request, $rentRepo);
                         return $this->redirectToRoute("paymentSupplierByPayment", [
                             'idPayment' => $payment->getId(),
                         ]);
@@ -111,7 +108,7 @@ class PaymentSupplierController extends AbstractController
         if($paymentSupplier){
             $rent = $rentRepo->find($payment->getMission()->getAllocate()->getId());
             $paymentSupplier->setAllocate($rent)
-                            ->setSupplier($rent->getSupplier())
+                            ->setSupplier($supplierRepo->findByMission($payment->getMission()))
                             ->setTotalPriceToPay($payment->getTotalPriceToPayToSupplier())
                             ->setTotalPricePaid($payment->getTotalPricePaidToSupplier() + $paymentSupplier->getPrice())
                             ->setRemainingPrice($payment->getRemainigPriceToSupplier() - $paymentSupplier->getPrice())
@@ -161,5 +158,23 @@ class PaymentSupplierController extends AbstractController
                     ->removePaymentSupplier($paymentSupplier);
             return $payment;
         }
+    }
+
+    public function messageOfAction(PaymentSupplier $paymentSupplier){
+        if($paymentSupplier && $paymentSupplier->getId()){
+            return "The payment supplier was successfully modified ";
+        }else{
+            return "The payment supplier was successfully added";
+        }
+    }
+
+    public function save(ObjectManager $manager, PaymentSupplier $paymentSupplier, Payment $payment, Request $request){
+        $payment = PaymentController::addPaymentSupplier($paymentSupplier, $payment);
+        $payment->addPaymentSupplier($paymentSupplier);
+        $manager->persist($manager->merge($payment));
+        $manager->persist($manager->merge($paymentSupplier));
+        $manager->flush();
+        $request->getSession()->clear();
+        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', $this->messageOfAction($paymentSupplier));
     }
 }

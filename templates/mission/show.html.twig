@@ -55,16 +55,22 @@
                         <td class="first"><strong>Total Task Expenses</strong></td>
                         <td class="last">{{mission.payment.totalPrice}} DH</td>
                     </tr>
+                    <tr class="bg">
+                    <td class="first">
+                        <strong>Payment Info</strong>
+                    </td>
+                        <td class="last"><a href="{{path('paymentsOfMission', {'idMission': mission.id} )}}" class="link">Show</a>
+                    </td>
+                    </tr>
                 <tr class="bg">
                     <td class="first">
                         <strong>Payment Supplier</strong>
                     </td>
                     <td class="last">
                     {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
-                        <a href="" class="link">Show</a> &nbsp; Or &nbsp; 
-                    {% else %}
-                    <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                        <a href="{{path('paymentSupplierByMission', {'idMission': mission.id})}}" class="link">Show</a> &nbsp; Or &nbsp; 
                     {% endif %}
+                    <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
                     </td>
                 </tr>
                 <tr class="bg">

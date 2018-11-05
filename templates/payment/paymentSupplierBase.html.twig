@@ -34,15 +34,17 @@
             {% else %}
                 <tr>
                     <th class="first">Payment Date</th>
-                    <th width="90px" title="Total Rent expenses">Total Price</th>
-                    <th title="The amount paid in this date" >Price</th>
-                    <th title="Total Remaining Amount">Remaining Price</th>
+                    <th width="120px" title="Total Rent expenses">Total Price To Pay</th>
+                    <th title="The price paid in that date">Price</th>
+                    <th title="The total price paid to the supplier" >Total Price Paid</th>
+                    <th title="The total Remaining price to pay to the supplier">Remaining Price</th>
                     <th class="last">Actions</th>
                 </tr>
                 {% for payment in paymentSupplier %}
                     <tr class="bg">
                         <td class="first">{{ payment.datePayment|date('d-M-Y') }}</td>
                         <td class="first">{{ payment.totalPriceToPay }} &nbsp;DH</td>
+                        <td class="first">{{payment.price}}</td>
                         <td class="first">{{ payment.totalPricePaid }} &nbsp;DH</td>
                         <td class="first">{{ payment.remainingPrice }} &nbsp;DH</td>
                         <td>

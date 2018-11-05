@@ -116,7 +116,7 @@ class VehicleController extends AbstractController
                     $session->set('vehicle', $vehicle);
                     return $this->redirectToRoute('stepTree');
                 }else if($vehicle->getType()){
-                    $session->getFlashBag()->add('vehicleError', "The driver ".$session->get('driver')->getFirstName()." can't driver this type of vehicle (".$vehicle->getType()->getName()."), Please specify
+                    $session->getFlashBag()->add('vehicleError', "The driver ".$session->get('driver')->getFirstName()." can't drive this type of vehicle (".$vehicle->getType()->getName()."), Please specify
                     another type.");
                 }
             }

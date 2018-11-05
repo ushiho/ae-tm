@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Supplier;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\Mission;
 
 /**
  * @method Supplier|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +49,14 @@ class SupplierRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByMission(Mission $mission){
+        return $this->createQueryBuilder('s')
+                    ->innerJoin('App:Allocate', 'rent', Join::WITH, 's = rent.supplier')
+                    ->innerJoin('App:Mission', 'mission', Join::WITH, 'rent = mission.allocate')
+                    ->andWhere('mission = :val')
+                    ->setParameter('val', $mission)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
 }
