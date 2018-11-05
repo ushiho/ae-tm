@@ -17,15 +17,15 @@
 
 {% block left_column %}
     <h3>DEPART MANAGMENT</h3>
-    <a href="{{path('addDepartment')}}" class="link">Create Department</a>
-    <a href="{{path('allDepartments')}}" class="link">Show all Departments</a>
+    <a href="{{path('addDepartment')}}" class="link">Create Depart</a>
+    <a href="{{path('allDepartments')}}" class="link">Show all Departs</a>
 {% endblock %}
 {% block center_column %}
 <div class="top-bar"> <a title="Add new Department" href="/department/new" class="button">ADD NEW </a>
         <h1>Department</h1><br>
         <div class="breadcrumbs">
         {% block path %}
-            <a class="path" href="/department">Contents</a>
+            <a class="path" href="/department">Departments</a>
         {% endblock %}
         </div>
     </div>
@@ -61,8 +61,8 @@
             {% endif %}
         </table>
         <br>
-        {% if departments is not empty and departments is not null %}
+        {# {% if departments is not empty and departments is not null %}
             <div class="first"><a class="button" href="{{ path('deleteAllDepartments') }}" onclick="return confirm('Are u sure, You want to delete all Departments? Note that all missions linked will be deleted')" >Delete All</a></div>
-        {% endif %}
+        {% endif %} #}
     </div>
 {% endblock %}

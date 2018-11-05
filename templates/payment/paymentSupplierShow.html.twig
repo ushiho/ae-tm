@@ -6,7 +6,7 @@
             <div class="breadcrumbs">
                 {% block path %}
                     {{parent()}}
-            &nbsp;/&nbsp;<a class="path" href="{{path('allPaymentsSupplier')}}">Payments Supplier</a>
+            &nbsp;/&nbsp;<a class="path" href="{{path('allPaymentsSupplier')}}">Payments Supplier</a>&nbsp;/&nbsp;<a href="#" class="path">Details</a>
                 {% endblock %}
             </div>
         </div>
@@ -30,6 +30,10 @@
             </td>
             <td class="last">{{ paymentSupplier.price }}&nbsp;DH</td>
         </tr>
+        <tr class="bg">
+        <td class="first"><strong>Total Expenses To Pay</strong></td>
+        <td class="last">{{paymentSupplier.totalPriceToPay}}</td>
+        </tr> 
         <tr class="bg">
             <td class="first" width="250px;">
                 <strong>Total Expenses Paid</strong>

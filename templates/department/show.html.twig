@@ -32,10 +32,6 @@
                         <a href="{{ path('showMissionOfDepartment', {'idDepartment':department.id}) }}" class="link">Show </a>
                         {% else %} Add Mission {% endif %}</td>
                     </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Note</strong></td>
-                        <td class="last">{{ department.note }}</td>
-                    </tr> 
                     </table>
                 </div>
                     <a title="Show All Rents" href="{{ path('allDepartments') }}" class="button">Back </a>

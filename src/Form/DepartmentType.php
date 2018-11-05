@@ -14,7 +14,6 @@ class DepartmentType extends AbstractType
         $builder
             ->add('name')
             ->add('adress')
-            ->add('note')
         ;
     }
 
