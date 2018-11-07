@@ -69,12 +69,12 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/add", name="addPaymentSupplier")
      * @Route("/payment/paymentSupplier/{id}/edit", name="editPaymentSupplier", requirements={"id"="\d+"})
      */
-    public function action($id=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
-        $payment = $request->getSession()->get('payment');// !=null => create a payment
-        $paymentSupplier = $repo->find($id); // !=null modify/ update
+    public function action(PaymentSupplier $paymentSupplier=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
+        $payment = $request->getSession()->get('payment');
+        $paymentSupplierDB = $request->getSession()->get('paymentSupplier');
         if($payment || $paymentSupplier){
                 if($payment && $payment->getRemainigPriceToSupplier()==0){
-                    $request->getSession()->getFlashBag()->add('paymentError', "All supplier expenses are paid, you can not add one! ");
+                    $request->getSession()->getFlashBag()->add('paymentError', "All supplier's expenses are paid, you can not add a payment! ");
                 }else if($paymentSupplier==null){
                     $paymentSupplier = new PaymentSupplier();
                 }else{
@@ -83,14 +83,14 @@ class PaymentSupplierController extends AbstractController
                 $form = $this->createForm(PaymentSupplierType::class, $paymentSupplier);
                 $form->handleRequest($request);
                 if($form->isSubmitted() && $form->isValid()){
-                    if($paymentSupplier->getPrice() <= $payment->getTotalPriceToPayToSupplier()){
-                        $paymentSupplier = $this->completeDatas($paymentSupplier, $payment, $rentRepo, $supplierRepo);                        
-                        $this->save($manager, $paymentSupplier, $payment, $request, $rentRepo);
+                    if($this->comparePrice($paymentSupplier, $request, $payment, $paymentSupplierDB)){
+                        $paymentSupplier = $this->completeDatas($paymentSupplier, $payment, $rentRepo, $supplierRepo, $paymentSupplierDB);                        
+                        $this->save($manager, $paymentSupplier, $payment, $request, $paymentSupplierDB);
                         return $this->redirectToRoute("paymentSupplierByPayment", [
                             'idPayment' => $payment->getId(),
                         ]);
                     }else{
-                        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The price given to that supplier is more than his expenses (".$payment->getTotalPriceToPayToSupplier()." DH)");
+                        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The price given to that supplier is more than his remaining expenses (".$payment->getRemainigPriceToSupplier()." DH)");
                     }
                 }
                 return $this->render('payment/paymentSupplierForm.html.twig', [
@@ -104,18 +104,21 @@ class PaymentSupplierController extends AbstractController
         }
     }
 
-    public function completeDatas(PaymentSupplier $paymentSupplier, Payment $payment, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
+    public function completeDatas(PaymentSupplier $paymentSupplier, Payment $payment, AllocateRepository $rentRepo, SupplierRepository $supplierRepo, PaymentSupplier $paymentSupplierDB=null){
         if($paymentSupplier){
-            $rent = $rentRepo->find($payment->getMission()->getAllocate()->getId());
-            $paymentSupplier->setAllocate($rent)
-                            ->setSupplier($supplierRepo->findByMission($payment->getMission()))
-                            ->setTotalPriceToPay($payment->getTotalPriceToPayToSupplier())
-                            ->setTotalPricePaid($payment->getTotalPricePaidToSupplier() + $paymentSupplier->getPrice())
-                            ->setRemainingPrice($payment->getRemainigPriceToSupplier() - $paymentSupplier->getPrice())
-                            ->setPayment($payment);
+            $price = $paymentSupplier->getPrice();
+            if($paymentSupplier->getId()&&$paymentSupplierDB){
+                $price -= $paymentSupplierDB->getPrice();
+            }else{
+                $rent = $rentRepo->find($payment->getMission()->getAllocate()->getId());
+                $paymentSupplier->setAllocate($rent)
+                                ->setSupplier($supplierRepo->findByMission($payment->getMission()))
+                                ->setPayment($payment);
+            }
+            $paymentSupplier->setTotalPriceToPay($payment->getTotalPriceToPayToSupplier())
+                            ->setTotalPricePaid($payment->getTotalPricePaidToSupplier() + $price)
+                            ->setRemainingPrice($payment->getRemainigPriceToSupplier() - $price);
             return $paymentSupplier;
-        }else{
-            return null;
         }
     }
 
@@ -123,29 +126,28 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/{id}/show", name="showPaymentSupplier")
      */
     public function showDetails(PaymentSupplier $paymentSupplier=null, Request $request){
-        if($paymentSupplier){
+        if($paymentSupplier && $paymentSupplier->getId()){
             return $this->render('payment/paymentSupplierShow.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'paymentSupplier' => $paymentSupplier,
             ]);
-        }else{
-            $request->getSession()->getFlashBag()->add('paymentSupplierError', "Please select a payment from the lise below to show details!");
-            return $this->redirectToRoute("allPaymentsSupplier");
         }
+            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "Please select a payment from the lise below to show details!");
+            return $this->redirectToRoute("allPaymentsSupplier");
     }
 
     /**
      * @Route("/payment/paymentSupplier/{id}/delete", name="deletePaymentSupplier")
      */
     public function delete(PaymentSupplier $paymentSupplier=null, ObjectManager $manager, Request $request){
-        if($paymentSupplier){
+        if($paymentSupplier&&$paymentSupplier->getId()){
             $payment = $this->addMoneyToPayment($paymentSupplier);
             $manager->remove($paymentSupplier);
             $manager->persist($manager->merge($payment));
             $manager->flush();
-            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment successfully deleted!");
+            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment was successfully deleted!");
         }else{
-            $request->getSession()->getFlashBag()->add('paymentSupplierError', "There is no selected payment to delete!");
+            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "There is no selected payment to delete!");
         }
         return $this->redirectToRoute('allPaymentsSupplier');
     }
@@ -154,7 +156,9 @@ class PaymentSupplierController extends AbstractController
         if($paymentSupplier && $paymentSupplier->getPayment()){
             $payment = $paymentSupplier->getPayment();
             $payment->setRemainingPrice($payment->getRemainingPrice()+$paymentSupplier->getPrice())
+                    ->setRemainigPriceToSupplier($payment->getRemainigPriceToSupplier() + $paymentSupplier->getPrice())
                     ->setTotalPricePaid($payment->getTotalPricePaid()-$paymentSupplier->getPrice())
+                    ->setTotalPricePaidToSupplier($payment->getTotalPricePaidToSupplier()-$paymentSupplier->getPrice())
                     ->removePaymentSupplier($paymentSupplier);
             return $payment;
         }
@@ -168,13 +172,21 @@ class PaymentSupplierController extends AbstractController
         }
     }
 
-    public function save(ObjectManager $manager, PaymentSupplier $paymentSupplier, Payment $payment, Request $request){
-        $payment = PaymentController::addPaymentSupplier($paymentSupplier, $payment);
-        $payment->addPaymentSupplier($paymentSupplier);
+    public function save(ObjectManager $manager, PaymentSupplier $paymentSupplier, Payment $payment, Request $request, PaymentSupplier $paymentSupplierDB=null){
+        $payment = PaymentController::addPaymentSupplier($paymentSupplier, $payment, $paymentSupplierDB);
         $manager->persist($manager->merge($payment));
         $manager->persist($manager->merge($paymentSupplier));
         $manager->flush();
         $request->getSession()->clear();
         $request->getSession()->getFlashBag()->add('paymentSupplierMsg', $this->messageOfAction($paymentSupplier));
+    }
+
+    public function comparePrice(PaymentSupplier $paymentSupplier, Request $request, Payment $payment, PaymentSupplier $paymentSupplierDB=null){
+        if ($paymentSupplier && $paymentSupplierDB && $request->attributes->get('_route') == "editPaymentSupplier") {
+            $cond = $paymentSupplier->getPrice() <= $paymentSupplierDB->getPrice() + $payment->getRemainigPriceToSupplier();
+        } else {
+            $cond = $paymentSupplier->getPrice() <= $payment->getRemainigPriceToSupplier();
+        }
+        return $cond;
     }
 }

@@ -50,7 +50,7 @@
                         <td>
 <a href="{{ path('deletePaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this Payment?')">
                             <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"/></a>
-                            <a href="{{ path('editPaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
+                            <a href="{{ path('editPaymentSupplier', {'id': payment.id}) }}{{app.session.set('paymentSupplier', payment)}}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
                             <a href="{{ path('showPaymentSupplier', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details"/></a>
                         </td>
                     </tr>

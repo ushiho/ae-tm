@@ -22,7 +22,7 @@ class PaymentDriver
     private $datePayment;
 
     /**
-     * @ORM\Column(type="decimal", precision=50, scale=27)
+     * @ORM\Column(type="decimal", precision=50, scale=2)
      */
     private $price; # amount paid in this date
 
@@ -34,7 +34,7 @@ class PaymentDriver
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $pricePaid = 0; # total amount paid
+    private $pricePaid; # total amount paid
 
 
     /**

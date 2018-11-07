@@ -65,14 +65,14 @@
     <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
     <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
     <table class="listing form" cellpadding="0" cellspacing="0">
-        <tr>
+         <tr>
             <th class="full" colspan="2">Payment Driver Details</th>
         </tr>
         <tr class="bg">
                 <td class="first" width="220;">
                 <strong>Driver's Expenses</strong>
                 </td>
-                <td class="last">{{ payment.totalPriceToPayToDriver}}&nbsp;DH</td>
+                <td class="last">{{ payment.totalPriceToPayToDriver }}&nbsp;DH</td>
         </tr>
         <tr class="bg">
                 <td class="first">
@@ -88,14 +88,18 @@
         </tr>
         <tr class="bg">
                 <td class="first">
-                <strong title="Payments Driver Info">Payments Driver</strong>
+                    <strong>Payments Driver</strong>
                 </td>
                 <td class="last">
                 {% if payment.paymentDriver and payment.paymentDriver is not empty %}
-                    <span id="showPaymentDriver">Show</span>
+                    <a href="{{path('paymentDriverByPayment', {'idPayment': payment.id })}}" class="link" >Show</a>
+                {% endif %}
+                {% if payment.remainingPriceToDriver != 0 %}
+                &nbsp;&nbsp;&nbsp;
+                &nbsp;
+                <a href="{{path('addPaymentDriver')}}{{ app.session.set('payment', payment)}}">Add One</a>
                 {% else %}
-                    {# <a href="{{path('addPaymentDriver', {'payment': payment})}}">Add One</a> #}
-                    Add
+                    &nbsp;|&nbsp;&nbsp; <strong style="color: black; text-decoration: underline red;text-align:center;font-size:10pt">Driver is paid</strong>
                 {% endif %}
                 </td>
         </tr>

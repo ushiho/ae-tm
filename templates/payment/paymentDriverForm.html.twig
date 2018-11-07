@@ -1,23 +1,22 @@
-{% extends 'payment/paymentSupplierBase.html.twig' %}
+{% extends 'payment/paymentBase.html.twig' %}
 {% block center_column %}
-<div class="top-bar">
-            <h1>Contents</h1><br>
-            <div class="breadcrumbs">
-    {% block path %}
-        {{ parent() }}
-    <a class="path" href="#">
-            /
-            {% if paymentSupplier and paymentSupplier.id %} Edit{% else %} Create {% endif %}
-        </a>
-    {% endblock %}
-    </div>
+    <div class="top-bar">
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+            {% block path %}
+                {{ parent() }}
+                    <a href="#" class="path"> /
+                    {% if paymentDriver and paymentDriver.id %}Edit {% else %}Create{% endif %}
+                </a>
+            {% endblock %}
+        </div>
     </div>
     <br>
     <hr>
     {{ form_start(form) }}
-    {% if app.session.flashBag.has('paymentSupplierMsg') %}
+    {% if app.session.flashBag.has('paymentDriverMsg') %}
         <div class="alert alert-success error">
-            {% for msg in app.session.flashBag.get('paymentSupplierMsg') %}
+            {% for msg in app.session.flashBag.get('paymentDriverMsg') %}
                 <strong>{{ msg }}</strong>
             {% endfor %}
         </div>
@@ -29,13 +28,13 @@
         <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
         <table class="listing form" cellpadding="0" cellspacing="0">
             <tr>
-                <th class="full" colspan="2">Enter Payment Supplier information</th>
+                <th class="full" colspan="2">Enter Payment Driver information</th>
             </tr>
             <tr>
                 <td class="first" width="172">
                     <strong>{{ form_label(form.datePayment) }}</strong>
                 </td>
-                    <td class="last">{{ form_widget(form.datePayment) }}</td>
+                <td class="last">{{ form_widget(form.datePayment) }}</td>
             </tr>
             <tr>
                 <td class="first" width="172">
@@ -52,9 +51,9 @@
         </table>
         <br>
         <button type="submit" class="button">
-            {% if paymentSupplier and paymentSupplier.id %}Update{% else %}Create{% endif %}
+            {% if paymentDriver and paymentDriver.id %}Update{% else %}Create{% endif %}
         </button>
-            <a class="button" href="{{ path('allPaymentsSupplier') }}">Cancel</a>
+            <a class="button" href="{{ path('allPaymentsDriver') }}">Cancel</a>
     </div>
     {{ form_end(form) }}
 {% endblock %}

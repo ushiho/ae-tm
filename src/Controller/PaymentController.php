@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\PaymentSupplier;
+use App\Entity\PaymentDriver;
+use App\Repository\PaymentDriverRepository;
 
 class PaymentController extends AbstractController
 {
@@ -92,29 +94,37 @@ class PaymentController extends AbstractController
         
     }
 
-    public function addPaymentSupplier(PaymentSupplier $paymentSupplier, Payment $payment){
-        if($paymentSupplier && $payment){
-            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $paymentSupplier->getPrice())
-                    ->setRemainingPrice($payment->getRemainingPrice() - $paymentSupplier->getPrice())
-                    ->setTotalPricePaidToSupplier($payment->getTotalPricePaidToSupplier() + $paymentSupplier->getPrice())
-                    ->setRemainigPriceToSupplier($payment->getRemainigPriceToSupplier() - $paymentSupplier->getPrice())
+    public function addPaymentSupplier(PaymentSupplier $paymentSupplier, Payment $payment, PaymentSupplier $paymentSupplierDB=null){
+        if($paymentSupplier){
+            $price = $paymentSupplier->getPrice();
+            if($paymentSupplierDB){
+                $price -= $paymentSupplierDB->getPrice();
+            }
+            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $price)
+                    ->setRemainingPrice($payment->getRemainingPrice() - $price)
+                    ->setTotalPricePaidToSupplier($payment->getTotalPricePaidToSupplier() + $price)
+                    ->setRemainigPriceToSupplier($payment->getRemainigPriceToSupplier() - $price)
                     ->setFinished($payment->getRemainingPrice()==0);
             return $payment;
-        }else{
-            return null;
         }
+            return null;
     }
 
-    // public function addPaymentDriver(PaymentSupplier $paymentSupplier, Payment $payment)
-    // {
-    //     if ($paymentSupplier && $payment) {
-    //         $payment->addPaymentSupplier($paymentSupplier);
-    //         $payment->setTotalPricePaid($payment->getTotalPricePaid() + $paymentSupplier->getPrice())
-    //             ->setRemainingPrice($payment->getRemainingPrice() - $paymentSupplier->getPrice())
-    //             ->setFinished($payment->getRemainingPrice() == 0);
-    //     } else {
-    //         return null;
-    //     }
-    // }
+    public function addPaymentDriver(PaymentDriver $paymentDriver, Payment $payment, PaymentDriver $paymentDriverDB=null)
+    {
+        if($paymentDriver){
+            $price = $paymentDriver->getPrice();
+            if($paymentDriverDB){
+                $price -= $paymentDriverDB->getPrice();
+            }
+            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $price)
+                ->setRemainingPrice($payment->getRemainingPrice() - $price)
+                ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() + $price)
+                ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() - $price)
+                ->setFinished($payment->getRemainingPrice() == 0);
+                return $payment;
+        }
+        return null;
+    }
 
 }

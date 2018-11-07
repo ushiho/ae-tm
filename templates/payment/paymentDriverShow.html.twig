@@ -1,0 +1,94 @@
+{% extends 'payment/paymentBase.html.twig' %}
+
+{% block center_column %}
+    <div class="top-bar">
+        <h1>Contents</h1><br>
+        <div class="breadcrumbs">
+            {% block path %}
+                {{parent()}}
+                &nbsp;/&nbsp;<a class="path" href="{{path('allPaymentsDriver')}}">Payments Driver</a>&nbsp;/&nbsp;<a href="#" class="path">Details</a>
+            {% endblock %}
+        </div>
+    </div>
+    <hr><br>
+    <div class="table">
+        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
+        <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
+        <table class="listing form" cellpadding="0" cellspacing="0">
+            <tr>
+                <th class="full" colspan="2">Details</th>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Payment Date</strong>
+                </td>
+                <td class="last">{{ paymentDriver.datePayment|date('d-M-Y')}}</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Price</strong>
+                </td>
+                <td class="last">{{ paymentDriver.price }}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Total Expenses To Pay</strong>
+                </td>
+                <td class="last">{{paymentDriver.totalPrice}}</td>
+            </tr>
+            <tr class="bg">
+                <td class="first" width="250px;">
+                    <strong>Total Expenses Paid</strong>
+                </td>
+                <td class="last">{{ paymentDriver.pricePaid }}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Remaining Expenses</strong>
+                </td>
+                <td class="last">{{ paymentDriver.remainingPrice}}&nbsp;DH</td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Payment Info</strong>
+                </td>
+                <td class="last">
+                    {% if paymentDriver.payment %}
+                        <a href="{{path('showPayment', {'id':paymentDriver.payment.id})}}" class="link">Show
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong title="Rent Info">Mission Info</strong>
+                </td>
+                <td class="last">
+                    {% if paymentDriver.payment.mission and paymentDriver.payment.mission is not empty %}
+                        <a href="{{path('showMission', {'id':paymentDriver.payment.mission.id})}}" class="link">Show</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Driver Info</strong>
+                </td>
+                <td class="last">
+                    {% if paymentDriver.driver and paymentDriver.driver is not empty %}
+                        <a href="{{path('showDriver', {'id': paymentDriver.driver.id })}}" class="link">Show</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="bg">
+                <td class="first">
+                    <strong>Note</strong>
+                </td>
+                <td class="last">{{paymentDriver.note}}</td>
+            </tr>
+        </table>
+        <br>
+        <a href="{{path('editPaymentDriver', {'id': paymentDriver.id})}}{{app.session.set('paymentDriver', paymentDriver)}}" class="button" title="Edit This Payment">Edit</a>
+        <a title="Show All payments" href="{{ path('allPaymentsDriver') }}" class="button">Back</a>
+    </td>
+</div>
+{% endblock %}

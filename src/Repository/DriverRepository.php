@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Driver;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Driver|null find($id, $lockMode = null, $lockVersion = null)
@@ -64,5 +65,14 @@ class DriverRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult()
         ;
+    }
+
+    public function findByMission($mission){
+        return $this->createQueryBuilder('d')
+                ->innerJoin('App:Mission', 'm', Join::WITH, 'm.driver = d')
+                ->andWhere('m = :val')
+                ->setParameter('val', $mission)
+                ->getQuery()
+                ->getOneOrNullResult();
     }
 }

@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\PaymentDriver;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method PaymentDriver|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +48,34 @@ class PaymentDriverRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByMission($mission){
+        return $this->createQueryBuilder('pd')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'pd.payment = p')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'p.mission = m')
+                    ->andWhere('m = :val')
+                    ->setParameter('val', $mission)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function findByProject($project){
+        return $this->createQueryBuilder('pd')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'pd.payment = p')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'p.mission = m')
+                    ->innerJoin('App:Project', 'pr', Join::WITH, 'm.project = pr')
+                    ->andWhere('pr = :val')
+                    ->setParameter('val', $project)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function findByPayment($payment){
+        return $this->createQueryBuilder('pd')
+                    ->andWhere('pd.payment = :val')
+                    ->setParameter('val', $payment)
+                    ->getQuery()
+                    ->getResult();
+    }
+
 }
