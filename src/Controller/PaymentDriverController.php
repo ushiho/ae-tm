@@ -32,21 +32,21 @@ class PaymentDriverController extends AbstractController
 
     public function calculateTotalPrice(Mission $mission){
         if($mission){
-            return $mission->getDriver()->getSalairePerDay() * $mission->getEndDate()->diff($mission->getStartDate())->days;
+            return $mission->getDriver()->getSalairePerDay() * ($mission->getEndDate()->diff($mission->getStartDate())->days+1);
         }else{
             return null;
         }
     }
 
-    public function calculateRemainingPrice(PaymentDriver $paymentDriver){
-        if($paymentDriver){
-            if($paymentDriver->getRemainingPrice() >= $paymentDriver->getPrice()){
-                $paymentDriver->setRemainingPrice($paymentDriver->getRemainingPrice - $paymentDriver->getPrice());
-            }else{
-                dd('The price is greater than the remaining price! do you want to  continue this process?');
-            }
-        }
-    }
+    // public function calculateRemainingPrice(PaymentDriver $paymentDriver, Request $request){
+    //     if($paymentDriver){
+    //         if($paymentDriver->getRemainingPrice() >= $paymentDriver->getPrice()){
+    //             $paymentDriver->setRemainingPrice($paymentDriver->getRemainingPrice - $paymentDriver->getPrice());
+    //         }else{
+    //             'The price is greater than the remaining price! do you want to  continue this process?'
+    //         }
+    //     }
+    // }
 
     public function init(Mission $mission){
         if($mission){
@@ -178,6 +178,7 @@ class PaymentDriverController extends AbstractController
             $manager->persist($manager->merge($payment));
             $manager->remove($paymentDriver);
             $manager->flush();
+            $request->getSession()->clear();
             $request->getSession()->getFlashBag()->add('paymentDriverMsg', "The payment was successfully  deleted!");
         }else{
             $request->getSession()->getFlashBag()->add('paymentDriverMsg', "There is no selected payment to delete!");

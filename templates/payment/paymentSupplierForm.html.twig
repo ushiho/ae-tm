@@ -54,7 +54,7 @@
         <button type="submit" class="button">
             {% if paymentSupplier and paymentSupplier.id %}Update{% else %}Create{% endif %}
         </button>
-            <a class="button" href="{{ path('allPaymentsSupplier') }}">Cancel</a>
+            <a class="button" href="{{ path('cancelAddPaymentSupplier') }}">Cancel</a>
     </div>
     {{ form_end(form) }}
 {% endblock %}

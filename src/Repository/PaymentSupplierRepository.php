@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\PaymentSupplier;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method PaymentSupplier|null find($id, $lockMode = null, $lockVersion = null)
@@ -70,5 +71,24 @@ class PaymentSupplierRepository extends ServiceEntityRepository
      * $builder->andWhere('type IN (:string)');
      * $builder->setParameter('string', array('first','second'), \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
      */
+
+     public function findOneByPayment($payment){
+         return $this->createQueryBuilder('ps')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'ps.payment = p')
+                    ->andWhere('p = :val')
+                    ->setParameter('val', $payment)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+     }
+
+     public function editAllAmounts($payment, $price){
+         return $this->createQueryBuilder('ps')
+                    ->update('App:PaymentSupplier', 'ps')
+                    ->set('ps.totalPricePaid', 'ps.totalPricePaid - '.$price)
+                    ->set('ps.remainingPrice', 'ps.remainingPrice + '.$price)
+                    ->getQuery()
+                    ->execute();
+        // return $req;
+     }
 
 }

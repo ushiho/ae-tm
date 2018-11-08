@@ -2,6 +2,7 @@
 
 {% block center_column %}
     <div class="top-bar">
+<a title="Add new Mission" href="{{path('addPaymentDriver')}}" class="button">ADD NEW </a>
         <h1>Contents</h1><br>
         <div class="breadcrumbs">
             {% block path %}
@@ -53,7 +54,7 @@
                             <td>
                                 <a href="{{ path('deletePaymentDriver', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this Payment?')">
                                     <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"/></a>
-                                <a href="{{ path('editPaymentDriver', {'id': payment.id}) }}{{app.session.set('paymentDriver', paymentDriver)}}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
+                                <a href="{{ path('editPaymentDriver', {'id': payment.id}) }}{{app.session.set('paymentDriver', payment)}}" onclick="return confirm('Are u sure, You want to edit this payment?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
                                 <a href="{{ path('showPaymentDriver', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details"/></a>
                             </td>
                         </tr>

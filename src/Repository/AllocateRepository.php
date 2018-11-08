@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Allocate;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Allocate|null find($id, $lockMode = null, $lockVersion = null)
@@ -55,5 +56,25 @@ class AllocateRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult()
         ;
+    }
+
+    public function findOneByProject($project){
+        return $this->createQueryBuilder('a')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'm.allocate = a')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'p.mission = m')
+                    ->andWhere('p = :val')
+                    ->setParameter('val', $project)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+    public function findOneByPayment($payment){
+        return $this->createQueryBuilder('a')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'm.allocate = a')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'm.payment = p')
+                    ->andWhere('p = :val')
+                    ->setParameter('val', $payment)
+                    ->getQuery()
+                    ->getOneOrNullResult();
     }
 }

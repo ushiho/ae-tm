@@ -35,7 +35,7 @@ class PaymentSupplierController extends AbstractController
 
     public function calculateTotalPrice(Mission $mission){
         if($mission && $mission->getAllocate()){
-            return $mission->getAllocate()->getPricePerDay() * $mission->getAllocate()->getEndDate()->diff($mission->getAllocate()->getStartDate())->days;
+            return $mission->getAllocate()->getPricePerDay() * ($mission->getAllocate()->getEndDate()->diff($mission->getAllocate()->getStartDate())->days+1);
         }else{
             return null;
         }
@@ -71,9 +71,13 @@ class PaymentSupplierController extends AbstractController
      */
     public function action(PaymentSupplier $paymentSupplier=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo){
         $payment = $request->getSession()->get('payment');
-        $paymentSupplierDB = $request->getSession()->get('paymentSupplier');
         if($payment || $paymentSupplier){
-                if($payment && $payment->getRemainigPriceToSupplier()==0){
+            if($request->attributes->get('_route')== "editPaymentSupplier"){
+                $paymentSupplierDB = $repo->findOneByPayment($payment);
+            }else{
+                $paymentSupplierDB = null;
+            }
+               if($payment && $payment->getRemainigPriceToSupplier()==0){
                     $request->getSession()->getFlashBag()->add('paymentError', "All supplier's expenses are paid, you can not add a payment! ");
                 }else if($paymentSupplier==null){
                     $paymentSupplier = new PaymentSupplier();
@@ -110,8 +114,7 @@ class PaymentSupplierController extends AbstractController
             if($paymentSupplier->getId()&&$paymentSupplierDB){
                 $price -= $paymentSupplierDB->getPrice();
             }else{
-                $rent = $rentRepo->find($payment->getMission()->getAllocate()->getId());
-                $paymentSupplier->setAllocate($rent)
+                $paymentSupplier->setAllocate($rentRepo->findOneByPayment($payment))
                                 ->setSupplier($supplierRepo->findByMission($payment->getMission()))
                                 ->setPayment($payment);
             }
@@ -139,13 +142,15 @@ class PaymentSupplierController extends AbstractController
     /**
      * @Route("/payment/paymentSupplier/{id}/delete", name="deletePaymentSupplier")
      */
-    public function delete(PaymentSupplier $paymentSupplier=null, ObjectManager $manager, Request $request){
+    public function delete(PaymentSupplier $paymentSupplier=null, ObjectManager $manager, Request $request, PaymentSupplierRepository $repo){
         if($paymentSupplier&&$paymentSupplier->getId()){
             $payment = $this->addMoneyToPayment($paymentSupplier);
+            $repo->editAllAmounts($payment, $paymentSupplier->getPrice());
             $manager->remove($paymentSupplier);
             $manager->persist($manager->merge($payment));
             $manager->flush();
             $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment was successfully deleted!");
+            $request->getSession()->clear();
         }else{
             $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "There is no selected payment to delete!");
         }
@@ -176,6 +181,7 @@ class PaymentSupplierController extends AbstractController
         $payment = PaymentController::addPaymentSupplier($paymentSupplier, $payment, $paymentSupplierDB);
         $manager->persist($manager->merge($payment));
         $manager->persist($manager->merge($paymentSupplier));
+        // dd($paymentSupplier);
         $manager->flush();
         $request->getSession()->clear();
         $request->getSession()->getFlashBag()->add('paymentSupplierMsg', $this->messageOfAction($paymentSupplier));
@@ -189,4 +195,14 @@ class PaymentSupplierController extends AbstractController
         }
         return $cond;
     }
+
+    /**
+     * @Route("/payment/paymentSupplier/add/cancel", name="cancelAddPaymentSupplier")
+     */
+    public function cancelAdd(Request $request){
+        $request->getSession()->clear();
+        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The process is cancled by the user!");
+        return $this->redirectToRoute('allPaymentsSupplier');
+    }
+
 }
