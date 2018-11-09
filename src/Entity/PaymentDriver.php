@@ -31,11 +31,6 @@ class PaymentDriver
      */
     private $totalPrice; # number of days * salary per day, calculated in creating mission process
 
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
-    private $pricePaid; # total amount paid
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="paymentDrivers")
@@ -43,10 +38,6 @@ class PaymentDriver
      */
     private $driver;
 
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
-    private $remainingPrice; # ch7al ky tsalo driver, equal to the total price in the first time
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Payment", inversedBy="paymentDriver")
@@ -101,18 +92,6 @@ class PaymentDriver
         return $this;
     }
 
-    public function getPricePaid()
-    {
-        return $this->pricePaid;
-    }
-
-    public function setPricePaid($pricePaid): self
-    {
-        $this->pricePaid = $pricePaid;
-
-        return $this;
-    }
-
     public function getDriver(): ?Driver
     {
         return $this->driver;
@@ -121,18 +100,6 @@ class PaymentDriver
     public function setDriver(?Driver $driver): self
     {
         $this->driver = $driver;
-
-        return $this;
-    }
-
-    public function getRemainingPrice()
-    {
-        return $this->remainingPrice;
-    }
-
-    public function setRemainingPrice($remainingPrice): self
-    {
-        $this->remainingPrice = $remainingPrice;
 
         return $this;
     }

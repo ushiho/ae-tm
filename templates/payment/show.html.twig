@@ -97,7 +97,7 @@
                 {% if payment.remainingPriceToDriver != 0 %}
                 &nbsp;&nbsp;&nbsp;
                 &nbsp;
-                <a href="{{path('addPaymentDriver')}}{{ app.session.set('payment', payment)}}">Add One</a>
+                <a href="{{path('addPaymentDriver', {'idPayment': payment.id})}}">Add One</a>
                 {% else %}
                     &nbsp;|&nbsp;&nbsp; <strong style="color: black; text-decoration: underline red;text-align:center;font-size:10pt">Driver is paid</strong>
                 {% endif %}
@@ -142,7 +142,7 @@
                 {% if payment.remainigPriceToSupplier != 0 %}
                 &nbsp;&nbsp;&nbsp;
                 &nbsp;
-                <a href="{{path('addPaymentSupplier')}}{{ app.session.set('payment', payment)}}">Add One</a>
+                <a href="{{path('addPaymentSupplier', {'idPayment': payment.id})}}">Add One</a>
                 {% else %}
                     &nbsp;|&nbsp;&nbsp; <strong style="color: black; text-decoration: underline red;text-align:center;font-size:10pt">Supplier is paid</strong>
                 {% endif %}

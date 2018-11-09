@@ -29,17 +29,7 @@ class PaymentSupplier
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $totalPricePaid;
-
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
     private $totalPriceToPay;
-
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
-    private $remainingPrice;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Payment", inversedBy="paymentVehicle")
@@ -94,18 +84,6 @@ class PaymentSupplier
         return $this;
     }
 
-    public function getTotalPricePaid()
-    {
-        return $this->totalPricePaid;
-    }
-
-    public function setTotalPricePaid($totalPricePaid): self
-    {
-        $this->totalPricePaid = $totalPricePaid;
-
-        return $this;
-    }
-
     public function getTotalPriceToPay()
     {
         return $this->totalPriceToPay;
@@ -114,18 +92,6 @@ class PaymentSupplier
     public function setTotalPriceToPay($totalPriceToPay): self
     {
         $this->totalPriceToPay = $totalPriceToPay;
-
-        return $this;
-    }
-
-    public function getRemainingPrice()
-    {
-        return $this->remainingPrice;
-    }
-
-    public function setRemainingPrice($remainingPrice): self
-    {
-        $this->remainingPrice = $remainingPrice;
 
         return $this;
     }

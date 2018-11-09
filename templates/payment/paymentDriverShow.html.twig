@@ -40,13 +40,13 @@
                 <td class="first" width="250px;">
                     <strong>Total Expenses Paid</strong>
                 </td>
-                <td class="last">{{ paymentDriver.pricePaid }}&nbsp;DH</td>
+                <td class="last">{{ paymentDriver.payment.totalPricePaidToDriver }}&nbsp;DH</td>
             </tr>
             <tr class="bg">
                 <td class="first">
                     <strong>Remaining Expenses</strong>
                 </td>
-                <td class="last">{{ paymentDriver.remainingPrice}}&nbsp;DH</td>
+                <td class="last">{{ paymentDriver.payment.remainingPriceToDriver}}&nbsp;DH</td>
             </tr>
             <tr class="bg">
                 <td class="first">
@@ -87,7 +87,7 @@
             </tr>
         </table>
         <br>
-        <a href="{{path('editPaymentDriver', {'id': paymentDriver.id})}}" class="button" title="Edit This Payment">Edit</a>
+        <a href="{{path('editPaymentDriver', {'id': paymentDriver.id, 'idPayment': paymentDriver.payment.id})}}" class="button" title="Edit This Payment">Edit</a>
         <a title="Show All payments" href="{{ path('allPaymentsDriver') }}" class="button">Back</a>
     </td>
 </div>

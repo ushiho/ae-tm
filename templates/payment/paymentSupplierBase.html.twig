@@ -2,7 +2,7 @@
 
 {% block center_column %}
         <div class="top-bar">
-<a title="Add new Mission" href="{{path('addPaymentSupplier')}}" class="button">ADD NEW </a>
+<a title="Add new Mission" href="{{path('addPaymentSupplier', {'idPayment': -1})}}" class="button">ADD NEW </a>
             <h1>Contents</h1><br>
             <div class="breadcrumbs">
             {% block path %}
@@ -29,33 +29,30 @@
             {% if paymentSupplier is empty or paymentSupplier is null %}
                 <tr class="bg">
                     <td class="first" style="text-align:center;font-weight: bold;">There is no Payments Supplier add one
-                        <a href="{{path('addPaymentSupplier')}}" style="color:red;text-decoration: underline black;">here</a>
+                        <a href="{{path('addPaymentSupplier', {'idPayment': -1})}}" style="color:red;text-decoration: underline black;">here</a>
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <th class="first">Payment Date</th>
-                    <th width="120px" title="Total Rent expenses">Total Price To Pay</th>
-                    <th title="The price paid in that date">Price</th>
-                    <th title="The total price paid to the supplier" >Total Price Paid</th>
-                    <th title="The total Remaining price to pay to the supplier">Remaining Price</th>
+                    <th>Payment Date</th>
+                    <th width="180px" title="Total Rent expenses">Total Price To Pay (DH)</th>
+                    <th title="The price paid in that date">Price (DH)</th>
                     <th class="last">Actions</th>
                 </tr>
                 {% for payment in paymentSupplier %}
                     <tr class="bg">
-                        <td class="first">{{ payment.datePayment|date('d-M-Y') }}</td>
-                        <td class="first">{{ payment.totalPriceToPay }} &nbsp;DH</td>
-                        <td class="first">{{payment.price}}</td>
-                        <td class="first">{{ payment.totalPricePaid }} &nbsp;DH</td>
-                        <td class="first">{{ payment.remainingPrice }} &nbsp;DH</td>
+                        <td >{{ payment.datePayment|date('d-M-Y') }}</td>
+                        <td >{{ payment.totalPriceToPay }}</td>
+                        <td >{{payment.price}}</td>
                         <td>
                             <a href="{{ path('deletePaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this Payment?')">
                             <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"/></a>
-                            <a href="{{ path('editPaymentSupplier', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this mission?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
+                            <a href="{{ path('editPaymentSupplier', {'id': payment.id, 'idPayment': payment.payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this payment?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
                             <a href="{{ path('showPaymentSupplier', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details"/></a>
                         </td>
                     </tr>
                 {% endfor %}
+            <tr><td></td><td>Total</td><td>{{paymentSupplier|first.payment.totalPricePaidToSupplier}}</td></tr>
             {% endif %}
         </table>
     </div>

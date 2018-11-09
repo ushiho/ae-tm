@@ -72,23 +72,26 @@ class PaymentSupplierRepository extends ServiceEntityRepository
      * $builder->setParameter('string', array('first','second'), \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
      */
 
-     public function findOneByPayment($payment){
-         return $this->createQueryBuilder('ps')
+     public function findOneByPaymentAndDate($payment, $date){
+         $req = $this->createQueryBuilder('ps')
+                    ->select('price')
                     ->innerJoin('App:Payment', 'p', Join::WITH, 'ps.payment = p')
                     ->andWhere('p = :val')
                     ->setParameter('val', $payment)
-                    ->getQuery()
-                    ->getOneOrNullResult();
+                    ->andWhere('ps.datePayment = :date')
+                    ->setParameter('date', $date)
+                    ->getQuery();
+        dd($req);
      }
 
-     public function editAllAmounts($payment, $price){
-         return $this->createQueryBuilder('ps')
-                    ->update('App:PaymentSupplier', 'ps')
-                    ->set('ps.totalPricePaid', 'ps.totalPricePaid - '.$price)
-                    ->set('ps.remainingPrice', 'ps.remainingPrice + '.$price)
-                    ->getQuery()
-                    ->execute();
-        // return $req;
-     }
+    //  public function editAllAmounts($payment, $price){
+    //      return $this->createQueryBuilder('ps')
+    //                 ->update('App:PaymentSupplier', 'ps')
+    //                 ->set('ps.totalPricePaid', 'ps.totalPricePaid - '.$price)
+    //                 ->set('ps.remainingPrice', 'ps.remainingPrice + '.$price)
+    //                 ->getQuery()
+    //                 ->execute();
+    //     // return $req;
+    //  }
 
 }

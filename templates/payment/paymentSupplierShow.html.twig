@@ -38,13 +38,13 @@
             <td class="first" width="250px;">
                 <strong>Total Expenses Paid</strong>
             </td>
-            <td class="last">{{ paymentSupplier.totalPricePaid }}&nbsp;DH</td>
+            <td class="last">{{ paymentSupplier.payment.totalPricePaidToSupplier }}&nbsp;DH</td>
         </tr>
         <tr class="bg">
             <td class="first">
                 <strong>Remaining Expenses</strong>
             </td>
-            <td class="last">{{ paymentSupplier.remainingPrice}}&nbsp;DH</td>
+            <td class="last">{{ paymentSupplier.payment.remainigPriceToSupplier}}&nbsp;DH</td>
         </tr>
         <tr class="bg">
             <td class="first">
@@ -82,7 +82,7 @@
         </tr>
     </table>
     <br>
-<a href="{{path('editPaymentSupplier', {'id': paymentSupplier.id})}}" class="button" title="Edit This Payment">Edit</a>
+<a href="{{path('editPaymentSupplier', {'id': paymentSupplier.id, 'idPayment': paymentSupplier.payment.id})}}" class="button" title="Edit This Payment">Edit</a>
     <a title="Show All payments" href="{{ path('allPaymentsSupplier') }}" class="button">Back</a>
 </td>
 </div>

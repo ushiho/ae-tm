@@ -78,4 +78,13 @@ class PaymentDriverRepository extends ServiceEntityRepository
                     ->getResult();
     }
 
+    public function findOneByPayment($payment)
+    {
+        return $this->createQueryBuilder('pd')
+            ->innerJoin('App:Payment', 'p', Join::WITH, 'pd.payment = p')
+            ->andWhere('p = :val')
+            ->setParameter('val', $payment)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -2,7 +2,7 @@
 
 {% block center_column %}
     <div class="top-bar">
-<a title="Add new Mission" href="{{path('addPaymentDriver')}}" class="button">ADD NEW </a>
+    <a title="Add new Mission" href="{{path('addPaymentDriver', {'idPayment': -1})}}" class="button">ADD NEW </a>
         <h1>Contents</h1><br>
         <div class="breadcrumbs">
             {% block path %}
@@ -29,36 +29,36 @@
                 {% if paymentDriver is empty or paymentDriver is null %}
                     <tr class="bg">
                         <td class="first" style="text-align:center;font-weight: bold;">There is no Payments Driver add one
-                            <a href="{{path('addPaymentDriver')}}" style="color:red;text-decoration: underline black;">here</a>
+                            <a href="{{path('addPaymentDriver', {'idPayment': -1})}}" style="color:red;text-decoration: underline black;">here</a>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <th class="first">Payment Date</th>
-                        <th width="120px" title="Total Rent expenses">Total Price To Pay</th>
-                        <th title="The price paid in that date">Price</th>
-                        <th title="The total price paid to the supplier">Total Price Paid</th>
-                        <th title="The total Remaining price to pay to the supplier">Remaining Price</th>
+                        <th >Payment Date</th>
+                        <th width="180px" title="Total Rent expenses">Total Price To Pay (DH)</th>
+                        <th title="The price paid in that date">Price (DH)</th>
                         <th class="last">Actions</th>
                     </tr>
                     {% for payment in paymentDriver %}
                         <tr class="bg">
-                            <td class="first">{{ payment.datePayment|date('d-M-Y') }}</td>
-                            <td class="first">{{ payment.totalPrice }}
-                                &nbsp;DH</td>
-                            <td class="first">{{payment.price}}</td>
-                            <td class="first">{{ payment.pricePaid }}
-                                &nbsp;DH</td>
-                            <td class="first">{{ payment.remainingPrice }}
-                                &nbsp;DH</td>
+                            <td >{{ payment.datePayment|date('d-M-Y') }}</td>
+                            <td >{{ payment.totalPrice }}</td>
+                            <td >{{payment.price}}</td>
                             <td>
-                                <a href="{{ path('deletePaymentDriver', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this Payment?')">
+                                <a href="{{ path('deletePaymentDriver', {'id': payment.id}) }}" onclick="return confirm('Are u sure, You want to delete this payment?')">
                                     <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"/></a>
-                                <a href="{{ path('editPaymentDriver', {'id': payment.id}) }}{{app.session.set('paymentDriver', payment)}}" onclick="return confirm('Are u sure, You want to edit this payment?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
+                                <a href="{{ path('editPaymentDriver', {'id': payment.id, 'idPayment': payment.payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this payment?')"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit"/></a>
                                 <a href="{{ path('showPaymentDriver', {'id': payment.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="Details"/></a>
                             </td>
                         </tr>
                     {% endfor %}
+                    <tr class="last">
+                    <td></td>
+                    <td>Total</td>
+                        <td>
+                            {{paymentDriver|first.payment.totalPricePaidToDriver}}
+                        </td>
+                    </tr>
                 {% endif %}
             </table>
         </div>

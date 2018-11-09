@@ -94,37 +94,29 @@ class PaymentController extends AbstractController
         
     }
 
-    public function addPaymentSupplier(PaymentSupplier $paymentSupplier, Payment $payment, PaymentSupplier $paymentSupplierDB=null){
-        if($paymentSupplier){
-            $price = $paymentSupplier->getPrice();
-            if($paymentSupplierDB){
-                $price -= $paymentSupplierDB->getPrice();
-            }
-            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $price)
-                    ->setRemainingPrice($payment->getRemainingPrice() - $price)
-                    ->setTotalPricePaidToSupplier($payment->getTotalPricePaidToSupplier() + $price)
-                    ->setRemainigPriceToSupplier($payment->getRemainigPriceToSupplier() - $price)
+    public function addPaymentSupplier(PaymentSupplier $paymentSupplier, Payment $payment, $price){
+        if($paymentSupplier && $payment){
+            $priceToAdd = $paymentSupplier->getPrice() - $price;
+            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $priceToAdd)
+                    ->setRemainingPrice($payment->getRemainingPrice() - $priceToAdd)
+                    ->setTotalPricePaidToSupplier($payment->getTotalPricePaidToSupplier() + $priceToAdd)
+                    ->setRemainigPriceToSupplier($payment->getRemainigPriceToSupplier() - $priceToAdd)
                     ->setFinished($payment->getRemainingPrice()==0);
             return $payment;
         }
-            return null;
     }
 
-    public function addPaymentDriver(PaymentDriver $paymentDriver, Payment $payment, PaymentDriver $paymentDriverDB=null)
+    public function addPaymentDriver(PaymentDriver $paymentDriver, Payment $payment, $price)
     {
-        if($paymentDriver){
-            $price = $paymentDriver->getPrice();
-            if($paymentDriverDB){
-                $price -= $paymentDriverDB->getPrice();
-            }
-            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $price)
-                ->setRemainingPrice($payment->getRemainingPrice() - $price)
-                ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() + $price)
-                ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() - $price)
+        if($paymentDriver && $payment){
+            $priceToAdd = $paymentDriver->getPrice() - $price;
+            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $priceToAdd)
+                ->setRemainingPrice($payment->getRemainingPrice() - $priceToAdd)
+                ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() + $priceToAdd)
+                ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() - $priceToAdd)
                 ->setFinished($payment->getRemainingPrice() == 0);
                 return $payment;
         }
-        return null;
     }
 
 }
