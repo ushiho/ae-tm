@@ -43,6 +43,8 @@ class UserRegistrationType extends AbstractType
             ))
             ->add('country', CountryType::class)
             ->add('birthday', BirthdayType::class)
+
+
         ;
     }
 

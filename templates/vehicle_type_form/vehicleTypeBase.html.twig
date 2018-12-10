@@ -1,37 +1,28 @@
 {% extends 'base.html.twig' %}
-
+{% block vehicleType_class %}class="active"{% endblock %}
 {% block header %}
-    <li><span><span><a href="{{ path('allProjects') }}">Projects</a></span></span></li>
-    <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
-    <li><span><span><a href="{{path('allRents')}}">Rent</a></span></span></li>
-    <li><span><span><a href="{{path('allSuppliers')}}">Suppliers</a></span></span></li>
-    <li><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
-    <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
-    <li><span><span><a href="{{path('allVehicles')}}">Vehicles</a></span></span></li>
-    <li class="active"><span><span><a href="{{path('allTypes')}}">Vehicles Type</a></span></span></li>
-    <li><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
-    {% if connectedUser.role == 1 %}
-    <li><span><span><a href="{{path('allUsers')}}">Users</a></span></span></li>
-    {% endif %}
+    Vehicles Types
+{% endblock %}
+{% block header_annex %}
+    <li><a href="index.html">Home</a></li>
+    <li class="active">Vehicles Types</li>
 {% endblock %}
 
 {% block left_column %}
-    <h3>TYPES MANAGMENT</h3>
-    <a href="{{path('addType')}}" class="link">Add Vehicle Types</a>
-    <a href="/vehicle" class="link">Show all Types</a>
+    <a href="{{path('addType')}}"  class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Add Vehicle Types</a>
+    <a href="/vehicle"  class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all Types</a>
 {% endblock %}
+
 {% block center_column %}
-<div class="top-bar"> <a title="Add new Type" href="/vehicle/type/add" class="button">ADD NEW </a>
-        <h1>Contents</h1><br>
-        <div class="breadcrumbs">
-        {% block path %}
-        <a class="path" href="/vehicle">Vehicles Types</a>
-        {% endblock %}
-        </div>
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Vehicles Types</h3>
     </div>
-    <br>
-    <hr>
-        <div class="error"> 
+        {% block path %}
+        {#<a class="path" href="/vehicle">Vehicles Types</a>#}
+        {% endblock %}
+
+    <div class="panel-body">
+    <div class="error">
             <strong>{% if app.session.flashBag.has('typeSuccess') %}
             <div class="alert alert-success">
                 {% for msg in app.session.flashBag.get('typeSuccess') %}
@@ -39,10 +30,13 @@
                 {% endfor %}
             </div>{% endif %}</strong>
         </div>
+    <a title="Add new Type" href="/vehicle/type/add" class="btn-group-justified btn-primary btn-xs " > ADD NEW </a>
+
     <br>
-    <div class="table"> 
-    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-        <table class="listing" cellpadding="0" cellspacing="0">
+    <div class="table-responsive">
+
+
+        <table class="table table-striped table-hover">
         {% if types is null or types is empty  %}
                 <tr class="bg">
                     <td class="first" style="text-align:center;font-weight: bold;">There is no Types add some <a href="{{ path('addType')}}" style="color:red;text-decoration: underline black;">here</a></td>
@@ -57,25 +51,29 @@
             <tr class="bg">
                 <td class="first">{{ type.name }}</td>
                 <td class="first">
-                {% if type.vehicles and type.vehicles is not empty() %}
+                    {#
+                    Add fonction find by Vehicles by type
+                    Add Vehicle deja existante Modifier la path
+                    #}
+               {# {% if type.vehicles and type.vehicles is not empty() %}
                 <a href="{{ path('showVehiclesByType', {'idType': type.id}) }}" class="link">Show Vehicles</a>
-                {% else %} Add a Vehicle{% endif %}
+                {% else %} Add a Vehicle{% endif %}#}
                 </td>
                 <td>
-                <a href="{{ path('deleteType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to delete this type of vehicle?')">
-                <img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete" /></a>
-                <a href="{{ path('editType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to edit this type of vehicle?')">
-                <img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>
-                <a href="{{ path('showVehicleType', {'id': type.id}) }}">
-                <img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Details" /></a>
+                    <div class="btn-group btn-sm">
+                        <a class="btn btn-info" href="{{ path('showVehicleType', {'id': type.id}) }}">Details</a>
+                        <a class="btn btn-default" href="{{ path('editType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to edit this type of vehicle?')">Edit</a>
+                        {% if connectedUser.role == 1 %}
+                        <a  class="btn btn-danger" href="{{ path('deleteType', {'id': type.id}) }}" onclick="return confirm('Are u sure, You want to delete this type of vehicle?')">Delete</a>
+                        {% endif %}
+                    </div>
                 </td>
             </tr>
             {% endfor %}
             {% endif %}
         </table>
-        <br>
         {% if types is not empty and types is not null %}
-            <div class="first"><a class="button" href="{{ path('deleteAllTypes') }}" onclick="return confirm('Are u sure, You want to delete all Vehciles types? Note that all vehicles will be deleted!')" >Delete All</a></div>
+            <div class="first"><a class="btn-group-justified btn-danger btn-xs" href="{{ path('deleteAllTypes') }}" onclick="return confirm('Are u sure, You want to delete all Vehciles types? Note that all vehicles will be deleted!')" >Delete All</a></div>
         {% endif %}
     </div>
 {% endblock %}

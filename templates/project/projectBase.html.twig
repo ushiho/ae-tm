@@ -1,90 +1,96 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }}{% endblock %}
+{% block projet_class %}
+    class="active"
+{% endblock %}
 {% block stylesheets %}
 
 {% endblock %}
 
 {% block header %}
-            <li class="active"><span><span><a href="#">Projects</a></span></span></li>
-            <li><span><span><a href="{{path('allMissions')}}">Missions</a></span></span></li>
-            <li><span><span><a href="{{ path('allRents') }}">Rent</a></span></span></li>
-            <li><span><span><a href="{{path('allSuppliers')}}">Suppliers</a></span></span></li>
-            <li><span><span><a href="{{path('allDepartments')}}">Departments</a></span></span></li>
-            <li><span><span><a href="{{path('allDrivers')}}">Drivers</a></span></span></li>
-            <li><span><span><a href="{{path('allVehicles')}}">Vehicles</a></span></span></li>
-            <li><span><span><a href="{{path('allTypes')}}">Vehicles Type</a></span></span></li>
-            <li><span><span><a href="{{path('allPayments')}}">Payments</a></span></span></li>
-            {% if connectedUser.role == 1 %}
-            <li><span><span><a href="{{ path('allUsers') }}">Users</a></span></span></li>
-            {% endif %}
+    Projects
+{% endblock %}
+{% block header_annex %}
+    <li><a href="index.html">Home</a></li>
+    <li class="active">Projet</li>
 {% endblock %}
 
 {% block left_column %}
-    <h3>PROJECTS MANAGMENT</h3>
-    <a href="{{path('addProject')}}" class="link">Create Project</a>
-    <a href="/project" class="link">Show all projects</a>
-    <a href="{{path('projectCalendar')}}" class="link">Calendrier</a>
-    <a href="#" class="link">Export data</a>
+    {% if connectedUser.role == 1 %}
+        <a href="{{path('addProject')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Create Project</a>
+    {% endif %}
+        <a href="/project" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Show all projects</a>
+        <a href="{{path('projectCalendar')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Calendrier</a>
+        <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Export data</a>
 {% endblock %}
+
 {% block center_column %}
-<div class="top-bar"> <a title="Add new Project" href="/project/new" class="button">ADD NEW </a>
-        <h1>Contents</h1><br>
-        <div class="breadcrumbs">
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Project</h3>
+    </div>
+
+
         {% block path %}
-        <a class="path" href="/project">Projects</a>
+
+
         {% endblock %}
-        </div>
-    </div>
-    <br>
-    <hr>
-    {% if app.session.flashBag.has('projectError') %}
-        <div class="alert alert-success error">
-            <strong>{% for msg in app.session.flashBag.get('projectError') %}
-                {{ msg }}
-            {% endfor %}</strong>
-        </div>
-    {% endif %}
-    {% if app.session.flashBag.has('projectSuccess') %}
-        <div class="alert alert-success error">
-            {% for msg in app.session.flashBag.get('projectSuccess') %}
-                {{ msg }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <br>
-    <div class="table"> 
-    <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-        <table class="listing" cellpadding="0" cellspacing="0">
-        {% if projects is empty or projects is null %}
-                <tr class="bg">
-                    <td class="first" style="text-align:center;font-weight: bold;">There is no Project add one <a href="/project/new" style="color:red;text-decoration: underline black;">here</a></td>
+    <div class="panel-body">
+        {% if app.session.flashBag.has('projectError') %}
+            <div class="alert alert-success error">
+                <strong>{% for msg in app.session.flashBag.get('projectError') %}
+                    {{ msg }}
+                {% endfor %}</strong>
+            </div>
+        {% endif %}
+        {% if app.session.flashBag.has('projectSuccess') %}
+            <div class="alert alert-success error">
+                {% for msg in app.session.flashBag.get('projectSuccess') %}
+                    {{ msg }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if connectedUser.role == 1 %}
+            <a href="/project/new" class="btn-group-justified btn-primary btn-xs "  >ADD NEW Project</a>
+        {% endif %}
+        <div class="table-responsive">
+            <br>
+            <table class="table table-striped table-hover">
+            {% if projects is empty or projects is null %}
+                    <tr class="bg">
+                        <td class="first" style="text-align:center;font-weight: bold;">There is no Project add one <a href="/project/new" style="color:red;text-decoration: underline black;">Here</a></td>
+                    </tr>
+                {% else %}
+                <tr>
+                    <th class="first">Name</th>
+                    <th>Owner</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Budget</th>
+                    <th class="last">Actions</th>
                 </tr>
-            {% else %}
-            <tr>
-                <th class="first">Name</th>
-                <th>Owner</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Budget</th>
-                <th class="last">Actions</th>
-            </tr>
-            {% for project in projects %}
-            <tr class="bg">
-                <td class="first">{{ project.name }}</td>
-                <td class="first">{{ project.owner }}</td>
-                <td class="first">{{ project.startDate|date('d-m-Y') }}</td>
-                <td class="first">{{ project.endDate|date('d-m-Y') }}</td>
-                <td class="first">{{ project.budget }} DH</td>
-                <td>
-                <a href="{{ path('deleteProject', {'id': project.id}) }}"><img src="{{ asset('img/hr.gif') }}" width="16" height="16" title="Delete"
-                onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" /></a>&nbsp;
-                <a href="{{ path('editProject', {'id': project.id}) }}"><img src="{{ asset('img/edit-icon.gif') }}" width="16" height="16" title="Edit" /></a>&nbsp;
-                <a href="{{ path('showProject', {'id': project.id}) }}"><img src="{{ asset('img/arrow.gif') }}" width="16" height="16" title="More Details" /></a>&nbsp;
-                <a href="{{ path('addMissionToProject', {'id': project.id}) }}"><img src="{{ asset('img/add-icon.gif') }}" width="16" height="16" title="Add a mission to this project" /></a>&nbsp;
-                </td>
-            </tr>
-            {% endfor %}
-            {% endif %}
-        </table>
+                {% for project in projects %}
+                <tr class="bg">
+                    <td class="first">{{ project.name }}</td>
+                    <td class="first">{{ project.owner }}</td>
+                    <td class="first">{{ project.startDate|date('d-m-Y') }}</td>
+                    <td class="first">{{ project.endDate|date('d-m-Y') }}</td>
+                    <td class="first">{{ project.budget }} DH</td>
+                    <td>
+                        <div class="btn-group btn-sm">
+                            <a href="{{ path('showProject', {'id': project.id}) }}" class="btn btn-info"> Details</a>&nbsp;
+                            {% if connectedUser.role == 1 %}
+                            <a href="{{ path('editProject', {'id': project.id}) }}" class="btn btn-default" > Edit</a>&nbsp;
+                            <a href="{{ path('deleteProject', {'id': project.id}) }}" class="btn btn-danger" onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" > Delete </a>&nbsp;
+                            <a href="{{ path('addMissionToProject', {'id': project.id}) }}"class="btn btn-success"> Add Mission</a>&nbsp;
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+        </div>
     </div>
+
 {% endblock %}

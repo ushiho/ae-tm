@@ -1,28 +1,24 @@
 {% extends 'department/departmentBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
-<div class="top-bar">
+{#<div class="top-bar">
     <a title="Add new Department" href="/department/new" class="button">ADD NEW
     </a>
     <h1>Department</h1><br>
-    <div class="breadcrumbs">
+    <div class="breadcrumbs">#}
 {% block path %}
 {{ parent() }}
-<a class="path" href="{% if department.id == null %}{{ path('addDepartment') }} {% else %}{{path('editDepartment', {'id': department.id })}}{% endif %}">
- / {% if department.id == null %}Create Department{% else %}Edit Department{% endif %}</a>
+<div class="panel-heading main-color-bg">
+    <h3 class="panel-title"><a class="path" href="{% if department.id == null %}{{ path('addDepartment') }} {% else %}{{path('editDepartment', {'id': department.id })}}{% endif %}">
+               {% if department.id == null %}Create Department{% else %}Edit Department{% endif %}</a></h3>
+ </div>
 {% endblock %}
-</div>
-</div>
+
 {{ form_start(form) }}
-<hr>
-<br>
-        <div class="table"> 
-            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
-            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-            <table class="listing form" cellpadding="0" cellspacing="0">
-                <tr>
-                    <th class="full" colspan="2">Enter department information</th>
-                </tr>
+    <div class="panel-body">
+    <div class="container-fluid table-responsive">
+    <br>
+        <table class="listing form table table-striped table-hover" >
                 <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.name) }}</strong>
@@ -38,8 +34,15 @@
                     {'placeholder':'Department adress', 'class':'text' }}) }}</td>
                 </tr>
             </table>
-        </div>
-            <button type="submit" class="button">{% if department.id %}Update{% else %}Create{% endif %}</button>
-            <button class="button" formnovalidate><a href="{{ path('allDepartments') }}" >Cancel</a></button>
+        <br>
         {{ form_end(form) }}
+    <div class="btn-group btn-group-justified ">
+        <div class="btn-group">
+            <button class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('allDepartments') }}" formnovalidate> Cancel</button>
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if department.id %} Update{% else %} Create{% endif %}</button>
+        </div>
+    </div>
+
 {% endblock %}

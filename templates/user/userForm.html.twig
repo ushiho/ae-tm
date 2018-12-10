@@ -3,107 +3,129 @@
 {% block center_column %}
 {% block path %}
 {{ parent() }}
-<a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
- / {% if user.id == null %}Add user{% else %}Edit User{% endif %}</a>
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title"> <a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
+                    {% if user.id == null %}Add user{% else %}Edit User{% endif %}</a></h3>
+    </div>
 {% endblock %}
 {{ form_start(form) }}
-<hr>
-<br>
-        <div class="table"> 
-            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
-            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-            <table class="listing form" cellpadding="0" cellspacing="0">
-                <tr>
-                    <th class="full" colspan="2">Enter user information</th>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.firstName) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.firstName, {'attr' : 
-                    {'placeholder':'First Name', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.lastName) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.lastName, {'attr' : 
-                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.cin) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.cin, {'attr' : 
-                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.email) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.email, {'attr' : 
-                    {'placeholder':'Email', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.confirmEmail) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.confirmEmail, {'attr' : 
-                    {'placeholder':'Confirm Email', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.password) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.password, {'attr' : 
-                    {'placeholder':'Password', 'class':'text' }}) }}</td>
-                </tr>
-                 <tr>
-                <td class="first" width="172">
-                        <strong>{{ form_label(form.confirmPassword) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.confirmPassword, {'attr' : 
-                    {'placeholder':'Confirm Password', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.phoneNumber) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.phoneNumber, {'attr' : 
-                    {'placeholder':'Phone Number', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.birthday) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.birthday, {'attr' : 
-                    {'placeholder':'BirthDay', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.gender) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.gender, {'attr' : 
-                    {'placeholder':'Gender', 'class':'text' }}) }}</td>
-                </tr>
-                
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.country) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.country, {'attr' : 
-                    {'placeholder':'Country', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.role) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.role, {'attr' : 
-                    {'placeholder':'Role', 'class':'text' }}) }}</td>
-                </tr>
-            </table>
-            <button type="submit" class="button">{% if user.id %}Update{% else %}Create{% endif %}</button>
-            <button class="button" formnovalidate><a href="{{ path('allUsers') }}" >Cancel</a></button>
+
+
+    <div class="panel-body">
+        <div class="container-fluid table-responsive">
+            <br>
+                <table class="listing form table table-striped table-hover" >
+                    <tr>
+                        <th>
+                            <th class="full" colspan="4">Enter user information</th>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.firstName) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.firstName, {'attr' :
+                        {'placeholder':'First Name', 'class':'text' }})
+                            }}</td>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.lastName) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.lastName, {'attr' :
+                                {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.email) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.email, {'attr' :
+                        {'placeholder':'Email', 'class':'text' }}) }}</td>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.confirmEmail) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.confirmEmail, {'attr' :
+                                {'placeholder':'Confirm Email', 'class':'text' }}) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.password) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.password, {'attr' :
+                        {'placeholder':'Password', 'class':'text' }}) }}</td>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.confirmPassword) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.confirmPassword, {'attr' :
+                                {'placeholder':'Confirm Password', 'class':'text' }}) }}</td>
+                    </tr>
+                     <tr>
+
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.cin) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.cin, {'attr' :
+                                {'placeholder':'CIN', 'class':'text' }}) }}</td>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.phoneNumber) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.phoneNumber, {'attr' :
+                        {'placeholder':'Phone Number', 'class':'text' }}) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.birthday) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.birthday, {'attr' :
+                        {'placeholder':'BirthDay','type':'date' }})
+                            }}
+                        </td>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.gender) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.gender, {'attr' :
+                                {'placeholder':'Gender', 'class':'text' }}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.country) }}</strong>
+                        </td>
+                        <td class="custom-select" width="172">{{ form_widget(form.country, {'attr' :
+                                {'placeholder':'Country', 'class':'text custom-select' }}) }}
+                        </td>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.role) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.role, {'attr' :
+                                {'placeholder':'Role', 'class':'text' }}) }}
+                        </td>
+                    </tr>
+                </table>
         </div>
-        {{ form_end(form) }}
+            <br>
+            {{ form_end(form) }}
+            <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                <button title="Show All Users" href="{{ path('allUsers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left"> Back </button>
+                </div>
+                    {#<a title="Show All Users" href="{{ path('allUsers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left">  Back  </a>#}
+                <div class="btn-group">
+                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if user.id %}Update{% else %}Create{% endif %}</button>
+                </div>
+             </div>
+        </div>
+    </div>
+
+   {# <input class="form-control"  type="date" name="bday">#}
+
+
+
+
+
+
+
+
+
+
 {% endblock %}
