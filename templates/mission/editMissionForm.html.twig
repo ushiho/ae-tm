@@ -4,8 +4,7 @@
 <div class="top-bar">
     <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
     </a>
-    <h1>Contents</h1><br>
-    <div class="breadcrumbs">
+
 {% block path %}
 {{ parent() }}
 <a class="path" href="{% if mission.id == null %}{{ path('addMission') }} {% else %}{{path('editMission', {'id': mission.id })}}{% endif %}">

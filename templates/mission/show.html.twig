@@ -1,76 +1,72 @@
 {% extends 'mission/missionBase.html.twig' %}
 {% block center_column %}
-<div class="top-bar">
-    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
-    </a>
-    <h1>Contents</h1><br>
-    <div class="breadcrumbs">
+
     {% block path %}
-        {{ parent()}} / <a href="#" class="path"> Details</a>
+        {{ parent()}}
     {% endblock %}
+<div class="panel-body">
+
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title"> <a href="#" class="path"> Details</a></h3>
     </div>
-</div>
-<hr><br>
-            <div class="table"> 
-                <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" />
-                <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-                    <table class="listing form" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <th class="full" colspan="2">Details</th>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first" width="172"><strong>Created At</strong></td>
-                        <td class="last">{{ mission.createdAt|date('d-m-Y H:i') }}</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Start Date</strong></td>
-                        <td class="last">{{ mission.startDate|date('d-m-Y')}}</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>End Date</strong></td>
-                        <td class="last">{{ mission.endDate|date('d-m-Y')}}</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Department</strong></td>
-                        <td class="last"><a href="{{ path('showDepartment', {'id': mission.department.id}) }}" title="More Details" class="link">{{ mission.department.name }}</a></td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Driver</strong></td>
-                        <td class="last"><a href="{{ path('showDriver', {'id':mission.driver.id}) }}" class="link" title="More Details">{{ mission.driver.firstName }}</a></td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Rent Info</strong></td>
-                        <td class="last">{% if mission.allocate %}<a href="{{ path('showRent', { 'idRent' : mission.allocate.id}) }}" class="link">Show Rent's Info
-                        {% else %}Add Rent Info{% endif %}</a></td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Driver Expenses</strong></td>
-                        <td class="last">{{mission.payment.totalPriceToPayToDriver}} DH</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Supplier Expenses</strong></td>
-                        <td class="last">{{mission.payment.totalPriceToPayToSupplier}} DH</td>
-                    </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Total Task Expenses</strong></td>
-                        <td class="last">{{mission.payment.totalPrice}} DH</td>
-                    </tr>
-                    <tr class="bg">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="full" colspan="2">Details</th>
+                </tr>
+                <tr class="bg">
+                    <td class="first" width="172"><strong>Created At</strong></td>
+                    <td class="last">{{ mission.createdAt|date('d-m-Y H:i') }}</td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Start Date</strong></td>
+                    <td class="last">{{ mission.startDate|date('d-m-Y')}}</td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>End Date</strong></td>
+                    <td class="last">{{ mission.endDate|date('d-m-Y')}}</td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Department</strong></td>
+                    <td class="last"><a href="{{ path('showDepartment', {'id': mission.department.id}) }}" title="More Details" class="link">{{ mission.department.name }}</a></td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Driver</strong></td>
+                    <td class="last"><a href="{{ path('showDriver', {'id':mission.driver.id}) }}" class="link" title="More Details">{{ mission.driver.firstName }}</a></td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Rent Info</strong></td>
+                    <td class="last">{% if mission.allocate %}<a href="{{ path('showRent', { 'idRent' : mission.allocate.id}) }}" class="link">Show Rent's Info
+                            {% else %}Add Rent Info{% endif %}</a></td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Driver Expenses</strong></td>
+                    <td class="last">{{mission.payment.totalPriceToPayToDriver}} DH</td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Supplier Expenses</strong></td>
+                    <td class="last">{{mission.payment.totalPriceToPayToSupplier}} DH</td>
+                </tr>
+                <tr class="bg">
+                    <td class="first"><strong>Total Task Expenses</strong></td>
+                    <td class="last">{{mission.payment.totalPrice}} DH</td>
+                </tr>
+                <tr class="bg">
                     <td class="first">
                         <strong>Payment Info</strong>
                     </td>
-                        <td class="last"><a href="{{path('paymentsOfMission', {'idMission': mission.id} )}}" class="link">Show</a>
+                    <td class="last"><a href="{{path('paymentsOfMission', {'idMission': mission.id} )}}" class="link">Show</a>
                     </td>
-                    </tr>
+                </tr>
                 <tr class="bg">
                     <td class="first">
                         <strong>Payment Supplier</strong>
                     </td>
                     <td class="last">
-                    {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
-                        <a href="{{path('paymentSupplierByMission', {'idMission': mission.id})}}" class="link">Show</a> &nbsp; Or &nbsp; 
-                    {% endif %}
-                    <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                        {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
+                            <a href="{{path('paymentSupplierByMission', {'idMission': mission.id})}}" class="link">Show</a> &nbsp; Or &nbsp;
+                        {% endif %}
+                        <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
                     </td>
                 </tr>
                 <tr class="bg">
@@ -78,30 +74,36 @@
                         <strong>Payment Driver</strong>
                     </td>
                     <td class="last">
-                    {% if mission.payment.paymentDriver and mission.payment.paymentDriver is not empty %}
-                        <a href="" class="link">Show</a>
-                        &nbsp;Or&nbsp;
-                    {% else %}
-                        <a href="" class="link">Add</a>
-                    {% endif %}
+                        {% if mission.payment.paymentDriver and mission.payment.paymentDriver is not empty %}
+                            <a href="" class="link">Show</a>
+                            &nbsp;Or&nbsp;
+                        {% else %}
+                            <a href="" class="link">Add</a>
+                        {% endif %}
                     </td>
                 </tr>
-                    <tr class="bg">
-                        <td class="first"><strong>Project</strong></td>
-                        <td class="last"><a href="{{ path('showProject', {'id':mission.project.id}) }}" class="link">Show</a></td>
-                    </tr>
-                    <tr class="bg">
+                <tr class="bg">
+                    <td class="first"><strong>Project</strong></td>
+                    <td class="last"><a href="{{ path('showProject', {'id':mission.project.id}) }}" class="link">Show</a></td>
+                </tr>
+                <tr class="bg">
                     <td class="first"><strong>Is Finished?</strong></td>
-                        <td class="last">{% if mission.finished %}Yes{% else %}No{% endif %} </td>
-                    </tr>
-                    <tr class="bg">
+                    <td class="last">{% if mission.finished %}Yes{% else %}No{% endif %} </td>
+                </tr>
+                <tr class="bg">
                     <td class="first"><strong>Note</strong></td>
                     <td class="last">{{mission.note}}</td>
-                    </tr>
-                    </table>
-                    <br>
-                    <a title="Show All Missions" href="{{ path('allMissions') }}" class="button">Back </a>
-                    <a title="Edit This Mission" href="{{ path('editMission', { 'id' : mission.id }) }}" class="button">EDIT </a></td>
-                </div>
+                </tr>
+            </table>
+            <br>
+            <div class="btn-group btn-group-justified">
+            <a title="Show All Missions" href="{{ path('allMissions') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left"> Back </a>
+            <a title="Edit This Mission" href="{{ path('editMission', { 'id' : mission.id }) }}" class="btn btn-primary btn-xs glyphicon glyphicon-pencil"> EDIT </a></td>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
 
 {% endblock %}

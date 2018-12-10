@@ -1,61 +1,59 @@
 {% extends 'mission/missionBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
-<div class="top-bar">
-    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
-    </a>
-    <h1>Contents</h1><br>
-    <div class="breadcrumbs">
-{% block path %}
-{{ parent() }}
-<br><br>
-<a class="path" href="">Step Tree: Create Rent</a>
-{% endblock %}
-</div>
-</div>
-{{ form_start(form) }}
-<hr>
-{% if app.session.flashBag.has('rentMsg') %}
-    <div class="alert alert-success error">
-        {% for msg in app.session.flashBag.get('rentMsg') %}
-            <strong>{{ msg }}</strong>
-        {% endfor %}
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title"><a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
+            </a></h3>
     </div>
-{% endif %}
-<br>
-        <div class="table"> 
-            <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left" /> 
-            <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right" />
-            <table class="listing form" cellpadding="0" cellspacing="0">
+{% block path %}
+    {{ parent() }}
+{% endblock %}
+{{ form_start(form) }}
+    <div class="panel-body">
+
+        {% if app.session.flashBag.has('rentMsg') %}
+            <div class="alert alert-success error">
+                {% for msg in app.session.flashBag.get('rentMsg') %}
+                    <strong>{{ msg }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="container-fluid table-responsive">
+            <h3 class="panel-title">
+                <a class="btn-info btn-xs" href="">Step Tree: Create Rent</a></h3>
+            <br>
+            <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
                 <tr>
-                    <th class="full" colspan="2">Enter Rent information</th>
+                    <th>
+                        <th class="full" colspan="2">Enter Rent information</th>
+                    </tr>
                 </tr>
                 <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.startDate) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.startDate, {'attr' : 
+                    <td class="last">{{ form_widget(form.startDate, {'attr' :
                     {'placeholder':'Start Date', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.endDate) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.endDate, {'attr' : 
+                    <td class="last">{{ form_widget(form.endDate, {'attr' :
                     {'placeholder':'End Date', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.period) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.period, {'attr' : 
+                    <td class="last">{{ form_widget(form.period, {'attr' :
                     {'placeholder':'Period of Rent', 'class':'text' }}) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.price) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.price, {'attr' : 
+                    <td class="last">{{ form_widget(form.price, {'attr' :
                     {'placeholder':'Price for this period DH', 'class':'text','style':'width:242px;' }}) }}</td>
                 </tr>
                 <tr>
@@ -74,13 +72,21 @@
                     <td class="first" width="172">
                         <strong>{{ form_label(form.note) }}</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.note, {'attr' : 
+                    <td class="last">{{ form_widget(form.note, {'attr' :
                     {'placeholder':'Write some Note', 'class':'text' }}) }}</td>
                 </tr>
             </table>
             <br>
-            <button type="submit" class="button">Next</button>
-            <a class="button" href="{{ path('stepTwo') }}" >Back</a>
+            <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                    <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('stepTwo') }}" > Back</a>
+                </div>
+                <div class="btn-group">
+                        <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Next</button>
+                </div>
+            </div>
         </div>
-        {{ form_end(form) }}
-{% endblock %}
+    </div>
+    
+    {{ form_end(form) }}
+    {% endblock %}

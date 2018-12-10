@@ -1,20 +1,18 @@
 {% extends 'payment/paymentSupplierBase.html.twig' %}
 {% block center_column %}
-<div class="top-bar">
-            <h1>Contents</h1><br>
-            <div class="breadcrumbs">
+
     {% block path %}
+        <div class="panel-heading main-color-bg">
+            <h3 class="panel-title">Suppliers </h3>
+        </div>
+        <div class="panel-body">
         {{ parent() }}
-    <a class="path" href="#">
-            /
-            {% if paymentSupplier and paymentSupplier.id %} Edit{% else %} Create {% endif %}
-        </a>
+         <a class=" btn-info btn-xs " href="#">
+            /{% if paymentSupplier and paymentSupplier.id %} Edit{% else %} Create {% endif %}</a>
+
     {% endblock %}
-    </div>
-    </div>
-    <br>
-    <hr>
     {{ form_start(form) }}
+
     {% if app.session.flashBag.has('paymentSupplierMsg') %}
         <div class="alert alert-success error">
             {% for msg in app.session.flashBag.get('paymentSupplierMsg') %}
@@ -22,12 +20,9 @@
             {% endfor %}
         </div>
     {% endif %}
-    <br>
-    <br>
-    <div class="table">
-        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
-        <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
-        <table class="listing form" cellpadding="0" cellspacing="0">
+        <br>
+        <div class="container-fluid table-responsive">
+        <table class="listing form table table-striped table-hover" >
             <tr>
                 <th class="full" colspan="2">Enter Payment Supplier information</th>
             </tr>
@@ -51,10 +46,18 @@
             </tr>
         </table>
         <br>
-        <button type="submit" class="button">
-            {% if paymentSupplier and paymentSupplier.id %}Update{% else %}Create{% endif %}
-        </button>
-            <a class="button" href="{{ path('cancelAddPaymentSupplier') }}">Cancel</a>
+        <div class="btn-group btn-group-justified ">
+            <div class="btn-group">
+                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('cancelAddPaymentSupplier') }}"> Back</a>
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">
+                    {% if paymentSupplier and paymentSupplier.id %}Update{% else %}Create{% endif %}
+                </button>
+            </div>
+        </div>
     </div>
+        </div>
+
     {{ form_end(form) }}
 {% endblock %}

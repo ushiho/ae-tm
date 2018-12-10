@@ -1,19 +1,16 @@
 {% extends 'payment/paymentBase.html.twig' %}
 {% block center_column %}
-    <div class="top-bar">
-        <h1>Contents</h1><br>
-        <div class="breadcrumbs">
             {% block path %}
+                <div class="panel-heading main-color-bg">
+                <h3 class="panel-title">
                 {{ parent() }}
-                    <a href="#" class="path"> /
+                    <a href="#" class="path"> :
                     {% if paymentDriver and paymentDriver.id %}Edit {% else %}Create{% endif %}
-                </a>
+                    </a></h3></div>
             {% endblock %}
-        </div>
-    </div>
-    <br>
-    <hr>
     {{ form_start(form) }}
+    <div class="panel-body">
+    <div class="container-fluid table-responsive">
     {% if app.session.flashBag.has('paymentDriverMsg') %}
         <div class="alert alert-success error">
             {% for msg in app.session.flashBag.get('paymentDriverMsg') %}
@@ -21,12 +18,8 @@
             {% endfor %}
         </div>
     {% endif %}
-    <br>
-    <br>
-    <div class="table">
-        <img src="{{ asset('img/bg-th-left.gif') }}" width="8" height="7" alt="" class="left"/>
-        <img src="{{ asset('img/bg-th-right.gif') }}" width="7" height="7" alt="" class="right"/>
-        <table class="listing form" cellpadding="0" cellspacing="0">
+<br>
+        <table class="listing form table table-striped table-hover" >
             <tr>
                 <th class="full" colspan="2">Enter Payment Driver information</th>
             </tr>
@@ -50,10 +43,20 @@
             </tr>
         </table>
         <br>
-        <button type="submit" class="button">
+    <div class="btn-group btn-group-justified ">
+        <div class="btn-group">
+            <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('allPaymentsDriver') }}"> Back</a>
+        </div>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"  >
             {% if paymentDriver and paymentDriver.id %}Update{% else %}Create{% endif %}
-        </button>
-            <a class="button" href="{{ path('allPaymentsDriver') }}">Cancel</a>
+          </button>
     </div>
+
+
     {{ form_end(form) }}
+    </div>
+    </div>
+    </div>
+
 {% endblock %}

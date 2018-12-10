@@ -25,45 +25,47 @@ Rent
         {#<a class="path" href="/rent">Rents</a>#}
         {% endblock %}
     <br>
-    <div class="panel-body">
-        <a title="Add new Rent" href="{{path('stepOne')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
-        <br>
-        <div class="table-responsive">
+        <div class="panel-body">
+            <a title="Add new Rent" href="{{path('stepOne')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
             <br>
-            <table class="table table-striped table-hover">
-                {% if Rents is empty or Rents is null %}
-                    <tr class="bg">
-                        <td class="first" style="text-align:center;font-weight: bold;">There is no Rent Information, add a mission and set the rent Information <a href="{{path('addMission')}}" style="color:red;text-decoration: underline black;">here</a></td>
-                    </tr>
-                {% else %}
-            <tr>
-                <th class="first">Start Date</th>
-                <th>End Date</th>
-                <th>Period</th>
-                <th>Price</th>
-                <th class="last">Actions</th>
-            </tr>
-            {% for Rent in Rents %}
-            <tr class="bg">
-                <td class="first">{{ Rent.startDate|date('d-m-Y') }}</td>
-                <td class="first">{{ Rent.endDate|date('d-m-Y') }}</td>
-                <td class="first">{% if Rent.period == 1 %}Daily{% elseif Rent.period == 2 %}Weekly{% else %}Monthly{% endif %}</td>
-                <td class="first">{{ Rent.price}} DH</td>
-                <td>
-                    <div class="btn-group btn-sm">
-                        <a href="{{ path('showRent', {'idRent': Rent.id}) }}"class="btn btn-info">Details</a>
-                        {% if connectedUser.role == 1 %}
-                        <a href="{{ path('editRent', {'id': Rent.id}) }}" class="btn btn-default"> Edit</a>
-                        <a href="{{ path('deleteRent', {'id': Rent.id}) }}" class="btn btn-danger"> Delete</a>
-                        {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            {% endif %}
-        </table>
+            <div class="table-responsive">
+                <br>
+                <table class="table table-striped table-hover">
+                    {% if Rents is empty or Rents is null %}
+                        <tr class="bg">
+                            <td class="first" style="text-align:center;font-weight: bold;">There is no Rent Information, add a mission and set the rent Information <a href="{{path('addMission')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                        </tr>
+                    {% else %}
+                <tr>
+                    <th class="first">Start Date</th>
+                    <th>End Date</th>
+                    <th>Period</th>
+                    <th>Price</th>
+                    <th class="last">Actions</th>
+                </tr>
+                {% for Rent in Rents %}
+                <tr class="bg">
+                    <td class="first">{{ Rent.startDate|date('d-m-Y') }}</td>
+                    <td class="first">{{ Rent.endDate|date('d-m-Y') }}</td>
+                    <td class="first">{% if Rent.period == 1 %}Daily{% elseif Rent.period == 2 %}Weekly{% else %}Monthly{% endif %}</td>
+                    <td class="first">{{ Rent.price}} DH</td>
+                    <td>
+                        <div class="btn-group btn-sm">
+                            <a href="{{ path('showRent', {'idRent': Rent.id}) }}"class="btn btn-info">Details</a>
+                            {% if connectedUser.role == 1 %}
+                            <a href="{{ path('editRent', {'id': Rent.id}) }}" class="btn btn-default"> Edit</a>
+                            <a href="{{ path('deleteRent', {'id': Rent.id}) }}" class="btn btn-danger"> Delete</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                </table>
         <br>
         {% if Rents is not empty and Rents is not null %}
             <div class="first"><a  class="btn-group-justified btn-danger btn-xs " href="{{ path('deleteAllRents') }}" onclick="return confirm('Are u sure, You want to delete all Rents?')" >Delete All</a></div>
         {% endif %}
-    </div>
+             </div>
+         </div>
 {% endblock %}

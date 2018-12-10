@@ -2,9 +2,9 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
 {% block path %}
-{{ parent() }}
+
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title"> <a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
+        <h3 class="panel-title"> {{ parent() }}<a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
                     {% if user.id == null %}Add user{% else %}Edit User{% endif %}</a></h3>
     </div>
 {% endblock %}
@@ -85,7 +85,7 @@
                         </td>
                         <td class="last" width="172">{{ form_widget(form.gender, {'attr' :
                                 {'placeholder':'Gender', 'class':'text' }}) }}
-                        </td>
+                         </td>
                     </tr>
                     <tr>
                         <td class="first" width="172">
