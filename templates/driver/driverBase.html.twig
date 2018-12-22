@@ -58,6 +58,7 @@
                 <th>Lastname</th>
                 <th>CIN</th>
                 <th>Licence Number</th>
+                <th>State</th>
                 <th>Actions</th>
             </tr>
             <tbody id="driver">
@@ -67,6 +68,7 @@
                     <td class="first">{{ driver.lastname }}</td>
                     <td class="first">{{ driver.cin }}</td>
                     <td class="first">{{ driver.licenceNumber }}</td>
+                    <td class="first">{% if driver.busy %} Busy {% else %} Available {% endif %}</td>
                     <td>
                         <div class="btn-group btn-sm">
                             <a href="{{ path('showDriver', {'id': driver.id}) }}" class="btn btn-info">Details</a>

@@ -11,14 +11,14 @@ Rent
     <li class="active">Rent</li>
 {% endblock %}
 {% block left_column %}
-    <a href="{{path('stepOne')}}" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Create Mission</a>
+    <a href="{{path('addMission')}}" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Create Mission</a>
     <a href="/rent" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all Rents</a>
     <a href="#" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>    Search</a>
 {% endblock %}
 
 {% block center_column %}
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title">Suppliers</h3>
+        <h3 class="panel-title">Rents</h3>
     </div>
 {#<a title="Add new Rent" href="{{path('stepOne')}}" class="button">ADD NEW </a>#}
         {% block path %}
@@ -26,7 +26,7 @@ Rent
         {% endblock %}
     <br>
         <div class="panel-body">
-            <a title="Add new Rent" href="{{path('stepOne')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
+            <a title="Add new Rent" href="{{path('addMission')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
             <br>
             <div class="table-responsive">
                 <br>

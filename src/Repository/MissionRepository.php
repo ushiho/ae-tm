@@ -49,7 +49,8 @@ class MissionRepository extends ServiceEntityRepository
     */
     // $query = $em->createQuery('DELETE SomeOtherBundle:CarEntityClass c WHERE c.idOwner = 4 AND c.id = 10');
 
-    public function findMissionByStateByDriver($driver, $finished){
+    public function findMissionByStateByDriver($driver, $finished)
+    {
         return $this->createQueryBuilder('m')
                 ->andWhere('m.driver = :driver')
                 ->andWhere('m.finished = :finished')
@@ -60,7 +61,8 @@ class MissionRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findByDepartment($department){
+    public function findByDepartment($department)
+    {
         return $this->createQueryBuilder('m')
         ->andWhere('m.department = :department')
         ->setParameter('department', $department)
@@ -68,8 +70,9 @@ class MissionRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
-    
-    public function findByProject($project){
+
+    public function findByProject($project)
+    {
         return $this->createQueryBuilder('m')
         ->andWhere('m.project = :project')
         ->setParameter('project', $project)
@@ -78,12 +81,32 @@ class MissionRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByDriver($driver){
+    public function findByDriver($driver)
+    {
         return $this->createQueryBuilder('m')
         ->andWhere('m.driver = :driver')
         ->setParameter('driver', $driver)
         ->getQuery()
         ->getResult()
         ;
+    }
+
+    public function updateMissionTable()
+    {
+        return $this->createQueryBuilder('m')
+                    ->update('App:Mission', 'm')
+                    ->set('m.finished', '1')
+                    ->where('m.endDate <= CURRENT_DATE()')
+                    ->getQuery()
+                    ->execute();
+    }
+
+    public function findByRent(Allocate $rent)
+    {
+        return $this->createQueryBuilder('m')
+                    ->andWhere('m.allocate = :val')
+                    ->setParameter('val', $rent)
+                    ->getQuery()
+                    ->getOneOrNullResult();
     }
 }

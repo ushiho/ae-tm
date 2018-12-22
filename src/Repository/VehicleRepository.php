@@ -48,7 +48,8 @@ class VehicleRepository extends ServiceEntityRepository
     }
     */
 
-    public function findByType($type){
+    public function findByType($type)
+    {
         return $this->createQueryBuilder('v')
         ->andWhere('v.type = :type')
         ->setParameter('type', $type)

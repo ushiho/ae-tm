@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -45,11 +43,12 @@ class Vehicle
     private $matricule;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $image;
+
     private $state;
 
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -108,17 +107,27 @@ class Vehicle
         return $this;
     }
 
-    public function getState(): ?int
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getState()
     {
         return $this->state;
     }
 
-    public function setState(int $state): self
+    public function setState(?string $state): self
     {
         $this->state = $state;
 
         return $this;
     }
-
-
 }

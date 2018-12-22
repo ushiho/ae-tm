@@ -10,6 +10,14 @@
 {{ form_start(form) }}
         <div class="table">
     <div class="panel-body">
+    <div class="error">
+            <strong>{% if app.session.flashBag.has('uploadError') %}
+            <div class="alert alert-success">
+                {% for msg in app.session.flashBag.get('uploadError') %}
+                    {{ msg }}
+                {% endfor %}
+            </div>{% endif %}</strong>
+        </div>
     <div class="container-fluid table-responsive">
         <br>
         <table class="listing form table table-striped table-hover" >
@@ -26,9 +34,9 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
-                        <strong>{{ form_label(form.state) }}</strong>
+                        <strong>Image</strong>
                     </td>
-                    <td class="last">{{ form_widget(form.state) }}</td>
+                    <td class="last">{{ form_widget(form.image) }}</td>
                 </tr>
                 <tr>
                     <td class="first" width="172">

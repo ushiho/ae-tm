@@ -82,6 +82,11 @@ class Allocate
      */
     private $pricePerDay;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $finished;
+
     public function __construct()
     {
         $this->paymentSuppliers = new ArrayCollection();
@@ -258,6 +263,18 @@ class Allocate
     public function setPricePerDay($pricePerDay): self
     {
         $this->pricePerDay = $pricePerDay;
+
+        return $this;
+    }
+
+    public function getFinished(): ?bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(bool $finished): self
+    {
+        $this->finished = $finished;
 
         return $this;
     }

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -72,7 +71,6 @@ class Mission
      * @Assert\Valid()
      */
     private $driver;
-
 
     public function getId(): ?int
     {
@@ -198,5 +196,4 @@ class Mission
 
         return $this;
     }
-
 }

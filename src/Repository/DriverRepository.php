@@ -49,7 +49,8 @@ class DriverRepository extends ServiceEntityRepository
     }
     */
 
-    public function findByType($type){
+    public function findByType($type)
+    {
         return $this->createQuery('d')
         ->andWhere('d.vehicleType = :type')
         ->setParameter('type', $type)
@@ -58,7 +59,8 @@ class DriverRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByConditionOnMission($condition){
+    public function findByConditionOnMission($condition)
+    {
         return $this->createQueryBuilder('d')
         ->andWhere('d.missions = :condition')
         ->setParameter('condition', $condition)
@@ -67,12 +69,23 @@ class DriverRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByMission($mission){
+    public function findByMission($mission)
+    {
         return $this->createQueryBuilder('d')
                 ->innerJoin('App:Mission', 'm', Join::WITH, 'm.driver = d')
                 ->andWhere('m = :val')
                 ->setParameter('val', $mission)
                 ->getQuery()
                 ->getOneOrNullResult();
+    }
+
+    public function updateDriverTable()
+    {
+        // Raw SQL
+        $conn = $this->getEntityManager()->getConnection();
+        $req1 = 'UPDATE driver d SET d.busy = 1 WHERE d.id IN ( SELECT m.driver_id from mission m WHERE m.finished = 0 )';
+        $req2 = 'UPDATE driver d SET d.busy = 0 WHERE d.id IN ( SELECT m.driver_id from mission m WHERE m.finished = 1 )';
+        $conn->prepare($req1)->execute();
+        $conn->prepare($req2)->execute();
     }
 }

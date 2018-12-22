@@ -49,7 +49,8 @@ class AllocateRepository extends ServiceEntityRepository
     }
     */
 
-    public function findBySupplier($supplier){
+    public function findBySupplier($supplier)
+    {
         return $this->createQueryBuilder('a')
         ->andWhere('a.supplier = :supplier')
         ->setParameter('supplier', $supplier)
@@ -58,7 +59,8 @@ class AllocateRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findOneByProject($project){
+    public function findOneByProject($project)
+    {
         return $this->createQueryBuilder('a')
                     ->innerJoin('App:Mission', 'm', Join::WITH, 'm.allocate = a')
                     ->innerJoin('App:Payment', 'p', Join::WITH, 'p.mission = m')
@@ -68,7 +70,8 @@ class AllocateRepository extends ServiceEntityRepository
                     ->getOneOrNullResult();
     }
 
-    public function findOneByPayment($payment){
+    public function findOneByPayment($payment)
+    {
         return $this->createQueryBuilder('a')
                     ->innerJoin('App:Mission', 'm', Join::WITH, 'm.allocate = a')
                     ->innerJoin('App:Payment', 'p', Join::WITH, 'm.payment = p')
@@ -76,5 +79,26 @@ class AllocateRepository extends ServiceEntityRepository
                     ->setParameter('val', $payment)
                     ->getQuery()
                     ->getOneOrNullResult();
+    }
+
+    public function updateAllocateTable()
+    {
+        return $this->createQueryBuilder('a')
+                    ->update('App:Allocate', 'a')
+                    ->set('a.finished', '1')
+                    ->where('a.endDate <= CURRENT_DATE()')
+                    ->getQuery()
+                    ->execute();
+    }
+
+    public function findByVehicle($vehicle)
+    {
+        return $this->createQueryBuilder('a')
+                    ->andWhere('a.finished = 0')
+                    ->andWhere('a.vehicle := val')
+                    ->setParameter('val', $vehicle)
+                    ->getQuery()
+                    ->getFirstResult()
+                    ;
     }
 }

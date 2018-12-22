@@ -21,23 +21,21 @@ class PaymentDriver
      */
     private $datePayment;
 
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
-    private $price; # amount paid in this date
+    // /**
+    //  * @ORM\Column(type="decimal", precision=50, scale=2)
+    //  */
+    // private $price; # amount paid in this date
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
      */
-    private $totalPrice; # number of days * salary per day, calculated in creating mission process
-
+    private $totalPrice; // number of days * salary per day, calculated in creating mission process
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="paymentDrivers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $driver;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Payment", inversedBy="paymentDriver")
@@ -50,7 +48,6 @@ class PaymentDriver
      */
     private $note;
 
-    
     public function getId(): ?int
     {
         return $this->id;
@@ -127,5 +124,4 @@ class PaymentDriver
 
         return $this;
     }
-
 }

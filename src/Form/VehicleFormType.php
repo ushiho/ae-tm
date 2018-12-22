@@ -4,13 +4,12 @@ namespace App\Form;
 
 use App\Entity\Vehicle;
 use App\Entity\VehicleType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class VehicleFormType extends AbstractType
 {
@@ -18,20 +17,6 @@ class VehicleFormType extends AbstractType
     {
         $builder
             ->add('matricule', TextType::class)
-            ->add('state', ChoiceType::class, array(
-                'choices' => array(
-                    'New' => 1,
-                    'Good Condition' => 2,
-                    'Bad Condition' => 3,
-                ),
-                'placeholder' => '--Select state--',
-                'required' => true,
-                'attr' => [
-                    'style' => 'width:270px',
-                    'class' => 'state',
-                    ]
-
-            ))
             ->add('type', EntityType::class, array(
                 'class' => VehicleType::class,
                 'placeholder' => '--Select the type--',
@@ -43,6 +28,12 @@ class VehicleFormType extends AbstractType
                 ],
             ))
             ->add('brand', TextType::class)
+            ->add('image', FileType::class, array(
+                'required' => false,
+                'label' => false,
+                'by_reference' => true,
+                'data_class' => null,
+            ))
         ;
     }
 

@@ -41,40 +41,34 @@
                     <th class="first">Matricule</th>
                     <th>Type</th>
                     <th>Brand</th>
-                    <th>State</th>
-                    <th>Rent Information</th>
+                    <th>State Information</th>
                     <th class="last">Actions</th>
                 </tr>
                 {% for Vehicle in vehicles %}
-                <tr class="bg">
-                    <td class="first">{{ Vehicle.matricule }}</td>
-                    <td class="first">{{ Vehicle.type.name }}</td>
-                    <td class="first">{{ Vehicle.brand}}</td>
-                    <td class="first">
-                    {% if Vehicle.state == 1 %}New{% elseif Vehicle.state == 2 %}Good Condition
-                    {% else %}Bad Condition{% endif %}
-                    </td>
-                    <td class="first">
-                    {% if Vehicle.allocate != null or Vehicle.allocate is not empty() %}Show
-                    {% else %} Add a Rent{% endif %}
-                    </td>
-                    <td>
-                        <div class="btn-group btn-sm">
-                            <a href="{{ path('showVehicle', {'id': Vehicle.id}) }}"class="btn btn-info">Details</a>
-                            <a href="{{ path('editVehicle', {'id': Vehicle.id}) }}" onclick="return confirm('Are u sure, You want to edit this vehicle?')"class="btn btn-default" >Edit</a>
-                            {% if connectedUser.role == 1 %}
-                            <a href="{{ path('deleteVehicle', {'id': Vehicle.id}) }}" onclick="return confirm('Are u sure, You want to delete this vehicle?')" class="btn btn-danger">Delete</a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
+            <tr class="bg">
+                <td class="first">{{ Vehicle.matricule }}</td>
+                <td class="first">{{ Vehicle.type.name }}</td>
+                <td class="first">{{ Vehicle.brand}}</td>
+                <td class="first">
+                {{ Vehicle.state }}
+                </td>
+                <td>
+                    <div class="btn-group btn-sm">
+                        <a href="{{ path('showVehicle', {'id': Vehicle.id}) }}"class="btn btn-info">Details</a>
+                        <a href="{{ path('editVehicle', {'id': Vehicle.id}) }}" onclick="return confirm('Are u sure, You want to edit this vehicle?')"class="btn btn-default" >Edit</a>
+                        {% if connectedUser.role == 1 %}
+                        <a href="{{ path('deleteVehicle', {'id': Vehicle.id}) }}" onclick="return confirm('Are u sure, You want to delete this vehicle?')" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                        {% if not (Vehicle.state == 'Busy') %}
+                            <a href="{{ path('addMissionToVehicle', {'id': Vehicle.id}) }}" class="btn btn-info">Link Mission</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
                 {% endfor %}
                 {% endif %}
         </table>
         <br>
-        {% if vehicles is not empty and vehicles is not null %}
-            <div class="first"><a class="btn-group-justified btn-danger btn-xs " href="{{ path('deleteAllVehicles') }}" onclick="return confirm('Are u sure, You want to delete all Vehciles?')" >Delete All</a></div>
-        {% endif %}
     </div>
     </div>
 

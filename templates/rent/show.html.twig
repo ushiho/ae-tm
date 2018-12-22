@@ -32,6 +32,7 @@
                         <td class="first"><strong>Price for period</strong></td>
                         <td class="last">{{ rent.price }}</td>
                     </tr>
+                    <tr class="bg"><td class="first"><strong>Finished</strong></td><td class="last">{% if rent.finished %}YES{% else %} NO {% endif %}</td></tr>
                     <tr class="bg">
                         <td class="first"><strong>Supplier</strong></td>
                         <td class="last"><a class="link" href="{{ path('showSupplier', {'id':rent.supplier.id}) }}">{{ rent.supplier.firstName }}</a></td>

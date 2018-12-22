@@ -28,7 +28,9 @@
                     </tr>
                     <tr>
                         <td class="first"><strong>State</strong></td>
-                        <td class="last">{% if vehicle.state == 1 %}New{% elseif vehicle.state == 2 %}Good Condition{% else %}Bad Condition{% endif %}</td>
+                        <td class="last">{% if vehicle.image %}
+                        <a class="link" href="{{ asset('uploads/vehicle/image/' ~ vehicle.image) }}">Show Image</a>
+                        {% else %}There is no Image{% endif %}</td>
                     </tr>
                     <tr class="bg">
                         <td class="first"><strong>Rent Info</strong></td>
