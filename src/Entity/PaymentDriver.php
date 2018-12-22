@@ -21,10 +21,10 @@ class PaymentDriver
      */
     private $datePayment;
 
-    // /**
-    //  * @ORM\Column(type="decimal", precision=50, scale=2)
-    //  */
-    // private $price; # amount paid in this date
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $price; // amount paid in this date
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
@@ -47,6 +47,16 @@ class PaymentDriver
      * @ORM\Column(type="text", nullable=true)
      */
     private $note;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $daysToPay;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $daysPaid;
 
     public function getId(): ?int
     {
@@ -121,6 +131,30 @@ class PaymentDriver
     public function setNote(?string $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getDaysToPay(): ?int
+    {
+        return $this->daysToPay;
+    }
+
+    public function setDaysToPay(int $daysToPay): self
+    {
+        $this->daysToPay = $daysToPay;
+
+        return $this;
+    }
+
+    public function getDaysPaid(): ?int
+    {
+        return $this->daysPaid;
+    }
+
+    public function setDaysPaid(int $daysPaid): self
+    {
+        $this->daysPaid = $daysPaid;
 
         return $this;
     }

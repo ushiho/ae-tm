@@ -18,10 +18,10 @@ class PaymentDriverType extends AbstractType
             ->add('datePayment', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('price', NumberType::class, array(
+            ->add('daysToPay', NumberType::class, array(
                 'attr' => [
-                    'placeholder' => 'Price Paid (DH)'
-                ]
+                    'placeholder' => 'Days paid',
+                ],
             ))
             ->add('note', TextareaType::class, [
                     'attr' => [

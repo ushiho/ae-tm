@@ -43,6 +43,7 @@
                         <th >Payment Date</th>
                         <th  width="180px" title="Total Rent expenses">Total Price To Pay (DH)</th>
                         <th  title="The price paid in that date">Price (DH)</th>
+                        <th title="Days Paid">Days</th>
                         <th  class="last">Actions</th>
                     </tr>
                     {% for payment in paymentDriver %}
@@ -50,6 +51,7 @@
                             <td >{{ payment.datePayment|date('d-M-Y') }}</td>
                             <td bgcolor="#359e98" >{{ payment.totalPrice }} DH</td>
                             <td bgcolor="#7c9e35">{{payment.price}} DH</td>
+                            <td bgcolor="#7c9e35">{{payment.daysPaid}}</td>
                             <td>
                                 <div class="btn-group btn-sm">
                                     <a href="{{ path('editPaymentDriver', {'id': payment.id, 'idPayment': payment.payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this payment?')"class="btn btn-default" >Edit</a>
@@ -62,9 +64,12 @@
                     {% endfor %}
                     <tr class="last">
 
-                    <th colspan="2" >Total:</th>
+                    <th colspan="1" >Total:</th>
                         <td bgcolor="#7c9e35">
                             {{paymentDriver|first.payment.totalPricePaidToDriver}} DH
+                        </td>
+                        <td bgcolor="#7c9e35">
+                            {{paymentDriver|first.payment.totalDaysPaid}} Days
                         </td>
                     </tr>
                 {% endif %}

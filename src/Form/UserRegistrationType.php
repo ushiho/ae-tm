@@ -8,11 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserRegistrationType extends AbstractType
@@ -32,7 +30,7 @@ class UserRegistrationType extends AbstractType
                 'label' => 'Gender',
                 'choices' => array(
                     'Admin' => 1,
-                    'User'  => 2,
+                    'User' => 2,
                 ),
             ))
             ->add('gender', ChoiceType::class, array(
@@ -42,8 +40,9 @@ class UserRegistrationType extends AbstractType
                 ),
             ))
             ->add('country', CountryType::class)
-            ->add('birthday', BirthdayType::class)
-
+            ->add('birthday', DateType::class, array(
+                'widget' => 'single_text',
+            ))
 
         ;
     }

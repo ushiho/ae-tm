@@ -8,7 +8,6 @@ use App\Entity\Payment;
 use App\Entity\PaymentDriver;
 use App\Form\PaymentDriverType;
 use App\Repository\DriverRepository;
-use App\Controller\PaymentController;
 use App\Repository\MissionRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\ProjectRepository;
@@ -30,10 +29,11 @@ class PaymentDriverController extends AbstractController
         ]);
     }
 
-    public function calculateTotalPrice(Mission $mission){
-        if($mission){
-            return $mission->getDriver()->getSalairePerDay() * ($mission->getEndDate()->diff($mission->getStartDate())->days+1);
-        }else{
+    public function calculateTotalPrice(Mission $mission)
+    {
+        if ($mission) {
+            return $mission->getDriver()->getSalairePerDay() * ($mission->getEndDate()->diff($mission->getStartDate())->days + 1);
+        } else {
             return null;
         }
     }
@@ -48,12 +48,14 @@ class PaymentDriverController extends AbstractController
     //     }
     // }
 
-    public function init(Mission $mission){
-        if($mission){
+    public function init(Mission $mission)
+    {
+        if ($mission) {
             $paymentDriver = new PaymentDriver();
             $paymentDriver->setTotalPrice(PaymentDriverController::calculateTotalPrice($mission));
+
             return $paymentDriver;
-        }else{
+        } else {
             return null;
         }
     }
@@ -67,15 +69,16 @@ class PaymentDriverController extends AbstractController
     public function show(Request $request, PaymentDriverRepository $repo, ProjectRepository $projectRepo, MissionRepository $missionRepo, $idMission = null, $idProject = null, PaymentRepository $paymentRepo, $idPayment = null)
     {
         $paymentDriver = [];
-        if ($idMission && $request->attributes->get('_route') == "paymentDriverByMission") {
+        if ($idMission && $request->attributes->get('_route') == 'paymentDriverByMission') {
             $paymentDriver = $repo->findByMission($missionRepo->find($idMission));
-        } else if ($idProject && $request->attributes->get('_route') == "paymentDriverByProject") {
+        } elseif ($idProject && $request->attributes->get('_route') == 'paymentDriverByProject') {
             $paymentDriver = $repo->findByProject($projectRepo->find($idProject));
-        } else if ($idPayment && $request->attributes->get('_route') == "paymentDriverByPayment") {
+        } elseif ($idPayment && $request->attributes->get('_route') == 'paymentDriverByPayment') {
             $paymentDriver = $repo->findByPayment($paymentRepo->find($idPayment));
         } else {
             $paymentDriver = $repo->findAll();
         }
+
         return $this->render('payment/paymentDriverBase.html.twig', [
             'connectedUser' => $this->getUser(),
             'paymentDriver' => $paymentDriver,
@@ -86,45 +89,53 @@ class PaymentDriverController extends AbstractController
      * @Route("/payment/paymentDriver/add/{idPayment}", name="addPaymentDriver")
      * @Route("/payment/{idPayment}/paymentDriver/{id}/edit", name="editPaymentDriver", requirements={"id"= "\d+"})
      */
-    public function action(PaymentDriver $paymentDriver=null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment=null, PaymentRepository $paymentRepo){
+    public function action(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment = null, PaymentRepository $paymentRepo)
+    {
         $payment = $paymentRepo->find($idPayment);
-        if($payment || $paymentDriver){
+        if ($payment || $paymentDriver) {
             $params = $this->testParams($payment, $paymentDriver, $request);
             $form = $this->createForm(PaymentDriverType::class, $params['paymentDriver']);
             $form->handleRequest($request);
-            if($form->isSubmitted()&&$form->isValid()){
-                if($this->comparePrice($params['paymentDriver'], $request, $params['payment'], $params['price'])){
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($this->compareDays($params['paymentDriver'], $request, $params['payment'], $params['days'])) {
+                    $paymentDriver->setPrice($params['price']);
                     $paymentDriver = $this->completeDatas($params['paymentDriver'], $params['payment'], $driverRepo);
-                    $this->save($manager, $paymentDriver, $params['payment'], $request, $params['price']);
-                    return $this->redirectToRoute("paymentDriverByPayment", [
+                    $this->save($manager, $paymentDriver, $params['payment'], $request, $params);
+
+                    return $this->redirectToRoute('paymentDriverByPayment', [
                         'idPayment' => $params['payment']->getId(),
                     ]);
-                }else{
-                    $request->getSession()->getFlashBag()->add('paymentDriverMsg', "The Price given to that driver is more than his expanses!");
+                } else {
+                    $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Number of days paid to that driver is more than his expanses!');
                 }
             }
+
             return $this->render('payment/paymentDriverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
                 'paymentDriver' => $params['paymentDriver'],
             ]);
-        }else{
-            $request->getSession()->getFlashBag()->add('paymentMsg', "Please select a payment from the list below to link the new payment!");
+        } else {
+            $request->getSession()->getFlashBag()->add('paymentMsg', 'Please select a payment from the list below to link the new payment!');
+
             return $this->redirectToRoute('allPayments');
         }
     }
 
-    public function completeDatas(PaymentDriver $paymentDriver, Payment $payment, DriverRepository $driverRepo){
-        if($paymentDriver && !$paymentDriver->getId()){
+    public function completeDatas(PaymentDriver $paymentDriver, Payment $payment, DriverRepository $driverRepo)
+    {
+        if ($paymentDriver && !$paymentDriver->getId()) {
             $paymentDriver->setDriver($driverRepo->findByMission($payment->getMission()))
                         ->setPayment($payment)
                         ->setTotalPrice($payment->getTotalPriceToPayToDriver());
-            }
+        }
+
         return $paymentDriver;
     }
 
-    public function save(ObjectManager $manager, PaymentDriver $paymentDriver, Payment $payment, Request $request, $price){
-        $payment = PaymentController::addPaymentDriver($paymentDriver, $payment, $price);
+    public function save(ObjectManager $manager, PaymentDriver $paymentDriver, Payment $payment, Request $request, $params)
+    {
+        $payment = PaymentController::addPaymentDriver($paymentDriver, $payment, $params['price'], $params['days']);
         $manager->persist($manager->merge($payment));
         $manager->persist($manager->merge($paymentDriver));
         $manager->flush();
@@ -132,78 +143,94 @@ class PaymentDriverController extends AbstractController
         $request->getSession()->getFlashBag()->add('paymentDriverMsg', $this->messageOfAction($paymentDriver));
     }
 
-    public function messageOfAction(PaymentDriver $paymentDriver){
-        if($paymentDriver && $paymentDriver->getId()){
-            return "The payment driver was successfully modified ";
+    public function messageOfAction(PaymentDriver $paymentDriver)
+    {
+        if ($paymentDriver && $paymentDriver->getId()) {
+            return 'The payment driver was successfully modified ';
         }
-        return "The payment driver was successfully added";
+
+        return 'The payment driver was successfully added';
     }
 
     /**
      * @Route("/payment/paymentDriver/{id}/show", name="showPaymentDriver")
      */
-    public function showDetails(PaymentDriver $paymentDriver=null, Request $request){
-        if($paymentDriver && $paymentDriver->getId()){
+    public function showDetails(PaymentDriver $paymentDriver = null, Request $request)
+    {
+        if ($paymentDriver && $paymentDriver->getId()) {
             return $this->render('payment/paymentDriverShow.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'paymentDriver' => $paymentDriver,
             ]);
         }
-        $request->getSession()->getFlashBag()->add('paymentDriverMsg', "Please select a payment from the list below to show details!");
-        return $this->redirectToRoute('allPaymentsDriver');
+        $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Please select a payment from the list below to show details!');
 
+        return $this->redirectToRoute('allPaymentsDriver');
     }
 
     /**
      * @Route("/payment/paylentDriver/{id}/delete", name="deletePaymentDriver", requirements={"id" = "\d+"})
      */
-    public function delete(PaymentDriver $paymentDriver=null, ObjectManager $manager, Request $request){
-        if($paymentDriver && $paymentDriver->getId()){
+    public function delete(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request)
+    {
+        if ($paymentDriver && $paymentDriver->getId()) {
             $payment = $this->addMoneyToPayment($paymentDriver);
             $manager->persist($manager->merge($payment));
             $manager->remove($paymentDriver);
             $manager->flush();
-            $request->getSession()->getFlashBag()->add('paymentDriverMsg', "The payment was successfully  deleted!");
+            $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'The payment was successfully  deleted!');
             $request->getSession()->clear();
-        }else{
-            $request->getSession()->getFlashBag()->add('paymentDriverMsg', "There is no selected payment to delete!");
+        } else {
+            $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'There is no selected payment to delete!');
         }
+
         return $this->redirectToRoute('allPaymentsDriver');
     }
 
-    public function addMoneyToPayment(PaymentDriver $paymentDriver){
-        if($paymentDriver && $paymentDriver->getId()){
+    public function addMoneyToPayment(PaymentDriver $paymentDriver)
+    {
+        if ($paymentDriver && $paymentDriver->getId()) {
             $payment = $paymentDriver->getPayment();
-            $payment->setRemainingPrice($payment->getRemainingPrice()+$paymentDriver->getPrice())
-                    ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver()+ $paymentDriver->getPrice())
-                    ->setTotalPricePaid($payment->getTotalPricePaid()-$paymentDriver->getPrice())
-                    ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver()-$paymentDriver->getPrice())
+            $payment->setRemainingPrice($payment->getRemainingPrice() + $paymentDriver->getPrice())
+                    ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() + $paymentDriver->getPrice())
+                    ->setTotalPricePaid($payment->getTotalPricePaid() - $paymentDriver->getPrice())
+                    ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() - $paymentDriver->getPrice())
+                    ->setTotalDaysPaid($payment->getTotalDaysPaid() - $paymentDriver->getDaysPaid())
+                    ->setRemainingDays($payment->getRemainingDays() + $paymentDriver->getDaysPaid())
                     ->removePaymentDriver($paymentDriver);
+
             return $paymentDriver;
         }
     }
 
-    public function comparePrice(PaymentDriver $paymentDriver, Request $request, Payment $payment, $price){
-        if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == "editPaymentDriver") {
-            $cond = $paymentDriver->getPrice() <= $price + $payment->getRemainingPriceToDriver();
+    public function compareDays(PaymentDriver $paymentDriver, Request $request, Payment $payment, $days)
+    {
+        if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == 'editPaymentDriver') {
+            //$cond = $paymentDriver->getPrice() <= $price + $payment->getRemainingPriceToDriver();
+            $cond = $paymentDriver->getDaysPaid() <= $days + $payment->getRemainingDays();
         } else {
-            $cond = $paymentDriver->getPrice() <= $payment->getRemainingPriceToDriver();
+            $cond = $paymentDriver->getDaysPaid() <= $payment->getRemainingDays();
         }
+
         return $cond;
     }
 
-    public function testParams(Payment $payment, PaymentDriver $paymentDriver=null, Request $request){
-        if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == "editPaymentDriver") {
-            $price = $paymentDriver->getPrice();
+    public function testParams(Payment $payment, PaymentDriver $paymentDriver = null, Request $request)
+    {
+        if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == 'editPaymentDriver') {
+            $days = $paymentDriver->getDaysPaid();
+            $price = $paymentDriver->getDriver()->getSalaire() * $days;
             $payment = $paymentDriver->getPayment();
-        }else {
+        } else {
             $paymentDriver = new PaymentDriver();
             $price = 0;
+            $days = 0;
         }
+
         return ['price' => $price,
+        'days' => $days,
         'payment' => $payment,
         'paymentDriver' => $paymentDriver,
         ];
     }
-
 }

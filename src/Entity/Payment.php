@@ -83,6 +83,21 @@ class Payment
      */
     private $totalPricePaidToDriver;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $totalDaysToPay;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $totalDaysPaid;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $remainingDays;
+
     public function __construct()
     {
         $this->paymentDriver = new ArrayCollection();
@@ -298,5 +313,41 @@ class Payment
     public function __toString()
     {
         return '';
+    }
+
+    public function getTotalDaysToPay(): ?int
+    {
+        return $this->totalDaysToPay;
+    }
+
+    public function setTotalDaysToPay(int $totalDaysToPay): self
+    {
+        $this->totalDaysToPay = $totalDaysToPay;
+
+        return $this;
+    }
+
+    public function getTotalDaysPaid(): ?int
+    {
+        return $this->totalDaysPaid;
+    }
+
+    public function setTotalDaysPaid(int $totalDaysPaid): self
+    {
+        $this->totalDaysPaid = $totalDaysPaid;
+
+        return $this;
+    }
+
+    public function getRemainingDays(): ?int
+    {
+        return $this->remainingDays;
+    }
+
+    public function setRemainingDays(?int $remainingDays): self
+    {
+        $this->remainingDays = $remainingDays;
+
+        return $this;
     }
 }
