@@ -36,15 +36,13 @@ class UserRepository extends ServiceEntityRepository
     }
     */
 
-    
-    // public function findOneByCIN($cin): ?User
-    // {
-    //     return $this->createQueryBuilder('u')
-    //         ->andWhere('u.cin = :val')
-    //         ->setParameter('val', $cin)
-    //         ->getQuery()
-    //         ->getOneOrNullResult()
-    //     ;
-    // }
-
+    public function findByEmail($email): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email = :val')
+            ->setParameter('val', $email)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

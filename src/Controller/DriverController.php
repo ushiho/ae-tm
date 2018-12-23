@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -158,6 +159,7 @@ class DriverController extends AbstractController
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
+                'searchForm' => $this->searchForm()->createView(),
             ]);
         } else {
             $session->clear();
@@ -209,5 +211,22 @@ class DriverController extends AbstractController
         } else {
             return null;
         }
+    }
+
+    public function searchForm()
+    {
+        $searchForm = $this->createFormBuilder()(null)
+                    ->add('search', TextType::class)
+                ->getForm();
+
+        return $searchForm;
+    }
+
+    /**
+     * @Route("/searchDriver", name="searchDriver")
+     */
+    public function searchDriver(Request $request)
+    {
+        dd($request);
     }
 }

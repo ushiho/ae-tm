@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class UserController extends AbstractController
 {
@@ -39,16 +40,12 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/new", name="addUser")
-     * @Route("user/edit/{id}", name="editUser")
+     * @Route("/user/profil/edit/", name="ediProfil")
      */
-    public function userForm(Request $request, ObjectManager $manager,
-    UserPasswordEncoderInterface $encoder, User $user = null)
+    public function userForm(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
         // if($this->getUser()->getRole() == 1){
-        if ($user == null) {
-            $user = new User();
-        }
+        $user = $this->getUser();
         $form = $this->createForm(UserRegistrationType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -60,17 +57,45 @@ class UserController extends AbstractController
             $manager->flush();
             $this->container->get('session')->getFlashBag()->add('success', $this->customizeMsg($request, $user));
 
-            return $this->redirectToRoute('allUsers');
+            return $this->redirectToRoute('showUser', [
+                'id' => $user->getId(),
+                ]);
         }
 
         return $this->render('user/userForm.html.twig', [
-                'form' => $form->createView(),
-                'user' => $user,
-                'connectedUser' => $this->getUser(),
-            ]);
+            'form' => $form->createView(),
+            'user' => $user,
+            'connectedUser' => $this->getUser(),
+        ]);
         // } else{
         //     throw $this->createAccessDeniedException("You don't have access to this page!");
         // }
+    }
+
+    /**
+     * @Route("/admin/addUser", name="addUser")
+     */
+    public function addUser(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    {
+        if ($this->getUser()->getRole() == 1) {
+            $user = new User();
+            $form = $this->createForm(UserToAddType::class, $user);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer);
+                $request->getSession()->getFlashBag()->add('success', $this->customizeMsg($request, $user));
+
+                return $this->redirectToRoute('allUsers');
+            }
+
+            return $this->render('addUser.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUser(),
+                'user' => $user,
+            ]);
+        } else {
+            return $this->redirectToRoute('profil');
+        }
     }
 
     public function customizeMsg(Request $request, User $user)
@@ -163,5 +188,63 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('allUsers');
+    }
+
+    public function sendEmail($user, $passwordNotCrypted, \Swift_Mailer $mailer)
+    {
+        $message = (new \Swift_Message('AE Transportation'))
+            ->setFrom('hlotfi.hamza.lotfi@gmail.com')
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->renderView(
+                    // templates/email/registration.html.twig
+                    'email/registration.html.twig', array(
+                        'name' => $user->getLastName(),
+                        'login' => $user->getEmail(),
+                        'password' => $passwordNotCrypted,
+                    )
+                ),
+                'text/html'
+            );
+
+        $mailer->send($message);
+    }
+
+    /**
+     * @Route("/resetPassword/", name="resetPassword")
+     */
+    public function resetPassword(Request $request, ObjectManager $manager, \Swift_Mailer $mailer, UserRepository $repo, UserPasswordEncoderInterface $encoder)
+    {
+        $form = $this->createFormBuilder()
+                    ->add('login', EmailType::class)
+                ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $repo->findByEmail($form['login']);
+            if ($user) {
+                $request->getSession()->getFlashBag()->add('resetPassMsg', 'The email is not exist, please enter a valid email.');
+
+                return $this->render('user/resetPassword.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+            $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer);
+            $request->getSession()->getFlashBag()->add('resetPassMsg', 'The password is reseted successfully please verify your boite email.');
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('user/resetPassword.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    public function generatePasswordAndSendEmail(ObjectManager $manager, $user, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    {
+        $passwordNotCrypted = random_bytes(10);
+        $user->setPassword($encoder->encodePassword($user, $passwordNotCrypted));
+        $manager->persist($user);
+        $manager->flush();
+        $this->sendEmail($user, $passwordNotCrypted, $mailer);
     }
 }
