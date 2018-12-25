@@ -26,7 +26,8 @@
         "symfony/validator": "*",
         "symfony/web-link": "*",
         "symfony/web-server-bundle": "*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+        "true/punycode": "^2.1"
     },
     "require-dev": {
         "allocine/twigcs": "^3.1",

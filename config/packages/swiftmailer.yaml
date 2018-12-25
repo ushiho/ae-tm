@@ -1,3 +1,11 @@
+# swiftmailer:
+#     url: '%env(MAILER_URL)%'
+#     spool: { type: 'memory' }
 swiftmailer:
-    url: '%env(MAILER_URL)%'
-    spool: { type: 'memory' }
+    transport:  smtp
+    encryption: ssl
+    auth_mode:  login
+    host:       64.233.184.108
+    username:   hlotfi.hamza.lotfi@gmail.com
+    password:   Lotfi1997.#
+    port: 465

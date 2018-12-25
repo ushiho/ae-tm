@@ -13,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserController extends AbstractController
 {
@@ -40,13 +42,15 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/profil/edit/", name="ediProfil")
+     * @Route("/user/profil/edit/", name="editProfil")
      */
     public function userForm(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
         // if($this->getUser()->getRole() == 1){
         $user = $this->getUser();
-        $form = $this->createForm(UserRegistrationType::class, $user);
+        $form = $this->createForm(UserRegistrationType::class, $user)
+            ->add('password', PasswordType::class)
+            ->add('confirmPassword', PasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$this->container->has('session')) {
@@ -74,12 +78,15 @@ class UserController extends AbstractController
 
     /**
      * @Route("/admin/addUser", name="addUser")
+     * @Route("/admin/editUser/{id}", name="editUser")
      */
-    public function addUser(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    public function addUser(User $user = null, Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
     {
         if ($this->getUser()->getRole() == 1) {
-            $user = new User();
-            $form = $this->createForm(UserToAddType::class, $user);
+            if (!$user) {
+                $user = new User();
+            }
+            $form = $this->createForm(UserRegistrationType::class, $user);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer);
@@ -88,12 +95,14 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('allUsers');
             }
 
-            return $this->render('addUser.html.twig', [
+            return $this->render('user/addUser.html.twig', [
                 'form' => $form->createView(),
                 'connectedUser' => $this->getUser(),
                 'user' => $user,
             ]);
         } else {
+            $request->getSession()->getFlashBag()->add('profilMsg', "You don't have permission.");
+
             return $this->redirectToRoute('profil');
         }
     }
@@ -199,7 +208,7 @@ class UserController extends AbstractController
                 $this->renderView(
                     // templates/email/registration.html.twig
                     'email/registration.html.twig', array(
-                        'name' => $user->getLastName(),
+                        'lastName' => $user->getLastName(),
                         'login' => $user->getEmail(),
                         'password' => $passwordNotCrypted,
                     )
@@ -207,21 +216,31 @@ class UserController extends AbstractController
                 'text/html'
             );
 
-        $mailer->send($message);
+        if (!$mailer->send($message, $failures)) {
+            echo 'Failures:';
+            print_r($failures);
+        }
+
+        dd($mailer->send($message));
     }
 
     /**
-     * @Route("/resetPassword/", name="resetPassword")
+     * @Route("user/resetPassword", name="resetPassword")
      */
     public function resetPassword(Request $request, ObjectManager $manager, \Swift_Mailer $mailer, UserRepository $repo, UserPasswordEncoderInterface $encoder)
     {
         $form = $this->createFormBuilder()
                     ->add('login', EmailType::class)
+                    ->add('submit', SubmitType::class, array(
+                        'attr' => array(
+                            'class' => 'btn btn-primary btn-block',
+                        ),
+                    ))
                 ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $repo->findByEmail($form['login']);
-            if ($user) {
+            $user = $repo->findByEmail($form->getData()['login']);
+            if (!$user) {
                 $request->getSession()->getFlashBag()->add('resetPassMsg', 'The email is not exist, please enter a valid email.');
 
                 return $this->render('user/resetPassword.html.twig', [

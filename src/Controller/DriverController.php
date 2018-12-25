@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverController extends AbstractController
 {
@@ -148,9 +149,14 @@ class DriverController extends AbstractController
             } else {
                 $driver = new Driver();
             }
+            $searchForm = $this->searchForm();
             $form = $this->createForm(DriverType::class, $driver);
             $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+            $searchForm->handleRequest($request);
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $data = $searchForm->getData();
+                dd($data);
+            } elseif ($form->isSubmitted() && $form->isValid()) {
                 $session->set('driver', $driver);
 
                 return $this->redirectToRoute('stepTwo');
@@ -159,7 +165,7 @@ class DriverController extends AbstractController
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'searchForm' => $this->searchForm()->createView(),
+                'searchForm' => $searchForm->createView(),
             ]);
         } else {
             $session->clear();
@@ -215,8 +221,15 @@ class DriverController extends AbstractController
 
     public function searchForm()
     {
-        $searchForm = $this->createFormBuilder()(null)
-                    ->add('search', TextType::class)
+        $searchForm = $this->createFormBuilder(null)
+                    ->add('search', TextType::class, array(
+                        'required' => false,
+                    ))
+                    ->add('submit', SubmitType::class, array(
+                        'attr' => [
+                            'class' => 'btn btn-primary',
+                        ],
+                    ))
                 ->getForm();
 
         return $searchForm;

@@ -11,7 +11,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserRegistrationType extends AbstractType
 {
@@ -23,8 +22,6 @@ class UserRegistrationType extends AbstractType
             ->add('cin')
             ->add('email', EmailType::class)
             ->add('confirmEmail', EmailType::class)
-            ->add('password', PasswordType::class)
-            ->add('confirmPassword', PasswordType::class)
             ->add('phoneNumber', TelType::class)
             ->add('role', ChoiceType::class, array(
                 'label' => 'Gender',

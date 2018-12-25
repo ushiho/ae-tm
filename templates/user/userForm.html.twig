@@ -4,7 +4,7 @@
 {% block path %}
 
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title"> {{ parent() }}<a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editUser', {'id': user.id })}}{% endif %}">
+        <h3 class="panel-title"> {{ parent() }}<a class="path" href="{% if user.id == null %}{{ path('addUser') }} {% else %}{{path('editProfil', {'id': user.id })}}{% endif %}">
                     {% if user.id == null %}Add user{% else %}Edit User{% endif %}</a></h3>
     </div>
 {% endblock %}

@@ -59,7 +59,8 @@
         <div class="btn-group btn-group-justified">
             <a title="Show All Users" href="{{ path('allUsers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left">  Back  </a>
             {% if connectedUser.role == 1 %}
-            <a title="Edit my profil" href="{{ path('editUser', { 'id' : user.id }) }}" class="btn btn-primary btn-xs glyphicon glyphicon-pencil">  EDIT  </a>
+            <a href="{% if connectedUser.id == user.id %}{{path('editProfil')}}{% else %}{{ path('editUser', {'id': user.id}) }}{% endif %}
+            " class="btn btn-primary btn-xs glyphicon glyphicon-pencil">  EDIT  </a>
             {% endif %}
         </div>
 

@@ -27,7 +27,7 @@
         <h3 class="panel-title">
             <a class="btn-info btn-xs" href="#"> Step One: Create the driver</a></h3>
         <br>
-        <div class="block">
+            <div class="block">
             {{ form_start(searchForm, {
                 'attr': {'class': 'navbar-form navbar-right', 'action': 'searchDriver'}
             }) }}
@@ -35,10 +35,11 @@
             {{ form_widget(searchForm.search, {
                 'attr': {'class': 'form-control search-query'}
             }) }}
-
+            {{ form_widget(searchForm.submit) }}
             {{ form_end(searchForm) }}
         </div>
         <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+            {{ form_start(form) }}
                 <tr>
                     <th>
                     <th class="full" colspan="2">Enter driver information</th></th>
@@ -94,7 +95,7 @@
                     <td class="last">{{ form_widget(form.numberPhone, {
                         'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
                 </tr>
-
+                {{ form_end(form) }}
             </table>
             <br>
         <div class="btn-group btn-group-justified ">
