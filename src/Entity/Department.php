@@ -33,9 +33,15 @@ class Department
      */
     private $missions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="department", orphanRemoval=true)
+     */
+    private $fuelReconciliations;
+
     public function __construct()
     {
         $this->missions = new ArrayCollection();
+        $this->fuelReconciliations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,6 +98,37 @@ class Department
             // set the owning side to null (unless already changed)
             if ($mission->getDepartment() === $this) {
                 $mission->setDepartment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FuelReconciliation[]
+     */
+    public function getFuelReconciliations(): Collection
+    {
+        return $this->fuelReconciliations;
+    }
+
+    public function addFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if (!$this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations[] = $fuelReconciliation;
+            $fuelReconciliation->setDepartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if ($this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations->removeElement($fuelReconciliation);
+            // set the owning side to null (unless already changed)
+            if ($fuelReconciliation->getDepartment() === $this) {
+                $fuelReconciliation->setDepartment(null);
             }
         }
 

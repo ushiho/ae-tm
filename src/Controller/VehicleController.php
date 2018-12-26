@@ -9,6 +9,8 @@ use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,11 +31,17 @@ class VehicleController extends AbstractController
         } else {
             $vehicles = $this->setTheState($repo->findAll());
         }
+        $searchForm = $this->searchForm();
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $vehicles = $repo->findByCriteria($searchForm->getData());
+        }
 
         return $this->render('vehicle/vehicleBase.html.twig', [
             'connectedUser' => $this->getUser(),
             'types' => $typeRepo->findAll(),
             'vehicles' => $vehicles,
+            'searchForm' => $searchForm->createView(),
         ]);
     }
 
@@ -242,5 +250,24 @@ class VehicleController extends AbstractController
 
             return $this->redirectToRoute('addMission');
         }
+    }
+
+    public function searchForm()
+    {
+        $searchForm = $this->createFormBuilder(null)
+                    ->add('brand', TextType::class, array(
+                        'required' => false,
+                    ))
+                    ->add('matricule', TextType::class, array(
+                        'required' => false,
+                    ))
+                    ->add('search', SubmitType::class, array(
+                        'attr' => [
+                            'class' => 'btn btn-primary',
+                        ],
+                    ))
+                ->getForm();
+
+        return $searchForm;
     }
 }

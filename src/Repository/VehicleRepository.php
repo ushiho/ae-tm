@@ -57,4 +57,15 @@ class VehicleRepository extends ServiceEntityRepository
         ->getResult()
         ;
     }
+
+    public function findByCriteria($data)
+    {
+        return $this->createQueryBuilder('v')
+                    ->orWhere('v.brand = :brand')
+                    ->setParameter('brand', $data['brand'])
+                    ->orWhere('v.matricule = :mat')
+                    ->setParameter('mat', $data['matricule'])
+                    ->getQuery()
+                    ->getResult();
+    }
 }

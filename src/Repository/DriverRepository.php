@@ -88,4 +88,18 @@ class DriverRepository extends ServiceEntityRepository
         $conn->prepare($req1)->execute();
         $conn->prepare($req2)->execute();
     }
+
+    public function findByCriteria($data)
+    {
+        return $this->createQueryBuilder('d')
+                    ->orWhere('d.firstName = :first')
+                    ->setParameter('first', $data['firstName'])
+                    ->orWhere('d.lastName = :last')
+                    ->setParameter('last', $data['lastName'])
+                    ->orWhere('d.cin = :cin')
+                    ->setParameter('cin', $data['cin'])
+                    ->groupBy('d.lastName')
+                    ->getQuery()
+                    ->getResult();
+    }
 }

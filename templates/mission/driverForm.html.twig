@@ -27,22 +27,11 @@
         <h3 class="panel-title">
             <a class="btn-info btn-xs" href="#"> Step One: Create the driver</a></h3>
         <br>
-            <div class="block">
-            {{ form_start(searchForm, {
-                'attr': {'class': 'navbar-form navbar-right', 'action': 'searchDriver'}
-            }) }}
-
-            {{ form_widget(searchForm.search, {
-                'attr': {'class': 'form-control search-query'}
-            }) }}
-            {{ form_widget(searchForm.submit) }}
-            {{ form_end(searchForm) }}
-        </div>
+    
         <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
             {{ form_start(form) }}
                 <tr>
-                    <th>
-                    <th class="full" colspan="2">Enter driver information</th></th>
+                    <th class="fa-align-right text-capitalize text-center full" colspan="12">Enter driver information</th>
                 </tr>
                 <tr>
                     <td class="first" width="172">

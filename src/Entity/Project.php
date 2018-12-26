@@ -66,9 +66,15 @@ class Project
      */
     private $finished;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="project")
+     */
+    private $fuelReconciliations;
+
     public function __construct()
     {
         $this->mission = new ArrayCollection();
+        $this->fuelReconciliations = new ArrayCollection();
     }
 
 
@@ -208,6 +214,37 @@ class Project
     public function setFinished(bool $finished): self
     {
         $this->finished = $finished;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FuelReconciliation[]
+     */
+    public function getFuelReconciliations(): Collection
+    {
+        return $this->fuelReconciliations;
+    }
+
+    public function addFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if (!$this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations[] = $fuelReconciliation;
+            $fuelReconciliation->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if ($this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations->removeElement($fuelReconciliation);
+            // set the owning side to null (unless already changed)
+            if ($fuelReconciliation->getProject() === $this) {
+                $fuelReconciliation->setProject(null);
+            }
+        }
 
         return $this;
     }

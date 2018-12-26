@@ -30,10 +30,16 @@ class DriverController extends AbstractController
         } else {
             $drivers = $repo->findAll();
         }
+        $searchForm = $this->searchForm();
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $drivers = $repo->findByCriteria($searchForm->getData());
+        }
 
         return $this->render('driver/driverBase.html.twig', [
                  'connectedUser' => $this->getUser(),
                  'drivers' => $drivers,
+                 'searchForm' => $searchForm->createView(),
                 ]);
     }
 
@@ -149,14 +155,9 @@ class DriverController extends AbstractController
             } else {
                 $driver = new Driver();
             }
-            $searchForm = $this->searchForm();
             $form = $this->createForm(DriverType::class, $driver);
             $form->handleRequest($request);
-            $searchForm->handleRequest($request);
-            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $data = $searchForm->getData();
-                dd($data);
-            } elseif ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $session->set('driver', $driver);
 
                 return $this->redirectToRoute('stepTwo');
@@ -165,7 +166,6 @@ class DriverController extends AbstractController
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'searchForm' => $searchForm->createView(),
             ]);
         } else {
             $session->clear();
@@ -222,10 +222,16 @@ class DriverController extends AbstractController
     public function searchForm()
     {
         $searchForm = $this->createFormBuilder(null)
-                    ->add('search', TextType::class, array(
+                    ->add('firstName', TextType::class, array(
                         'required' => false,
                     ))
-                    ->add('submit', SubmitType::class, array(
+                    ->add('lastName', TextType::class, array(
+                        'required' => false,
+                    ))
+                    ->add('cin', TextType::class, array(
+                        'required' => false,
+                    ))
+                    ->add('search', SubmitType::class, array(
                         'attr' => [
                             'class' => 'btn btn-primary',
                         ],
@@ -233,13 +239,5 @@ class DriverController extends AbstractController
                 ->getForm();
 
         return $searchForm;
-    }
-
-    /**
-     * @Route("/searchDriver", name="searchDriver")
-     */
-    public function searchDriver(Request $request)
-    {
-        dd($request);
     }
 }

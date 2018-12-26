@@ -97,12 +97,18 @@ class Driver
      */
     private $busy;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="driver")
+     */
+    private $fuelReconciliations;
+
 
     public function __construct()
     {
         $this->paymentDrivers = new ArrayCollection();
         $this->missions = new ArrayCollection();
         $this->vehicleType = new ArrayCollection();
+        $this->fuelReconciliations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -355,6 +361,37 @@ class Driver
     public function setBusy(?bool $busy): self
     {
         $this->busy = $busy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FuelReconciliation[]
+     */
+    public function getFuelReconciliations(): Collection
+    {
+        return $this->fuelReconciliations;
+    }
+
+    public function addFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if (!$this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations[] = $fuelReconciliation;
+            $fuelReconciliation->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if ($this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations->removeElement($fuelReconciliation);
+            // set the owning side to null (unless already changed)
+            if ($fuelReconciliation->getDriver() === $this) {
+                $fuelReconciliation->setDriver(null);
+            }
+        }
 
         return $this;
     }

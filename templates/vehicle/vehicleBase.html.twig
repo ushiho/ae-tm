@@ -30,6 +30,39 @@
     <div class="panel-body">
         <a title="Add new Vehicle" href="/vehicle/new" class="btn-group-justified btn-primary btn-xs " >ADD NEW </a>
         <br>
+        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+<tr class='first'>
+    <th colspan="12" class='fa-align-right text-capitalize text-center full'> Search for existing driver</th></tr>
+    <tr class='first'> 
+{{ form_start(searchForm) }}
+        <td>
+        {{ form_widget(searchForm.matricule, {
+            'attr': {
+                'class': 'bootstrap-select .col-6 .col-sm-4',
+                'placeholder': 'Matricule ...'
+                }
+        }) }}
+        </td>
+        <td>
+        {{
+            form_widget(searchForm.brand, {
+                'attr': {
+                    'class': 'bootstrap-select .col-6 .col-sm-4',
+                    'placeholder': 'Brand ...',
+                }
+            })
+        }}
+        </td>
+         <td>
+        {{ form_widget(searchForm.search, {
+            'attr': {
+                'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
+            }
+        }) }}
+        {{ form_end(searchForm) }}
+        </td>
+        </tr>
+    </table>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 {% if vehicles is empty or vehicles is null %}
