@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title">Search Reconciliation<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+              
+            </div>
+        </div>
+        <div class="panel-body">
+            <p class="content-group-lg"></p>
+
+            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            <div class="form-group">
+                <div class="control-label col-lg-2 text-semibold control-label required">
+                {{ form_label(form.firstDate) }}
+                </div>
+                <div class="col-lg-4">
+                    {{ form_widget(form.firstDate, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            
+                <div class="control-label col-lg-2 text-semibold control-label required">
+                {{ form_label(form.secondDate) }}
+                </div>
+                <div class="col-lg-4">
+                    {{ form_widget(form.secondDate, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-2">
+                    {{ form_label(form.department) }}
+                </div>
+                <div class="col-lg-4">
+                
+                    {{ form_widget(form.department, {'attr': {'class': 'bootstrap-select'}}) }}
+                </div>
+                <div class="col-lg-2">
+                    {{ form_label(form.driver) }}
+                </div>
+                <div class="col-lg-4">
+                
+                    {{ form_widget(form.driver, {'attr': {'class': 'bootstrap-select'}}) }}
+                </div>
+            
+            </div>
+            <div class="form-group">
+                <div class="col-lg-2">
+                    {{ form_label(form.project) }}
+                </div>
+                <div class="col-lg-4">
+                
+                    {{ form_widget(form.project, {'attr': {'class': 'bootstrap-select'}}) }}
+                </div>
+                <div class="col-lg-2">
+                    {{ form_label(form.vehicle) }}
+                </div>
+                <div class="col-lg-4">
+                
+                    {{ form_widget(form.vehicle, {'attr': {'class': 'bootstrap-select'}}) }}
+                </div>
+           </div>
+
+            <br />
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary legitRipple">Validate <i class="icon-arrow-right14 position-right"></i></button>
+
+
+            </div>
+
+        
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <div class="panel panel-flat">
+    <div class="panel-heading">
+        <h5 class="panel-title">Search Results</h5>
+        <div class="heading-elements">
+            <ul class="icons-list">
+                <li><a data-action="collapse"></a></li>
+                <li><a data-action="reload"></a></li>
+                <li><a data-action="close"></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <span title="Create a new fuel de reconciliations" class="pull-right"><a href="{{ path('fuelreconciliation_new') }}" class="btn btn-labeled btn-labeled-left bg-blue heading-btn"><b><i class="icon-plus3"></i></b> Create</a></span>
+    </div>
+
+    <table class="table datatable-responsive table-bordered table-hover datatable-highlight">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Immatricule</th>
+                <th>Driver's Name</th>
+                <th>Department</th>
+                <th>KM</th>
+                <th>Liters</th>
+                <th>Amount</th>
+                <th>Is Paid</th>
+                <th>Vehicle Type</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set index = 0 %}
+            {% set total = 0 %}
+            {% for fuelReconciliation in list %}
+                {% set total = total + fuelReconciliation.amount %}
+                <tr data-type="reconciliation" data-id="{{ fuelReconciliation.id }}">
+                    <td>{% if fuelReconciliation.dateCreation %}{{ fuelReconciliation.dateCreation|date('Y-m-d') }}{% endif %}</td>
+                    <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                    <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
+                    <td>{{ fuelReconciliation.department.name }}</td>
+                    <td>{{ fuelReconciliation.vehicle.kilometrage }}</td>
+                    <td>{{ fuelReconciliation.liters }}</td>
+                    <td>{{ fuelReconciliation.amount }}</td>
+                    <td>
+                        <span class="label {% if fuelReconciliation.isPayed %}label-success{% else %}label-danger{% endif %}">
+                            {% if fuelReconciliation.isPayed %}Yes{% else %}No{% endif %}</span>
+                    </td>
+                    <td>{{ fuelReconciliation.vehicle.type }}</td>
+                    <td>{{ fuelReconciliation.remarks }}</td>
+                </tr>
+                </tr>
+
+            {% endfor %}
+            <tr>
+                <td colspan="12"></td>
+            </tr>
+            <tr class="info">
+                <td colspan="6" class="text-center">TOTAL</td>
+                <td colspan="6">{{ total}} MAD
+                </td>
+
+            </tr>
+        
+
+        </tbody>
+        
+    </table>
+
+        <div class="panel-body">
+            <div class="text-center">
+                <button type="button" id="add_to_print" class="btn btn-success legitRipple">Add to print list <i class="icon-printer position-left"></i></button>
+
+
+            </div>
+        </div>
+</div>
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.rawgit.com/needim/noty/77268c46/lib/noty.css"/>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="https://cdn.rawgit.com/needim/noty/77268c46/lib/noty.min.js"></script>
+    <script type="text/javascript">
+            var add_reconciliations_to_print_path = "{{ path('add_reconciliation_to_print') }}";
+            $(document).ready(function(){
+                $('#add_to_print').on('click',function(){
+                    var reconciliations = [];
+                    $('tr[data-type="reconciliation"]').each(function(index,reconciliation){
+                        reconciliations.push($(this).data('id'));
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: add_reconciliations_to_print_path,
+                        data: {reconciliations :reconciliations},
+                        success: function (data) {
+                            console.log(data);
+                            new Noty({
+                                    type: 'info',
+                                    layout: 'topRight',
+                                    duration: 1000,
+                                    text: 'Success <br/>The reconciliations have been added to print side !',
+                            }).show();
+                        },
+                        error: function (data) {
+                            new Noty({
+                                type: 'error',
+                                layout: 'topRight',
+                                duration: 1000,
+                                text: 'Error <br/>Something goes wrong, please try again !',
+                            }).show();
+                        }
+                    });
+                })
+            });
+
+    </script>
+{% endblock %}

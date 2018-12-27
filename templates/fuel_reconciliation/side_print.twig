@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">Print Side : </h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+        </div>
+
+        <table class="table datatable-responsive table-bordered table-hover datatable-highlight">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Immatricule</th>
+                <th>Driver</th>
+                <th>Department</th>
+                <th>KM</th>
+                <th>Liters</th>
+                <th>Amount</th>
+                <th>Paid</th>
+                <th>Vehicle</th>
+                <th>Note</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set index = 0 %}
+            {% set total = 0 %}
+            {% for project in printSide.projects %}
+
+                {% for fuelReconciliation in project.reconciliations %}
+                    {% set total = total + fuelReconciliation.amount %}
+                    <tr data-type="reconciliation" data-id="{{ fuelReconciliation.id }}">
+                        <td>{% if fuelReconciliation.dateCreation %}{{ fuelReconciliation.dateCreation|date('Y-m-d') }}{% endif %}</td>
+                        <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                        <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
+                        <td>{{ fuelReconciliation.department.name }}</td>
+                        <td>{{ fuelReconciliation.vehicle.kilometrage }}</td>
+                        <td>{{ fuelReconciliation.liters }}</td>
+                        <td>{{ fuelReconciliation.amount }}</td>
+                        <td>
+                        <span class="label {% if fuelReconciliation.isPayed %}label-success{% else %}label-danger{% endif %}">
+                            {% if fuelReconciliation.isPayed %}Yes{% else %}No{% endif %}</span>
+                        </td>
+                        <td>{{ fuelReconciliation.vehicle.type }}</td>
+                        <td>{{ fuelReconciliation.remarks }}</td>
+                        <td class="text-center">
+                            <div class="">
+                                <a title="Remove reconciliation"
+                                   href="{{ path('remove_reconciliation_from_print_side', { 'id': fuelReconciliation.id }) }}"
+                                   class="text-primary legitRipple">
+                                    <i class="icon-trash position-left"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tr>
+                {% endfor %}
+
+                <tr class="success">
+                    <td colspan="3">&nbsp;</td>
+                    <td colspan="3" class="text-center">Sub Total</td>
+                    <td colspan="4">{{ attribute(printSide.subTotals,project.id) }} MAD
+                    <td class="text-center">
+                        <div class="">
+                            <a title="Remove project"
+                               href="{{ path('remove_project_from_print_side', { 'id': project.id }) }}"
+                               class="text-primary legitRipple">
+                                <i class="icon-trash position-left"></i>
+                            </a>
+                        </div>
+                    </td>
+                    </td>
+
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="12"></td>
+            </tr>
+            <tr class="warning">
+                <td colspan="6" class="text-center">TOTAL</td>
+                <td colspan="6">{{ total }} MAD
+                </td>
+
+            </tr>
+
+
+            </tbody>
+
+        </table>
+
+        <div class="panel-body">
+            <div class="text-center">
+                <a type="button" href="{{ path('invoice_new') }}" id="export-to-excel"
+                   class="btn btn-success legitRipple">create Invoice <i
+                            class="icon-file-plus position-left"></i></a>
+                <a type="button" href="{{ path('clean_print_side') }}" class="btn btn-warning legitRipple">Clean Print
+                    Side <i class="icon-trash position-left"></i></a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.rawgit.com/needim/noty/77268c46/lib/noty.css"/>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="https://cdn.rawgit.com/needim/noty/77268c46/lib/noty.min.js"></script>
+    <script type="text/javascript">
+        var add_reconciliations_to_print_path = "{{ path('add_reconciliation_to_print') }}";
+        $(document).ready(function () {
+            $('#add_to_print').on('click', function () {
+                var reconciliations = [];
+                $('tr[data-type="reconciliation"]').each(function (index, reconciliation) {
+                    reconciliations.push($(this).data('id'));
+                });
+                $.ajax({
+                    type: "POST",
+                    url: add_reconciliations_to_print_path,
+                    data: {reconciliations: reconciliations},
+                    success: function (data) {
+                        console.log(data);
+                        new Noty({
+                            type: 'info',
+                            layout: 'topRight',
+                            duration: 1000,
+                            text: 'Success <br/>The reconciliations have been added to print side !',
+                        }).show();
+                    },
+                    error: function (data) {
+                        new Noty({
+                            type: 'error',
+                            layout: 'topRight',
+                            duration: 1000,
+                            text: 'Error <br/>Something goes wrong, please try again !',
+                        }).show();
+                    }
+                });
+            })
+        });
+
+    </script>
+{% endblock %}

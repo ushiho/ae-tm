@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title">Search Invoices<a class="heading-elements-toggle"><i
+                            class="icon-more"></i></a></h6>
+            <div class="heading-elements">
+
+            </div>
+        </div>
+        <div class="panel-body">
+            <p class="content-group-lg"></p>
+
+            <form action="{{ path('invoice_index') }}" method="post">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="number" class="required">Invoice N°</label>
+                        <input type="integer" id="number"
+                               name="number"
+                               required="required" class="form-control">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="date" class="">Date</label>
+                        <input type="date" id="date"
+                               name="date" class="form-control">
+                    </div>
+                </div>
+                <br/>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary legitRipple">Validate <i
+                                class="icon-arrow-right14 position-right"></i></button>
+
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h5 class="panel-title">Invoices list</h5>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse"></a></li>
+                    <li><a data-action="reload"></a></li>
+                    <li><a data-action="close"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+
+            <table class="table datatable-responsive table-bordered table-hover datatable-highlight">
+                <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Liters</th>
+                    <th>Is Paid</th>
+
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.number }}</td>
+                        <td>{% if invoice.dateCreation %}{{ invoice.dateCreation|date('Y-m-d') }}{% endif %}</td>
+                        <td>{{ invoice.amount }}</td>
+                        <td>{{ invoice.liters }}</td>
+                        <td>
+                            <span class="label {% if invoice.isPaid %}label-success{% else %}label-danger{% endif %}">{% if invoice.isPaid %}Yes{% else %}No{% endif %}</span>
+                        </td>
+
+
+                        <td class="text-center">
+                            <div class="">
+                                <a title="Show the invoice" href="{{ path('invoice_show', { 'id': invoice.id }) }}"
+                                   class="text-primary legitRipple"><i class="icon-eye position-left"></i></a>
+                                {% if invoice.isPaid == false %}
+                                    <a title="Mark as Paid" href="{{ path('invoice_as_paid', { 'id': invoice.id }) }}"
+                                       class="text-primary legitRipple"><i
+                                                class="icon-checkmark3 position-left"></i></a>
+                                {% endif %}
+                                <a title="Download Invoice" href="{{ asset('spreadsheets/'~invoice.excelFile~'.xls') }}"
+                                   class="text-primary legitRipple"><i class="icon-download position-left"></i></a>
+                                <a title="Delete"
+                                   onclick="return confirm('Are You sure ?');"
+                                   href="{{ path('invoice_delete', { 'id': invoice.id }) }}"
+                                   class="text-danger legitRipple"><i class="icon-trash position-left"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -81,6 +81,11 @@ class FuelReconciliation
      */
     private $invoice;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPaid;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,7 +115,7 @@ class FuelReconciliation
         return $this;
     }
 
-    public function getTotalLitres(): self
+    public function getTotalLitres()
     {
         return $this->totalLitres;
     }
@@ -122,7 +127,7 @@ class FuelReconciliation
         return $this;
     }
 
-    public function getKilometrage(): self
+    public function getKilometrage()
     {
         return $this->kilometrage;
     }
@@ -226,6 +231,18 @@ class FuelReconciliation
     public function setInvoice(?Invoice $invoice): self
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    public function getIsPaid(): ?bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(bool $isPaid): self
+    {
+        $this->isPaid = $isPaid;
 
         return $this;
     }

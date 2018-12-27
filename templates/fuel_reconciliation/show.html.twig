@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title">Fuel Reconciliation<a class="heading-elements-toggle">
+                    <i class="icon-more"></i>
+                </a>
+            </h6>
+            <div class="heading-elements">
+                <a href="{{ path('fuelreconciliation_index') }}" class="btn btn-primary btn-xs ">
+                    <b>
+                        <i class="icon-loop3"></i>
+                    </b>
+                    Back to list</a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <table class="table">
+                        <tbody>
+                            {# <tr>
+                <th>Receipt N°</th>
+                <td>{{ fuelReconciliation.uiid }}</td>
+            </tr> #}
+                            <tr>
+                                <th>Created At</th>
+                                <td>
+                                    {% if fuelReconciliation.createdAt %}{{ fuelReconciliation.createdAt|date('Y-m-d H:i') }}
+                                    {% endif %}
+                                </td>
+                                <th>Driver</th>
+                                <td style="text-anchor: 10px">{{ fuelReconciliation.driver.firstName }}
+                                    {{ fuelReconciliation.driver.lastName }}
+                                    {{ fuelReconciliation.driver.phone|default('-') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Car</th>
+                                <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                            </tr>
+                            <tr>
+                                <th>Mileage</th>
+                                <td>{{ fuelReconciliation.kilometerage}}</td>
+                            </tr>
+                            <tr>
+                                <th>Liters</th>
+                                <td>{{ fuelReconciliation.totalLiters }}</td>
+                            </tr>
+                            <tr>
+                                <th>Amount</th>
+                                <td>{{ fuelReconciliation.totalAmount }}</td>
+                            </tr>
+                            <tr>
+                                <th>Factured</th>
+                                <td> {% if fuelReconciliation.invoice == null %} NO {% else %} YES {% endif %} </td>
+                            </tr>
+                            <tr>
+                                <th>Paid</th>
+                                <td>
+                                    {% if fuelReconciliation.isPaid %}Yes{% else %}No{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Note</th>
+                                <td>{{ fuelReconciliation.note }}</td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="heading-elements pull-right">
+                <div class="col-md-12">
+                    <div class="text-right">
+                        <div class="btn-group">
+                            <a class="btn btn-primary legitRipple" href="{{ path('editFuelReconciliation', { 'id': fuelReconciliation.id }) }}">Update<i class="icon-rotate-cw2 position-right"></i>
+                            </a>
+                            <a onclick="return confirm('Are you sure that you wan't to delete this item?.');" class="btn btn-danger legitRipple" href="{{ path('fuelreconciliation_delete', { 'id': fuelReconciliation.id }) }}">Delete
+                                <i class="icon-trash-alt position-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

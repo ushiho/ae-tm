@@ -1,0 +1,70 @@
+{% extends 'gas_station/gasStationBase.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">
+                    {% if gasStation.id == null %}Add Gaz Station{% else %}Edit Gaz Station{% endif %}</h3>
+    </div>
+{% endblock %}
+{{ form_start(form) }}
+
+
+    <div class="panel-body">
+        <div class="container-fluid table-responsive">
+            <br>
+                <table class="listing form table table-striped table-hover" >
+                    <tr>
+                        <th>
+                            <th class="full" colspan="4">Enter Gaz Station information</th>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.name) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.name, {'attr' :
+                        {'placeholder':'Gaz Station Name', 'class':'text' }})
+                            }}</td>
+                        <td class="first" width="150" >
+                            <strong>{{ form_label(form.phone) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.phone, {'attr' :
+                        {'placeholder':'Phone number', 'class':'text' }}) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.address) }}</strong>
+                        </td>
+                        <td class="last" width="172" colspan="4">{{ form_widget(form.address, {'attr' :
+                                {'placeholder':'Gaz Station Address', 'class':'text' }}) }}</td>
+                    </tr>
+                </table>
+        </div>
+            <br>
+            {{ form_end(form) }}
+            <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                {# <button title="Show All Users" href="{{ path('allUsers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left"> Back </button> #}
+                    <a title="Show All Gaz Station" href="{{ path('allGasStation') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left">  Back  </a>
+                </div>
+                <div class="btn-group">
+                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if gasStation.id %}Update{% else %}Create{% endif %}</button>
+                </div>
+             </div>
+        </div>
+    </div>
+
+   {# <input class="form-control"  type="date" name="bday">#}
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

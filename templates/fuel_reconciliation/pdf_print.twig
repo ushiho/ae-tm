@@ -1,0 +1,182 @@
+<page orientation="L" format="A4">
+    {#% include 'fuelreconciliation/styles.html.twig' %#}
+    <style>
+        body {
+            background-color: white;
+        }
+
+        .padding-r-5 {
+            padding-right: 5px;
+        }
+
+        .padding-5 {
+            paddingt: 5px;
+        }
+
+        label.required:after {
+            content: " * ";
+            color: red;
+        }
+
+        form div[id^="appbundle"] div {
+            margin-bottom: 25px;
+        }
+
+        form div[id^="appbundle"] div input {
+            margin-top: -12px;
+        }
+
+        body .content-wrapper {
+            background: url("{{  asset('assets/images/background.jpg')}}") 50% 0 no-repeat fixed #f7f7f7;
+            background-size: cover;
+        }
+
+        th {
+            font-size: 13px;
+            height: 10px;
+        }
+        .success {
+            background-color: #809fff;
+        }
+        warning{
+
+        }
+        .blue {
+
+        }
+        table.table.datatable-responsive.table-bordered.table-hover.datatable-highlight {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .row{
+            display: block;
+            height: 30px;
+        }
+        div.col-md-4 table, table {
+            width: 96%;
+            border-collapse: collapse;
+        }
+        td ,th{
+            border: 1px solid black;
+            width: 70pt;
+            text-align: left;
+        }
+        table.header td,table.header th {
+            border: 0px;
+            text-align: left;
+            width: 200px;
+        }
+        table.header tr{
+            width: 500px;
+        }
+        table.definition td,table.definition th{
+            border : 1px solid black;
+        }
+    </style>
+    <div style="margin : 20px;" class="panel panel-flat">
+        <div class="panel-body">
+            <p style="font-size: 25px;text-align: center;">FUEL STATION RECONCILIATION</p>
+        </div>
+        <div class="row">
+            <table class="header">
+                <tr>
+                    <td>
+                        <div class="col-md-4"style="width: 350px;float: left;display: inline-block">
+                            <table style="background-color: #57c957;" class="definition">
+                                <tr>
+                                    <td>Gaz Station</td>
+                                    <td>{{ printSide.gasStation }} </td>
+                                </tr>
+                                <tr>
+                                    <td>START DATE</td>
+                                    <td>{{ printSide.startDate|date('l d/m/Y')|upper }} </td>
+                                </tr>
+                                <tr>
+                                    <td>END DATE</td>
+                                    <td>{{ printSide.endDate|date('l d/m/Y')|upper }} </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="width: 410px;">&nbsp;</td>
+                    <td>
+                        <div class="col-md-4" style="width: 350px;float: right;display: inline-block">
+                            <table style="background-color: #57c957;" class="definition">
+                                <tr>
+                                    <td>PROJECT : {{ printSide.getGenericProjectName()|upper }} </td>
+                                </tr>
+                                <tr>
+                                    <td>AKRAM ELKOUZOUZ</td>
+                                </tr>
+                                <tr>
+                                    <td>+212 662-737535</td>
+                                </tr>
+                                <tr>
+                                    <td>N° {{ invoice.number }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <table class="table datatable-responsive table-bordered table-hover datatable-highlight">
+            <thead style="background-color: #aba8a8;">
+            <tr style="background-color: #aba8a8;text-align: center">
+                <th style="text-align: center" >Date</th>
+                <th style="width: 70pt; text-align: center;">Licence plate</th>
+                <th style="width: 100pt; text-align: center;">Driver</th>
+                <th style="text-align: center;">Department</th>
+                <th style="text-align: center;">Mileage</th>
+                <th style="text-align: center;">Liters</th>
+                <th style="text-align: center;">Amount</th>
+                <th style="text-align: center;">Car</th>
+                <th style="width: 200px; text-align: center;">Note</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set index = 0 %}
+            {% set total = 0 %}
+            {% for project in printSide.projects %}
+                {% set date_project = printSide.getProjectEarlierReconciliation(project) %}
+                <tr>
+                    <td class="warning" style="background-color: #ff6666;text-align: left" colspan="7">{{ date_project|date('d/m/Y') }} </td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                {% for fuelReconciliation in project.reconciliations %}
+                    {% set total = total + fuelReconciliation.amount %}
+                    <tr>
+                        <td>{% if fuelReconciliation.dateCreation %}{{ fuelReconciliation.dateCreation|date('d/m/Y') }}{% endif %}&nbsp;</td>
+                        <td>{{ fuelReconciliation.vehicle.mat }}&nbsp;</td>
+                        <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}&nbsp;</td>
+                        <td>{{ fuelReconciliation.department.name }}&nbsp;</td>
+                        <td style="text-align: right;">{{ fuelReconciliation.vehicle.kilometrage|number_format(2, '.', ' ') }}&nbsp;</td>
+                        <td style="text-align: right;">{{ fuelReconciliation.liters|number_format(2, '.', ' ') }}&nbsp;</td>
+                        <td style="text-align: right;">{{ fuelReconciliation.amount|number_format(2, '.', ' ') }}&nbsp;</td>
+                        <td>{{ fuelReconciliation.vehicle.type }}&nbsp;</td>
+                        <td>{{ fuelReconciliation.remarks }}&nbsp;</td>
+                    </tr>
+                {% endfor %}
+
+                <tr >
+                    <td style="background-color: #809fff;text-align: center;" class="success" colspan="5" class="text-center">Sub Total</td>
+                    <td class="success" colspan="1" style="text-align: right">{{ attribute(printSide.subLiterstotals,project.id)|number_format(2, '.', ' ') }}&nbsp;</td>
+                    <td class="success" colspan="1" style="text-align: right">{{ attribute(printSide.subTotals,project.id)|number_format(2, '.', ' ') }} &nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="9">&nbsp;</td>
+            </tr>
+            <tr style="background-color: #2eb8b8;">
+                <td colspan="5" class="text-center" style="text-align: center">TOTAL </td>
+                <td colspan="1" style="width: 80pt" style="text-align: right;">{{ printSide.totalLiters|number_format(2, '.', ' ') }} L&nbsp;</td>
+                <td colspan="1" style="width: 80pt" style="text-align: right;">{{ total |number_format(2, '.', ' ') }} &nbsp;</td>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</page>

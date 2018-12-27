@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block header %}
+    Fuel Reconciliations
+{% endblock %}
+{% block header_annex %}
+    <li><a href="index.html">Home</a></li>
+    <li class="active">Fuel Reconciliations</li>
+{% endblock %}
+
+{% block left_column %}
+    <a href="{{path('addFuelReconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Reconciliation</a>
+    <a href="{{path('all_fuel_reconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all reconciliations</a>
+    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search For</a>
+    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export data</a>
+{% endblock %}
+
+{% block center_column %}
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Reconciliations</h3>
+    </div>
+    <br>
+    <div class="panel-body">
+    {% if app.session.flashBag.has('fuelMsg') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('fuelMsg') %}
+                <strong>{{ msg }}</strong>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <a title="Add new Reconciliation" href="{{path('addFuelReconciliation')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
+        <br>
+        <div class="table-responsive">
+
+        <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
+             {% if fuelReconciliations is empty or fuelReconciliations is null %}
+                <tr class="bg">
+                    <td class="first" style="text-align:center;font-weight: bold;">There is no reconciliations add some <a href="{{path('addFuelReconciliation')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                </tr>
+            {% else %}
+        <thead>
+            <tr>
+                <th>Receipt N°</th>
+                <th>Date</th>
+                <th>Licence plate</th>
+                <th>Driver</th>
+                <th>Department</th>
+                <th>KM</th>
+
+
+                <th>Liters</th>
+                <th>Amount</th>
+                <th>Paid</th>
+
+
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for fuelReconciliation in fuelReconciliations %}
+            <tr>
+                 <td>{% if fuelReconciliation.createdAt %}{{ fuelReconciliation.createdAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                    <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
+                    <td>{{ fuelReconciliation.department.name }}</td>
+                    <td>{{ fuelReconciliation.kilometerage }}</td>
+                    <td>{{ fuelReconciliation.totalLiters }}</td>
+                    <td>{{ fuelReconciliation.totalAmount }}</td>
+                    <td><span class="label {% if fuelReconciliation.isPaid %}label-success{% else %}label-danger{% endif %}">{% if fuelReconciliation.isPaid %}Yes{% else %}No{% endif %}</span></td>
+
+            
+                <td class="text-center">
+                    <div class="">
+                        <a title="Afficher les détails" href="{{ path('fuelreconciliation_show', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple"><i class="icon-eye position-left"></i></a>
+                        <a title="Modifier" href="{{ path('fuelreconciliation_edit', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple"><i class="icon-pen position-left"></i></a>
+                        <a title="Delete" onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');" href="{{ path('fuelreconciliation_delete', { 'id': fuelReconciliation.id }) }}" class="text-danger legitRipple"><i class="icon-trash position-left"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

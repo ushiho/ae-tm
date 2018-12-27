@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Mission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Mission|null find($id, $lockMode = null, $lockVersion = null)
@@ -108,5 +109,27 @@ class MissionRepository extends ServiceEntityRepository
                     ->setParameter('val', $rent)
                     ->getQuery()
                     ->getOneOrNullResult();
+    }
+
+    public function findByDriverAndFinishedState($driver)
+    {
+        return $this->createQueryBuilder('m')
+                    ->andWhere('m.driver = :driver')
+                    ->setParameter('driver', $driver)
+                    ->andWhere('m.finished = false')
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function findByVehicleAndFinishedState($vehicle)
+    {
+        return $this->createQueryBuilder('m')
+                    ->innerJoin('App:Allocate', 'rent', Join::WITH, 'm.allocate = rent')
+                    ->innerJoin('App:Vehicle', 'v', Join::WITH, 'rent.vehicle = v')
+                    ->andWhere('m.finished = false')
+                    ->andWhere('v = :vehicle')
+                    ->setParameter('vehicle', $vehicle)
+                    ->getQuery()
+                    ->getResult();
     }
 }

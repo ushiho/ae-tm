@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+
+<div class="panel panel-flat">
+    <div class="panel-heading">
+        <h6 class="panel-title">Invoice<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
+        <div class="heading-elements">
+            <a href="{{ path('invoice_index') }}" class="btn btn-primary btn-xs "><b><i class="icon-loop3"></i></b> Back to list</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <table class="table">
+        <tbody>
+            <tr>
+                <th>Invoice N°</th>
+                <td>{{ invoice.number }}</td>
+            </tr>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>{{ invoice.amount }}</td>
+            </tr>
+            <tr>
+                <th>Liters</th>
+                <td>{{ invoice.liters }}</td>
+            </tr>
+            <tr>
+                <th>Is Paid</th>
+                <td><span class="label {% if invoice.isPaid %}label-success{% else %}label-danger{% endif %}">{% if invoice.isPaid %}Yes{% else %}No{% endif %}</span></td>
+            <tr>
+                <th>Date</th>
+                <td>{% if invoice.dateCreation %}{{ invoice.dateCreation|date('Y-m-d H:i') }}{% endif %}</td>
+            </tr>
+
+        </tbody>
+    </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="heading-elements pull-right">
+            <div class="col-md-12">
+                <div class="text-right">
+                    <div class="btn-group">
+                            <a type="button" href="{{ asset('spreadsheets/'~invoice.number~'_'~invoice.excelFile~'.xls') }}" id="export-to-excel"
+                               class="btn btn-success legitRipple">Export TO Excel
+                                <i class="icon-file-excel position-left"></i>
+                            </a>
+                            <a type="button" href="{{ asset('pdfs/'~invoice.number~'_'~invoice.excelFile~'.pdf') }}" id="export-to-pdf"
+                               class="btn btn-warning legitRipple">Export TO PDF
+                                <i class="icon-file-pdf position-left"></i>
+                            </a>
+                        {% if invoice.isPaid == false %}
+                        <a type="button" href="{{ path('invoice_as_paid',{'id':invoice.id }) }}" id="export-to-excel"
+                           class="btn btn-info legitRipple">Mark As Paid
+                            <i class="icon-checkmark3 position-left"></i>
+                        </a>
+                        {% endif %}
+                        <a onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');"  class="btn btn-danger legitRipple" href="{{ path('invoice_delete', { 'id': invoice.id }) }}">Delete <i class="icon-trash-alt position-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

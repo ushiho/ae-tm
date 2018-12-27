@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block header %}
+    Fuel Reconciliations
+{% endblock %}
+{% block header_annex %}
+    <li><a href="#">Home</a></li>
+    <li class="active">Fuel Reconciliations</li>
+{% endblock %}
+
+{% block left_column %}
+    <a href="{{path('addFuelReconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Reconciliation</a>
+    <a href="{{path('all_fuel_reconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all reconciliations</a>
+    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search For</a>
+    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export data</a>
+{% endblock %}
+
+{% block center_column %}
+{% block path %}
+
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">{% if fuelReconciliation.id == null %}Create Reconciliation
+                    {% else %}
+                    Edit Reconciliation
+                    {% endif %}</h3>
+    </div>
+{% endblock %}
+{{ form_start(form) }}
+
+
+    <div class="panel-body">
+    {% if app.session.flashBag.has('fuelMsg') %}
+        <div class=" text text-center alert alert-success error">
+            {% for msg in app.session.flashBag.get('fuelMsg') %}
+                <strong>{{ msg }}</strong>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <div class="container-fluid table-responsive">
+            <br>
+                <table class="listing form table table-striped table-hover" >
+                    <tr>
+                        <th>
+                            <th class="full" colspan="4">Enter Reconciliation information</th>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.totalAmount) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.totalAmount, {'attr' :
+                        {'placeholder':'Total Amount', 'class':'text' }})
+                            }}</td>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.totalLitres) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.totalLitres, {'attr' :
+                                {'placeholder':'Total Litres', 'class':'text' }}) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.kilometrage) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.kilometrage, {'attr' :
+                        {'placeholder':'Kilometrage', 'class':'text' }}) }}</td>
+                        <td class="first" width="150">
+                            <strong>{{ form_label(form.gasStation) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.gasStation) }}</td>
+                    </tr>
+                     <tr>
+
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.vehicle) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.vehicle) }}</td>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.driver) }}</strong>
+                        </td>
+                        <td class="last" width="172">{{ form_widget(form.driver) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172" rowspan="2">
+                            <strong>{{ form_label(form.note) }}</strong>
+                        </td>
+                        <td class="custom-select" colspan="4" width="172">{{ form_widget(form.note) }}
+                        </td>
+                    </tr>
+                </table>
+        </div>
+            <br>
+            <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                {# <button title="Show All Users" href="{{ path('allUsers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left"> Back </button> #}
+                    <a title="Show All Users" href="{{ path('all_fuel_reconciliation') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left">  Back  </a>
+                </div>
+                <div class="btn-group">
+                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if fuelReconciliation.id %}Update{% else %}Create{% endif %}</button>
+                </div>
+             </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+   {# <input class="form-control"  type="date" name="bday">#}
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
