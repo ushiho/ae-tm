@@ -92,6 +92,7 @@ class DriverRepository extends ServiceEntityRepository
     public function findByCriteria($data)
     {
         return $this->createQueryBuilder('d')
+                    ->orWhere('1 = 1')
                     ->orWhere('d.firstName = :first')
                     ->setParameter('first', $data['firstName'])
                     ->orWhere('d.lastName = :last')

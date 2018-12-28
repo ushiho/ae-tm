@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverController extends AbstractController
@@ -33,7 +33,7 @@ class DriverController extends AbstractController
         $searchForm = $this->searchForm();
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $drivers = $repo->findByCriteria($searchForm->getData());
+            $drivers = $searchForm->getData();
         }
 
         return $this->render('driver/driverBase.html.twig', [
@@ -222,14 +222,18 @@ class DriverController extends AbstractController
     public function searchForm()
     {
         $searchForm = $this->createFormBuilder(null)
-                    ->add('firstName', TextType::class, array(
-                        'required' => false,
-                    ))
-                    ->add('lastName', TextType::class, array(
-                        'required' => false,
-                    ))
-                    ->add('cin', TextType::class, array(
-                        'required' => false,
+                    ->add('firstName', EntityType::class, array(
+                        'class' => Driver::class,
+                        'required' => true,
+                        'choice_label' => function (Driver $driver) {
+                            return $driver->getLastName().' - '.$driver->getFirstName().' - '.$driver->getCin();
+                        },
+                        'placeholder' => 'Select a value',
+                        'attr' => array(
+                        'class' => 'bootstrap-select',
+                        'data-live-search' => 'true',
+                        'data-width' => '100%',
+                        ),
                     ))
                     ->add('search', SubmitType::class, array(
                         'attr' => [

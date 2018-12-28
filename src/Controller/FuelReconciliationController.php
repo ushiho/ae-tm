@@ -8,9 +8,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\FuelReconciliationRepository;
 use App\Entity\FuelReconciliation;
 use App\Form\FuelReconciliationType;
+use App\Model\PrintSide;
 use App\Entity\Mission;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
+use App\Form\SearchReconciliationType;
+use App\Entity\Invoice;
 
 class FuelReconciliationController extends AbstractController
 {
@@ -31,7 +34,7 @@ class FuelReconciliationController extends AbstractController
     }
 
     /**
-     * @Route("fuel/reconciliation/search", name="fuel_reconciliation_search")
+     * @Route("fuel/reconciliation/search", name="searchFuelReconciliation")
      */
     public function searchAction(Request $request, FuelReconciliationRepository $repo)
     {
@@ -40,6 +43,9 @@ class FuelReconciliationController extends AbstractController
         }
         $form = $this->createForm(SearchReconciliationType::class);
         $form->handleRequest($request);
+        $res = [];
+        $subTotals = 0;
+        $total = 0;
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $driverID = ($data['driver'] !== null) ? $data['driver']->getId() : 0;
@@ -50,16 +56,17 @@ class FuelReconciliationController extends AbstractController
             $secondDate = $data['secondDate'];
             $gasStation = $data['gasStation'];
             $isPaid = $data['isPaid'];
-            $list = $repo->getReconciliations($driverID, $vehicleID, $departmentID, $projectID, $firstDate, $secondDate, $isPaid, $gasStation);
+            $res = $repo->getReconciliations($driverID, $vehicleID, $departmentID, $projectID, $firstDate, $secondDate, $isPaid, $gasStation);
             $subTotals = $repo->getSubTotals();
             $total = $repo->getTotal();
         }
 
-        return $this->render('fuelreconciliation/search.html.twig', array(
+        return $this->render('fuel_reconciliation/search.html.twig', array(
             'form' => $form->createView(),
-            'list' => $list,
+            'list' => $res,
             'subTotals' => $subTotals,
             'total' => $total,
+            'connectedUser' => $this->getUser(),
         ));
     }
 
@@ -83,6 +90,16 @@ class FuelReconciliationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($fuelReconciliation->getVehicle() != null || $fuelReconciliation->getDriver() != null) {
                 $fuelReconciliation = $this->completeDatas($fuelReconciliation, $manager);
+                if (!$fuelReconciliation->getDriver() or !$fuelReconciliation->getVehicle()) {
+                    $request->getSession()->getFlashBag()->add('fuelMsg', 'The mission linked to this driver/vehicle is finished.');
+
+                    return $this->render('fuel_reconciliation/new.html.twig', array(
+                        'fuelReconciliation' => $fuelReconciliation,
+                        'form' => $form->createView(),
+                        'connectedUser' => $this->getUser(),
+                        'fuelReconciliation' => $fuelReconciliation,
+                    ));
+                }
                 $manager->persist($fuelReconciliation);
                 $manager->flush();
 
@@ -116,34 +133,7 @@ class FuelReconciliationController extends AbstractController
         ));
     }
 
-    // /**
-    //  * Displays a form to edit an existing fuelReconciliation entity.
-    //  *
-    //  * @Route("/{id}/edit", name="fuelreconciliation_edit")
-    //  * @Method({"GET", "POST"})
-    //  */
-    // public function editAction(Request $request, FuelReconciliation $fuelReconciliation)
-    // {
-    //     $deleteForm = $this->createDeleteForm($fuelReconciliation);
-    //     $editForm = $this->createForm('AppBundle\Form\FuelReconciliationType', $fuelReconciliation);
-    //     $editForm->handleRequest($request);
-
-    //     if ($editForm->isSubmitted() && $editForm->isValid()) {
-    //         $this->getDoctrine()->getManager()->flush();
-
-    //         return $this->redirectToRoute('fuelreconciliation_edit', array('id' => $fuelReconciliation->getId()));
-    //     }
-
-    //     return $this->render('fuelreconciliation/edit.html.twig', array(
-    //         'fuelReconciliation' => $fuelReconciliation,
-    //         'edit_form' => $editForm->createView(),
-    //         'delete_form' => $deleteForm->createView(),
-    //     ));
-    // }
-
     /**
-     * Deletes a fuelReconciliation entity.
-     *
      * @Route("fuel/reconciliation/delete/{id}", name="deleteFuelReconciliation")
      * @Method("DELETE")
      */
@@ -158,29 +148,28 @@ class FuelReconciliationController extends AbstractController
         return $this->redirectToRoute('all_fuel_reconciliation');
     }
 
-    // /**
-    //  * @Route("/add-reconciliations-to-print", name="add_reconciliation_to_print",options={"expose"=true})
-    //  * @Method("POST|GET")
-    //  */
-    // public function addReconciliationsToPrintAction(Request $request)
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $reconciliations_ids = $request->get('reconciliations') ? $request->get('reconciliations') : array(3, 4, 1, 2);
-    //     $reconciliations = $em->getRepository('AppBundle:FuelReconciliation')->findReconciliationsByIds($reconciliations_ids);
-    //     $session = $this->get('session');
-    //     if (!$session->has('print-side')) {
-    //         $printSide = new PrintSide();
-    //         $session->set('print-side', $printSide);
-    //     }
-    //     $printSide = $this->get('session')->get('print-side');
-    //     $printSide->addReconciliations($reconciliations);
-    //     $session->set('print-side', $printSide);
+    /**
+     * @Route("/add-reconciliations-to-print", name="add_reconciliation_to_print",options={"expose"=true})
+     * @Method("POST|GET")
+     */
+    public function addReconciliationsToPrintAction(Request $request, FuelReconciliationRepository $repo)
+    {
+        $reconciliations_ids = $request->get('reconciliations') ? $request->get('reconciliations') : array(3, 4, 1, 2);
+        $reconciliations = $repo->findReconciliationsByIds($reconciliations_ids);
+        $session = $this->get('session');
+        if (!$session->has('print-side')) {
+            $printSide = new PrintSide();
+            $session->set('print-side', $printSide);
+        }
+        $printSide = $this->get('session')->get('print-side');
+        $printSide->addReconciliations($reconciliations);
+        $session->set('print-side', $printSide);
 
-    //     return new JsonResponse(['success' => 200]);
-    // }
+        return new JsonResponse(['success' => 200]);
+    }
 
     /**
-     * @Route("/print-side", name="print_side",options={"expose"=true})
+     * @Route("fuel/reconciliation/print-side", name="print_side",options={"expose"=true})
      * @Method("GET")
      */
     public function printSideAction(Request $request)
@@ -193,11 +182,11 @@ class FuelReconciliationController extends AbstractController
         $refershedPrintSide->exportToExcel();
         VarDumper::dump($refershedPrintSide);
 
-        return $this->render('fuelreconciliation/side_print.twig', array('printSide' => $refershedPrintSide));
+        return $this->render('fuel_reconciliation/side_print.twig', array('printSide' => $refershedPrintSide));
     }
 
     /**
-     * @Route("/clean-print-side", name="clean_print_side",options={"expose"=true})
+     * @Route("fuel/reconciliation/clean-print-side", name="clean_print_side",options={"expose"=true})
      * @Method("GET")
      */
     public function cleanPrintSide()
@@ -208,18 +197,18 @@ class FuelReconciliationController extends AbstractController
     }
 
     /**
-    //  * @Route("/export-print-side/{invoice}", name="export_print_side",options={"expose"=true})
-    //  * @Method("GET")
-    //  */
-    // public function exportToExcelAction(Invoice $invoice)
-    // {
-    //     $spreadsheet = $this->get('AppBundle\Service\ExcelGenerator')->generateExcel($invoice->getNumber());
-    //     $writer = new Xlsx($spreadsheet);
-    //     $writer->save('spreadsheets/'.$invoice->getExcelFile().'.xls');
-    //     $response = $this->createStreamedResponse($writer, $invoice->getExcelFile().'.xls');
+     * @Route("fuel/reconciliation/export-print-side/{invoice}", name="export_print_side",options={"expose"=true})
+     * @Method("GET")
+     */
+    public function exportToExcelAction(Invoice $invoice)
+    {
+        $spreadsheet = $this->get('App\Service\ExcelGenerator')->generateExcel($invoice->getNumber());
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('spreadsheets/'.$invoice->getExcelFile().'.xls');
+        $response = $this->createStreamedResponse($writer, $invoice->getExcelFile().'.xls');
 
-    //     return $response;
-    // }
+        return $response;
+    }
 
     /**
      * Stream the file as Response.
@@ -253,7 +242,7 @@ class FuelReconciliationController extends AbstractController
     }
 
     /**
-     * @Route("/remove-reconciliation/{id}", name="remove_reconciliation_from_print_side",options={"expose"=true})
+     * @Route("fuel/reconciliation/remove-reconciliation/{id}", name="remove_reconciliation_from_print_side",options={"expose"=true})
      * @Method("GET")
      */
     public function removeReconciliationFromPrintSideAction(FuelReconciliation $reconciliation)
@@ -268,7 +257,7 @@ class FuelReconciliationController extends AbstractController
     }
 
     /**
-     * @Route("/remove-project/{id}", name="remove_project_from_print_side",options={"expose"=true})
+     * @Route("fuel/reconciliation/remove-project/{id}", name="remove_project_from_print_side",options={"expose"=true})
      * @Method("GET")
      */
     public function removeeProjectFromPrintSideAction($id)
@@ -296,6 +285,7 @@ class FuelReconciliationController extends AbstractController
     public function completeDatas(FuelReconciliation $fuelReconciliation, ObjectManager $manager)
     {
         $mission = $this->testVehicleAndDriverToSearchForMission($fuelReconciliation, $manager);
+        $fuelReconciliation = new FuelReconciliation();
         if ($mission) {
             $fuelReconciliation->setCreatedAt(new \DateTime())
                                 ->setIsPaid(false)
@@ -305,21 +295,18 @@ class FuelReconciliationController extends AbstractController
                                 ->setProject($mission->getProject())
                                 ->setUser($this->getUser())
                                 ->setInvoice(null);
-
-            return $fuelReconciliation;
         }
+
+        return $fuelReconciliation;
     }
 
     public function testVehicleAndDriverToSearchForMission(FuelReconciliation $fuelReconciliation, ObjectManager $manager)
     {
         if ($fuelReconciliation->getDriver()) {
-            dd('driver not numm');
             $mission = $manager->getRepository(Mission::class)->findByDriverAndFinishedState($fuelReconciliation->getDriver());
         } elseif ($fuelReconciliation->getVehicle()) {
             $mission = $manager->getRepository(Mission::class)->findByVehicleAndFinishedState($fuelReconciliation->getVehicle());
-            dd($mission);
         } else {
-            dd('hello');
             $mission = null;
         }
 

@@ -9,12 +9,12 @@ use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Allocate;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class VehicleController extends AbstractController
 {
@@ -34,7 +34,7 @@ class VehicleController extends AbstractController
         $searchForm = $this->searchForm();
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $vehicles = $repo->findByCriteria($searchForm->getData());
+            $vehicles = $searchForm->getData();
         }
 
         return $this->render('vehicle/vehicleBase.html.twig', [
@@ -254,20 +254,25 @@ class VehicleController extends AbstractController
 
     public function searchForm()
     {
-        $searchForm = $this->createFormBuilder(null)
-                    ->add('brand', TextType::class, array(
-                        'required' => false,
-                    ))
-                    ->add('matricule', TextType::class, array(
-                        'required' => false,
-                    ))
-                    ->add('search', SubmitType::class, array(
-                        'attr' => [
-                            'class' => 'btn btn-primary',
-                        ],
-                    ))
-                ->getForm();
-
-        return $searchForm;
+        return $this->createFormBuilder(null)
+                            ->add('matricule', EntityType::class, array(
+                            'class' => Vehicle::class,
+                            'required' => true,
+                            'choice_label' => function (Vehicle $vehicle) {
+                                return $vehicle->getMatricule().' - '.$vehicle->getType()->getName().' - '.$vehicle->getBrand();
+                            },
+                            'placeholder' => 'Select a value',
+                            'attr' => array(
+                                'class' => 'bootstrap-select',
+                                'data-live-search' => 'true',
+                                'data-width' => '100%',
+                            ),
+                        ))
+                        ->add('search', SubmitType::class, array(
+                            'attr' => [
+                                'class' => 'btn btn-primary',
+                            ],
+                        ))
+                    ->getForm();
     }
 }

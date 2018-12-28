@@ -2,11 +2,11 @@
 
 namespace App\Form;
 
-use AppBundle\Entity\Department;
-use AppBundle\Entity\Driver;
-use AppBundle\Entity\GasStation;
-use AppBundle\Entity\Project;
-use AppBundle\Entity\Vehicle;
+use App\Entity\Department;
+use App\Entity\Driver;
+use App\Entity\GasStation;
+use App\Entity\Project;
+use App\Entity\Vehicle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,9 +16,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class SearchReconciliationType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -79,7 +76,7 @@ class SearchReconciliationType extends AbstractType
                 'class' => Vehicle::class,
                 'required' => false,
                 'choice_label' => function (Vehicle $vehicle) {
-                    return $vehicle->getMat().' - '.$vehicle->getType();
+                    return $vehicle->getMatricule().' - '.$vehicle->getType()->getName();
                 },
                 'placeholder' => 'Select a value',
                 'attr' => array(
@@ -118,8 +115,5 @@ class SearchReconciliationType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => FuelReconciliation::class,
-        ]);
     }
 }

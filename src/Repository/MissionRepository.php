@@ -118,7 +118,7 @@ class MissionRepository extends ServiceEntityRepository
                     ->setParameter('driver', $driver)
                     ->andWhere('m.finished = false')
                     ->getQuery()
-                    ->getResult();
+                    ->getOneOrNullResult();
     }
 
     public function findByVehicleAndFinishedState($vehicle)
@@ -130,6 +130,6 @@ class MissionRepository extends ServiceEntityRepository
                     ->andWhere('v = :vehicle')
                     ->setParameter('vehicle', $vehicle)
                     ->getQuery()
-                    ->getResult();
+                    ->getOneOrNullResult();
     }
 }

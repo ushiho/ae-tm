@@ -49,10 +49,9 @@
     <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
 <tr class='first'>
     <th colspan="12" class='fa-align-right text-capitalize text-center full'> Search for existing driver</th></tr>
-    <tr class='first'> 
-        <td>     
+    <tr class='first'>
+    <br>
         {{ form_start(searchForm) }}
-        </td>
         <td>
         {{ form_widget(searchForm.firstName, {
             'attr': {
@@ -61,36 +60,17 @@
                 }
         }) }}
         </td>
-        <td>
-        {{
-            form_widget(searchForm.lastName, {
-                'attr': {
-                    'class': 'bootstrap-select .col-6 .col-sm-4',
-                    'placeholder': 'Last Name',
-                }
-            })
-        }}
-        </td>
-        <td>
-        {{ form_widget(searchForm.cin, {
-                'attr': {
-                    'class': 'bootstrap-select .col-6 .col-sm-4',
-                    'placeholder': 'CIN',
-                }
-            })}}
-            </td>
-            <td>
-        {{ form_widget(searchForm.search, {
+        <td>{{ form_widget(searchForm.search, {
             'attr': {
                 'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
             }
-        }) }}
+        }) }}</td>
         {{ form_end(searchForm) }}
         </td>
         </tr>
     </table>
         <table class="table table-striped table-hover">
-            {% if drivers is empty or drivers is null %}
+            {% if drivers == null or drivers is empty %}
                 <tr class="bg">
                     <td class="first" style="text-align:center;font-weight: bold;">There is no driver add one <a href="/driver/new" style="color:red;text-decoration: underline black;">here</a></td>
                 </tr>

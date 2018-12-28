@@ -48,6 +48,13 @@ class Invoice
      */
     private $number;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="excelFile", type="string", length=255, nullable=true)
+     */
+    private $excelFile;
+
     public function __construct()
     {
         $this->reconciliations = new ArrayCollection();
@@ -147,5 +154,29 @@ class Invoice
         $this->number = $number;
 
         return $this;
+    }
+
+    /**
+     * Set excelFile.
+     *
+     * @param string $excelFile
+     *
+     * @return Invoice
+     */
+    public function setExcelFile($excelFile)
+    {
+        $this->excelFile = $excelFile;
+
+        return $this;
+    }
+
+    /**
+     * Get excelFile.
+     *
+     * @return string
+     */
+    public function getExcelFile()
+    {
+        return $this->excelFile;
     }
 }
