@@ -12,7 +12,6 @@
 
 {% endblock %}
 
-{{ form_start(form) }}
     <div class="panel-body">
 
         <div class="error">
@@ -27,13 +26,68 @@
         <h3 class="panel-title">
             <a class="btn-info btn-xs" href="#"> Step One: Create the driver</a></h3>
         <br>
-    
+        <div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Collapsible Group Item #1
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Collapsible Group Item #2
+        </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+      </div>
+    </div>
+  </div>
+<br>
+        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+<tr class='first'>
+    <th colspan="12" class='fa-align-right text-capitalize text-center full'> <span id="search" style="cursor: pointer;" >Search for existing driver</span></th></tr>
+    <div id="search_form" style="display: none;">
+        <tr class='first'>
+            {{ form_start(searchForm) }}
+            <td>
+            {{ form_widget(searchForm.firstName, {
+                'attr': {
+                    'class': 'bootstrap-select .col-6 .col-sm-4',
+                    'placeholder': 'First Name'
+                    }
+            }) }}
+            </td>
+            <td>{{ form_widget(searchForm.search, {
+                'attr': {
+                    'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
+                }
+            }) }}</td>
+            {{ form_end(searchForm) }}
+            </td>
+        </tr>
+    </div>
+    </table>
         <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
             {{ form_start(form) }}
                 <tr>
-                    <th class="fa-align-right text-capitalize text-center full" colspan="12">Enter driver information</th>
+                    <th class="fa-align-right text-capitalize text-center full" colspan="12"><span id="enter_info" style="cursor: pointer;">Enter driver information</span></th>
                 </tr>
-                <tr>
+            <div id="enter_info_form" style="display: none;">
+                    <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.firstName) }}</strong>
                     </td>
@@ -84,6 +138,7 @@
                     <td class="last">{{ form_widget(form.numberPhone, {
                         'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
                 </tr>
+            </div>
                 {{ form_end(form) }}
             </table>
             <br>
@@ -97,5 +152,4 @@
         </div>
     </div>
 </div>
-        {{ form_end(form) }}
 {% endblock %}

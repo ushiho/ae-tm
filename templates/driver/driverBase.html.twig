@@ -101,7 +101,7 @@
                                    class="btn btn-danger" >Delete</a>
                             {% endif %}
                             {% if driver.busy == false %}
-                                <a href="{{ path('addMission', {'id': driver.id}) }}" class="btn btn-primary  "> Add Mission</a>
+                                <a href="{{ path('addMissionToDriver', {'id': driver.id}) }}" class="btn btn-primary  "> Add Mission</a>
                                 {% endif %}
 
                         </div>

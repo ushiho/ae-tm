@@ -156,7 +156,12 @@ class DriverController extends AbstractController
                 $driver = new Driver();
             }
             $form = $this->createForm(DriverType::class, $driver);
+            $searchForm = $this->searchForm();
+            $searchForm->handleRequest($request);
             $form->handleRequest($request);
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $driver = $searchForm->getData();
+            }
             if ($form->isSubmitted() && $form->isValid()) {
                 $session->set('driver', $driver);
 
@@ -166,6 +171,7 @@ class DriverController extends AbstractController
             return $this->render('mission/driverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
+                'searchForm' => $searchForm->createView(),
             ]);
         } else {
             $session->clear();
@@ -221,7 +227,7 @@ class DriverController extends AbstractController
 
     public function searchForm()
     {
-        $searchForm = $this->createFormBuilder(null)
+        return $this->createFormBuilder(null)
                     ->add('firstName', EntityType::class, array(
                         'class' => Driver::class,
                         'required' => true,
@@ -241,7 +247,5 @@ class DriverController extends AbstractController
                         ],
                     ))
                 ->getForm();
-
-        return $searchForm;
     }
 }

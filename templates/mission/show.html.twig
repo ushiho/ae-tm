@@ -36,8 +36,8 @@
                 </tr>
                 <tr class="bg">
                     <td class="first"><strong>Rent Info</strong></td>
-                    <td class="last">{% if mission.allocate %}<a href="{{ path('showRent', { 'idRent' : mission.allocate.id}) }}" class="link">Show Rent's Info
-                            {% else %}Add Rent Info{% endif %}</a></td>
+                    <td class="last">{% if mission.allocate %}<a href="{{ path('showRent', { 'idRent' : mission.allocate.id}) }}" class="link">Show
+                            {% else %}Add {% endif %}</a></td>
                 </tr>
                 <tr class="bg">
                     <td class="first"><strong>Driver Expenses</strong></td>
@@ -63,10 +63,16 @@
                         <strong>Payment Supplier</strong>
                     </td>
                     <td class="last">
-                        {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
-                            <a href="{{path('paymentSupplierByMission', {'idMission': mission.id})}}" class="link">Show</a> &nbsp; Or &nbsp;
+                    {% if mission.payment.paymentSupplier and mission.payment.paymentSupplier is not empty %}
+                    <a href="{{path('paymentSupplierByMission', {'idMission': mission.id})}}" class="link">Show</a> &nbsp;&nbsp;
+                        {% if mission.payment.remainigPriceToSupplier != 0 %}
+                            <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                        {% else %}
+                            <strong class="link" style="color:red;">Finished</strong>
                         {% endif %}
+                    {% else %}
                         <a href="{{path('addPaymentSupplier')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                    {% endif %}
                     </td>
                 </tr>
                 <tr class="bg">
@@ -76,9 +82,14 @@
                     <td class="last">
                         {% if mission.payment.paymentDriver and mission.payment.paymentDriver is not empty %}
                             <a href="" class="link">Show</a>
-                            &nbsp;Or&nbsp;
+                            &nbsp;&nbsp;
+                            {% if  mission.payment.remainingDays != 0 %}
+                            <a href="{{path('addPaymentDriver')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
+                            {% else %}
+                            <strong class="link" style="color:red;">Finished</strong>
+                            {% endif %}
                         {% else %}
-                            <a href="" class="link">Add</a>
+                            <a href="{{path('addPaymentDriver')}}{{app.session.set('payment', mission.payment)}}" class="link">Add</a>
                         {% endif %}
                     </td>
                 </tr>
