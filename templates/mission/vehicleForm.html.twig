@@ -2,9 +2,7 @@
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title">
-    <a title="Add new Mission" href="{{path('addMission')}}" class="button">ADD NEW
-    </a></h3>
+        <h3 class="panel-title button">Step Two: Create Vehicle</h3>
     </div>
 
 
@@ -13,7 +11,6 @@
 {{ parent() }}
 
 {% endblock %}
-{{ form_start(form) }}
 <div class="panel-body">
 
         <div class="error">
@@ -25,16 +22,50 @@
             </div>{% endif %}</strong>
         </div>
     <div class="container-fluid table-responsive">
-        <h3 class="panel-title">
-            <a class="btn-info btn-xs" href="#" >Step Two: Create Vehicle</a></h3>
         <br>
+
+    <div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        Collapsible Group 1</a>
+      </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse in">
+      <div class="panel-body">
+        {{ form_start(searchForm) }}
         <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
-                <tr>
-                    <th>
-                    <th class="full" colspan="2">Enter Vehicle information</th>
+                <tr class='first'>
+                    <td>
+                    {{ form_widget(searchForm.matricule) }}
+                    </td>
                 </tr>
-                </tr>
-                <tr>
+        </table>
+        <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                    <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('stepOne') }}" >     Back</a>
+                </div>
+            <div class="btn-group">
+                <button type="submit"class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Next</button>
+            </div>
+        </div>
+            {{ form_end(searchForm) }}
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+        Collapsible Group 2</a>
+      </h4>
+    </div>
+    <div id="collapse2" class="panel-collapse collapse">
+      <div class="panel-body">
+            {{ form_start(form) }}
+        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+            <tr>
                     <td class="first" width="172">
                         <strong>{{ form_label(form.matricule) }}</strong>
                     </td>
@@ -61,8 +92,7 @@
                     <td class="last">{{ form_widget(form.brand, {'attr' : 
                     {'placeholder':'Vehicle Brand', 'class':'text' }}) }}</td>
                 </tr>
-            </table>
-            <br>
+        </table>
         <div class="btn-group btn-group-justified ">
                 <div class="btn-group">
                     <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('stepOne') }}" >     Back</a>
@@ -71,13 +101,11 @@
                 <button type="submit"class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Next</button>
             </div>
         </div>
-
-    </div>
-</div>
-
         {{ form_end(form) }}
-{% endblock %}
+      </div>
+    </div>
+  </div>
 
-{% block javascripts %}
+</div>
 
 {% endblock %}

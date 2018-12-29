@@ -14,7 +14,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverController extends AbstractController
 {
@@ -155,17 +154,22 @@ class DriverController extends AbstractController
             } else {
                 $driver = new Driver();
             }
-            $form = $this->createForm(DriverType::class, $driver);
             $searchForm = $this->searchForm();
             $searchForm->handleRequest($request);
+            $form = $this->createForm(DriverType::class, $driver);
             $form->handleRequest($request);
-            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $driver = $searchForm->getData();
-            }
             if ($form->isSubmitted() && $form->isValid()) {
-                $session->set('driver', $driver);
-
-                return $this->redirectToRoute('stepTwo');
+                return $this->toStepTwo($request, $driver);
+            }
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $driver = $searchForm->getData()['firstName'];
+                if ($driver->getId()) {
+                    if (!$driver->getBusy()) {
+                        return $this->toStepTwo($request, $driver);
+                    } else {
+                        $session->getFlashBag()->add('driverErro', 'The Driver selected has a mission not finished yet.');
+                    }
+                }
             }
 
             return $this->render('mission/driverForm.html.twig', [
@@ -179,6 +183,13 @@ class DriverController extends AbstractController
 
             return $this->redirectToRoute('allMissions');
         }
+    }
+
+    public function toStepTwo(Request $request, $driver)
+    {
+        $request->getSession()->set('driver', $driver);
+
+        return $this->redirectToRoute('stepTwo');
     }
 
     public function isBusy($driver)
@@ -232,20 +243,26 @@ class DriverController extends AbstractController
                         'class' => Driver::class,
                         'required' => true,
                         'choice_label' => function (Driver $driver) {
-                            return $driver->getLastName().' - '.$driver->getFirstName().' - '.$driver->getCin();
+                            return $driver->getLastName().' - '.$driver->getFirstName().' - '.$driver->getCin().' - '.$this->driverVehicleType($driver->getVehicleType()->toArray());
                         },
                         'placeholder' => 'Select a value',
                         'attr' => array(
                         'class' => 'bootstrap-select',
                         'data-live-search' => 'true',
                         'data-width' => '100%',
+                        'style' => 'cursor: pointer;',
                         ),
                     ))
-                    ->add('search', SubmitType::class, array(
-                        'attr' => [
-                            'class' => 'btn btn-primary',
-                        ],
-                    ))
                 ->getForm();
+    }
+
+    public function driverVehicleType(array $vehcileTypes)
+    {
+        $types = ' ';
+        foreach ($vehcileTypes as $type) {
+            $types .= $type->getName().', ';
+        }
+
+        return $types;
     }
 }

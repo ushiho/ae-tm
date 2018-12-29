@@ -13,7 +13,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Validator\Constraints\Date;
 
 class RentController extends AbstractController
 {
@@ -126,7 +125,7 @@ class RentController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($this->generateMsg($request->getSession(), $rent)) {
-                    $rent->setFinished($this->verifyDates($rent->getEndDate(), new \Date()));
+                    $rent->setFinished($this->verifyDateWithNewDate($rent->getEndDate()));
                     $request->getSession()->set('rent', $rent);
 
                     return $this->redirectToRoute('stepFour');
@@ -207,8 +206,8 @@ class RentController extends AbstractController
         return $rent;
     }
 
-    private function verifyDates(Mission $mission, Allocate $rent)
+    private function verifyDateWithNewDate(\DateTime $date)
     {
-        return $mission->getStartDate()->format('U') >= $rent->getStartDate()->format('U') && $mission->getEndDate()->format('U') <= $rent->getEndDate()->format('U');
+        return $date->format('U') >= (new \DateTime())->format('U');
     }
 }

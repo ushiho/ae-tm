@@ -9,12 +9,12 @@ use App\Repository\VehicleRepository;
 use App\Repository\VehicleTypeRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Allocate;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Repository\DriverRepository;
 
 class VehicleController extends AbstractController
 {
@@ -68,7 +68,6 @@ class VehicleController extends AbstractController
                 try {
                     $image = $image->move($this->getParameter('Vehicle_Images'), $imageName);
                 } catch (FileException $e) {
-                    dd(hello);
                     $request->getSession()->getFlashBag()->add('uploadError', 'Sorry, There were a problem with uploading please try again.');
 
                     return $this->redirectToRoute('addVehicle');
@@ -132,7 +131,7 @@ class VehicleController extends AbstractController
     /**
      * @Route("/project/mission/new/add_vehicle", name="stepTwo")
      */
-    public function addMissionStepTwo(Request $request, SessionInterface $session, ObjectManager $manager)
+    public function addMissionStepTwo(Request $request, SessionInterface $session, ObjectManager $manager, DriverRepository $driverRepo)
     {
         if ($session->get('driver')) {
             $vehicle = $session->get('vehicle');
@@ -141,22 +140,26 @@ class VehicleController extends AbstractController
             } else {
                 $vehicle = new Vehicle();
             }
+            $searchForm = $this->searchForm();
+            $searchForm->handleRequest($request);
             $form = $this->createForm(VehicleFormType::class, $vehicle);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($this->typeExistsInArray($vehicle, $session->get('driver')->getVehicleType()->toArray())) {
-                    $session->set('vehicle', $vehicle);
-
-                    return $this->redirectToRoute('stepTree');
-                } elseif ($vehicle->getType()) {
-                    $session->getFlashBag()->add('vehicleError', 'The driver '.$session->get('driver')->getFirstName()." can't drive this type of vehicle (".$vehicle->getType()->getName().'), Please specify
-                    another type.');
+                return $this->toStepThree($vehicle, $request, $driverRepo);
+            }
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $vehicle = $this->checkVehicleState($searchForm->getData()['matricule']);
+                if ($vehicle->getState() != 'Busy') {
+                    return $this->toStepThree($vehicle, $request, $driverRepo);
+                } else {
+                    $request->getSession()->getFlashBag()->add('vehicleError', 'The vehicle selected is busy.');
                 }
             }
 
             return $this->render('mission/vehicleForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
+                'searchForm' => $searchForm->createView(),
             ]);
         } else {
             $session->getFlashBag()->add('driverError', 'This is the first step in creating the mission process!');
@@ -165,11 +168,33 @@ class VehicleController extends AbstractController
         }
     }
 
+    public function toStepThree(Vehicle $vehicle, Request $request, DriverRepository $driverRepo)
+    {
+        $driver = $request->getSession()->get('driver');
+        if ($driver->getId()) {
+            $driver = $driverRepo->find($request->getSession()->get('driver')->getId());
+        }
+        // dd($driver);
+        $resTest = $this->typeExistsInArray($vehicle, $driver->getVehicleType()->toArray());
+        if ($resTest) {
+            $request->getSession()->set('vehicle', $vehicle);
+
+            return $this->redirectToRoute('stepTree');
+        } else {
+            $request->getSession()->getFlashBag()->add('vehicleError', 'The driver '.$driver->getFirstName()." can't drive this type of vehicle (".$vehicle->getType()->getName().'), Please specify
+            another type.');
+
+            return $this->redirectToRoute('stepTwo');
+        }
+    }
+
     public function typeExistsInArray(Vehicle $vehicle, array $types)
     {
-        foreach ($types as $value) {
-            if ($vehicle->getType() && $value->getId() == $vehicle->getType()->getId()) {
-                return true;
+        if ($vehicle->getType()) {
+            foreach ($types as $value) {
+                if ($value->getId() == $vehicle->getType()->getId()) {
+                    return true;
+                }
             }
         }
 
@@ -266,12 +291,8 @@ class VehicleController extends AbstractController
                                 'class' => 'bootstrap-select',
                                 'data-live-search' => 'true',
                                 'data-width' => '100%',
+                                'style' => 'cursor: pointer;',
                             ),
-                        ))
-                        ->add('search', SubmitType::class, array(
-                            'attr' => [
-                                'class' => 'btn btn-primary',
-                            ],
                         ))
                     ->getForm();
     }

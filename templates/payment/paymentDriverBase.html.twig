@@ -43,7 +43,9 @@
                         <th >Payment Date</th>
                         <th  width="180px" title="Total Rent expenses">Total Price To Pay (DH)</th>
                         <th  title="The price paid in that date">Price (DH)</th>
-                        <th title="Days Paid">Days</th>
+                        <th title="Days Paid">Days To Pay</th>
+                        <th  title="Number of days paid">Days</th>
+
                         <th  class="last">Actions</th>
                     </tr>
                     {% for payment in paymentDriver %}
@@ -51,6 +53,7 @@
                             <td >{{ payment.datePayment|date('d-M-Y') }}</td>
                             <td bgcolor="#359e98" >{{ payment.totalPrice }} DH</td>
                             <td bgcolor="#7c9e35">{{payment.price}} DH</td>
+                            <td bgcolor="#7c9e35">{{payment.daysToPay}} DH</td>
                             <td bgcolor="#7c9e35">{{payment.daysPaid}}</td>
                             <td>
                                 <div class="btn-group btn-sm">

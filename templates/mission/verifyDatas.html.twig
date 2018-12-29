@@ -3,13 +3,10 @@
 {% block center_column %}
     <div class="panel-heading main-color-bg">
         <h3 class="panel-title">
-           Missions Verify</h3>
+           Step Five: Data Verify</h3>
     </div>
 {% block path %}
 {{ parent() }}
-    <h3 class="panel-title">
-        <a class="btn-info btn-xs" href="#">Step Five: Verify Data</a>
-    </h3>
 {% endblock %}
    {# <div class="panel-body">#}
 
@@ -56,7 +53,6 @@
                 </table>
             </div>
             <hr>
-            <br>
            <div class="container-fluid table-responsive">
                 <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
                     <tr>
@@ -141,6 +137,9 @@
                         <tr class="bg">
                             <td class="first"><strong>Vehicle Type</strong></td>
                             <td class="last">
+                            <pre>
+                                {{ dump(driver.vehicleType) }}
+                            </pre>
                             {% for type in driver.vehicleType %}
                                 <strong style="color:red;">{{ type.name }}</strong>&nbsp;&nbsp;
                             {% endfor %}
@@ -169,22 +168,17 @@
             <div class="btn-group">
                 <a href="{{path('stepFour')}}" title="Back to modify your datas" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" id="modify"> Go Back</a>
             </div>
+           
             <div class="btn-group">
-                <a href="#" title="Back" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" id="back" style="display: none;"> Back</a>
-            </div>
-            <div class="btn-group">
-            <a href="{{ path('createMission')}}" title="Create this mission" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" id="validate" style="display:none;">
+            <a href="{{ path('createMission')}}" title="Create this mission" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" id="validate">
             {% if mission and mission.id %}Modify{% else %}Create{% endif %}</a>
             </div>
 
-            <div class="btn-group">
-                <a href="#" title="Next" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" id="next"> Next</a>
-            </div>
         </div>
    {# </div>#}
 {% endblock %}
 
-{% block javascripts %}
+{# {% block javascripts %}
 <script>
     $(document).ready(function(){
         $("#next").click(function(){
@@ -206,4 +200,4 @@
     });
 </script>
 
-{% endblock %}
+{% endblock %} #}

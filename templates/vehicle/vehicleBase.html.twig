@@ -44,13 +44,11 @@
         }) }}
         </td>
          <td>
-        {{ form_widget(searchForm.search, {
-            'attr': {
-                'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
-            }
-        }) }}
-        {{ form_end(searchForm) }}
+            <div class="btn-group">
+                <button type="submit"class="btn btn-success btn-xs glyphicon glyphicon-pencil"> Search</button>
+            </div>
         </td>
+        {{ form_end(searchForm) }}
         </tr>
     </table>
         <div class="table-responsive">

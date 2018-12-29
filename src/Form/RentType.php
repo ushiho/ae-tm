@@ -2,17 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\Mission;
-use App\Entity\Vehicle;
 use App\Entity\Allocate;
 use App\Entity\Supplier;
-use Doctrine\DBAL\Types\DecimalType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -38,7 +34,7 @@ class RentType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'style' => 'width:250px',
-                ]
+                ],
             ))
             ->add('price', NumberType::class)
             ->add('withDriver', ChoiceType::class, array(
@@ -49,14 +45,17 @@ class RentType extends AbstractType
                 'placeholder' => '-- Select --',
                 'attr' => [
                     'style' => 'width:250px',
-                ]
+                ],
             ))
             ->add('note', TextareaType::class, array(
+                'required' => false,
                 'attr' => [
                     'rows' => '3',
-                    'cols' => '60'
-                ]
-            ))
+                    'cols' => '60',
+                    'formnovalidate' => 'true',
+                    'novalidate' => 'novalidate',
+                ],
+                ))
             ->add('supplier', EntityType::class, array(
                 'class' => Supplier::class,
                 'placeholder' => '--Choose a supplier--',
@@ -64,7 +63,7 @@ class RentType extends AbstractType
                 'choice_label' => 'firstName',
                 'attr' => [
                     'style' => 'width:250px',
-                ]
+                ],
             ))
         ;
     }

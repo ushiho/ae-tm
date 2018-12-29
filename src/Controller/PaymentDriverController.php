@@ -92,14 +92,18 @@ class PaymentDriverController extends AbstractController
     public function action(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment = null, PaymentRepository $paymentRepo)
     {
         $payment = $paymentRepo->find($idPayment);
+        if (!$paymentDriver) {
+            $paymentDriver = new PaymentDriver();
+        }
         if ($payment || $paymentDriver) {
             $params = $this->testParams($payment, $paymentDriver, $request);
             $form = $this->createForm(PaymentDriverType::class, $params['paymentDriver']);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($this->compareDays($params['paymentDriver'], $request, $params['payment'], $params['days'])) {
-                    $paymentDriver->setPrice($params['price']);
-                    $paymentDriver = $this->completeDatas($params['paymentDriver'], $params['payment'], $driverRepo);
+                    $driver = $driverRepo->findByMission($payment->getMission());
+                    $paymentDriver = $this->completeDatas($params['paymentDriver'], $params['payment'], $driver);
+                    $paymentDriver->setPrice($driver->getSalaire() * $params['days']);
                     $this->save($manager, $paymentDriver, $params['payment'], $request, $params);
 
                     return $this->redirectToRoute('paymentDriverByPayment', [
@@ -122,12 +126,13 @@ class PaymentDriverController extends AbstractController
         }
     }
 
-    public function completeDatas(PaymentDriver $paymentDriver, Payment $payment, DriverRepository $driverRepo)
+    public function completeDatas(PaymentDriver $paymentDriver, Payment $payment, $driver)
     {
         if ($paymentDriver && !$paymentDriver->getId()) {
-            $paymentDriver->setDriver($driverRepo->findByMission($payment->getMission()))
+            $paymentDriver->setDriver($driver)
                         ->setPayment($payment)
-                        ->setTotalPrice($payment->getTotalPriceToPayToDriver());
+                        ->setTotalPrice($payment->getTotalPriceToPayToDriver())
+                        ->setDaysToPay($payment->getTotalDaysToPay());
         }
 
         return $paymentDriver;

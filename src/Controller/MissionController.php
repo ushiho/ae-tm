@@ -142,7 +142,7 @@ class MissionController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($this->verifyDates($mission, $session->get('rent'))) {
-                    $mission->setFinished($this->verifyDates($mission->getEndDate(), new \Date()));
+                    $mission->setFinished($this->verifyDateWithNewDate($mission->getEndDate()));
                     $session->set('mission', $mission);
 
                     return $this->redirectToRoute('verifyDatas');
@@ -163,6 +163,11 @@ class MissionController extends AbstractController
         return $mission->getStartDate()->format('U') >= $rent->getStartDate()->format('U') && $mission->getEndDate()->format('U') <= $rent->getEndDate()->format('U');
     }
 
+    private function verifyDateWithNewDate(\DateTime $date)
+    {
+        return $date->format('U') >= (new \DateTime())->format('U');
+    }
+
     public function daysBetween(String $dt1, String $dt2)
     {
         return date_diff(
@@ -174,7 +179,7 @@ class MissionController extends AbstractController
     /**
      * @Route("/project/mission/new/verify", name="verifyDatas")
      */
-    public function verifyDatas(Request $request, SessionInterface $session, ObjectManager $manager)
+    public function verifyDatas(Request $request, SessionInterface $session, ObjectManager $manager, DriverRepository $driverRepo)
     {
         if ($session->count() > 0) {
             $data = $this->getDatasFromSession($session);

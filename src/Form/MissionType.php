@@ -23,13 +23,14 @@ class MissionType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('note', TextareaType::class, array(
+                'required' => false,
                 'attr' => [
                     'rows' => '3',
                     'cols' => '60',
                     'formnovalidate' => 'true',
                     'novalidate' => 'novalidate',
                 ],
-            ))
+                ))
             ->add('department', EntityType::class, array(
                 'class' => Department::class,
                 'required' => true,
