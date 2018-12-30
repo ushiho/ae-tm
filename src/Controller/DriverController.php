@@ -162,7 +162,7 @@ class DriverController extends AbstractController
                 return $this->toStepTwo($request, $driver);
             }
             if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $driver = $searchForm->getData()['firstName'];
+                $driver = $manager->merge($searchForm->getData()['firstName']);
                 if ($driver->getId()) {
                     if (!$driver->getBusy()) {
                         return $this->toStepTwo($request, $driver);

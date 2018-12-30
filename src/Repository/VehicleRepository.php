@@ -58,6 +58,16 @@ class VehicleRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findById($id)
+    {
+        return $this->createQueryBuilder('v')
+        ->andWhere('v.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getOneOrNullResult()
+        ;
+    }
+
     // public function findByCriteria($data)
     // {
     //     return $this->generateWhere($data, $this->createQueryBuilder('v')

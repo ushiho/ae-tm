@@ -20,7 +20,7 @@
 {% block path %}
 
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title">{% if fuelReconciliation.id == null %}Create Reconciliation
+        <h3 class="panel-title">{% if fuelReconciliation == null or fuelReconciliation.id == null %}Create Reconciliation
                     {% else %}
                     Edit Reconciliation
                     {% endif %}</h3>
@@ -83,6 +83,11 @@
                         <td class="last" width="172">{{ form_widget(form.driver) }}</td>
                     </tr>
                     <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.receiptNum) }}</strong>
+                        </td>
+                        <td class="custom-select" width="172">{{ form_widget(form.receiptNum) }}
+                        </td>
                         <td class="first" width="172" rowspan="2">
                             <strong>{{ form_label(form.note) }}</strong>
                         </td>
@@ -98,7 +103,7 @@
                     <a title="Show All Users" href="{{ path('all_fuel_reconciliation') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left">  Back  </a>
                 </div>
                 <div class="btn-group">
-                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if fuelReconciliation.id %}Update{% else %}Create{% endif %}</button>
+                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">{% if fuelReconciliation != null and fuelReconciliation.id %}Update{% else %}Create{% endif %}</button>
                 </div>
              </div>
             {{ form_end(form) }}

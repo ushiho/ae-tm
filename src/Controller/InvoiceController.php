@@ -11,6 +11,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Repository\InvoiceRepository;
 use App\Form\InvoiceType;
+use App\Entity\FuelReconciliation;
+use App\Repository\FuelReconciliationRepository;
+use App\Repository\VehicleRepository;
 
 class InvoiceController extends Controller
 {
@@ -34,7 +37,10 @@ class InvoiceController extends Controller
             $invoices = $repo->findAll();
         }
 
-        return $this->render('invoice/index.html.twig', array('invoices' => $invoices));
+        return $this->render('invoice/index.html.twig', array(
+            'invoices' => $invoices,
+            'connectedUser' => $this->getUser(),
+        ));
     }
 
     /**
@@ -49,21 +55,24 @@ class InvoiceController extends Controller
         }
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('invoice_show', array('id' => $invoice->getId()));
+        return $this->redirectToRoute('invoice_show', array(
+            'id' => $invoice->getId(),
+            'connectedUser' => $this->getUser(),
+        ));
     }
 
     /**
      * @Route("invoice/new", name="invoice_new")
      * @Method({"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, FuelReconciliationRepository $fuelRecoRepo, VehicleRepository $vehicleRepo)
     {
         $em = $this->getDoctrine()->getManager();
         $invoice = new Invoice();
         $printSide = $this->get('session')->get('print-side');
-        $printSide = $printSide->refreshFromDatabase($em);
-        $invoice->setAmounts($printSide->getTotalAmount())
-            ->setLiters($printSide->getTotalLiters())
+        $printSide = $printSide->refreshFromDatabase($fuelRecoRepo);
+        $invoice->setTotalAmounts($printSide->getTotalAmount())
+            ->setTotalLitres($printSide->getTotalLiters())
             ->setIsPaid(false)
             ->setCreatedAt(new \DateTime());
         $form = $this->createForm(InvoiceType::class, $invoice);
@@ -74,18 +83,22 @@ class InvoiceController extends Controller
             $reconciliations = $this->get('session')->get('print-side')->getAllReconciliations();
             $em = $this->getDoctrine()->getManager();
             $reconciliations = $em->getRepository('App:FuelReconciliation')->findReconciliationsByIds($reconciliations);
-            $invoice->setReconciliations($reconciliations);
-            $this->exportToExcel($invoice);
-            $this->exportToPdf($invoice);
+            $invoice->setReconciliation($reconciliations);
+            $this->exportToExcel($invoice, $fuelRecoRepo, $vehicleRepo);
+            $this->exportToPdf($invoice, $fuelRecoRepo);
             $em->persist($invoice);
             $em->flush();
 
-            return $this->redirectToRoute('invoice_show', array('id' => $invoice->getId()));
+            return $this->redirectToRoute('invoice_show', array(
+                'id' => $invoice->getId(),
+                'connectedUser' => $this->getUser(),
+            ));
         }
 
         return $this->render('invoice/new.html.twig', array(
             'invoice' => $invoice,
             'form' => $form->createView(),
+            'connectedUser' => $this->getUser(),
         ));
     }
 
@@ -100,7 +113,7 @@ class InvoiceController extends Controller
         return $this->render('invoice/show.html.twig', array(
             'invoice' => $invoice,
             'delete_form' => $deleteForm->createView(),
-        ));
+            'connectedUser' => $this->getUser(),        ));
     }
 
     /**
@@ -142,10 +155,10 @@ class InvoiceController extends Controller
      * @Route("invoice/export-to-pdf/{id}", name="export_invoice_pdf", requirements={"id"="\d+"}))
      * @Method("GET")
      */
-    public function exportToPdf(Invoice $invoice)
+    public function exportToPdf(Invoice $invoice, FuelReconciliationRepository $fuelRecoRepo)
     {
         $html2pdf = new Html2Pdf();
-        $printSide = $this->get('App\Service\ExcelGenerator')->getPrintSide();
+        $printSide = $this->get('App\Service\ExcelGenerator')->getPrintSide($fuelRecoRepo);
         $html = $this->renderView('fuel_reconciliation/pdf_print.twig', array(
             'printSide' => $printSide,
             'invoice' => $invoice,
@@ -155,9 +168,9 @@ class InvoiceController extends Controller
         $html2pdf->output($this->getParameter('kernel.project_dir').'/web/pdfs/'.$invoice->getNumber().'_'.$invoice->getExcelFile().'.pdf', 'F');
     }
 
-    private function exportToExcel(Invoice $invoice)
+    private function exportToExcel(Invoice $invoice, FuelReconciliationRepository $fuelRecoRepo, VehicleRepository $vehicleRepo)
     {
-        $spreadsheet = $this->get('App\Service\ExcelGenerator')->generateExcel($invoice->getNumber());
+        $spreadsheet = $this->get('App\Service\ExcelGenerator')->generateExcel($invoice->getNumber(), $fuelRecoRepo, $vehicleRepo);
         $writer = new Xlsx($spreadsheet);
         $writer->save('spreadsheets/'.$invoice->getNumber().'_'.$invoice->getExcelFile().'.xls');
     }

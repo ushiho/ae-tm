@@ -95,6 +95,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "markbaker/complex": {
+        "version": "1.4.7"
+    },
     "misd/phone-number-bundle": {
         "version": "v1.3.2"
     },
@@ -143,6 +146,9 @@
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
     },
+    "phpoffice/phpspreadsheet": {
+        "version": "1.5.2"
+    },
     "pimple/pimple": {
         "version": "v3.2.3"
     },
@@ -169,6 +175,9 @@
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
         }
+    },
+    "spipu/html2pdf": {
+        "version": "v5.2.1"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
@@ -439,6 +448,9 @@
     },
     "symfony/yaml": {
         "version": "v4.1.6"
+    },
+    "tecnickcom/tcpdf": {
+        "version": "6.2.26"
     },
     "true/punycode": {
         "version": "v2.1.1"

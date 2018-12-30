@@ -13,6 +13,7 @@ use App\Entity\Mission;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Form\SearchReconciliationType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Invoice;
 
 class FuelReconciliationController extends AbstractController
@@ -90,7 +91,7 @@ class FuelReconciliationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($fuelReconciliation->getVehicle() != null || $fuelReconciliation->getDriver() != null) {
                 $fuelReconciliation = $this->completeDatas($fuelReconciliation, $manager);
-                if (!$fuelReconciliation->getDriver() or !$fuelReconciliation->getVehicle()) {
+                if (!$fuelReconciliation) {
                     $request->getSession()->getFlashBag()->add('fuelMsg', 'The mission linked to this driver/vehicle is finished.');
 
                     return $this->render('fuel_reconciliation/new.html.twig', array(
@@ -100,10 +101,11 @@ class FuelReconciliationController extends AbstractController
                         'fuelReconciliation' => $fuelReconciliation,
                     ));
                 }
+                // $manager->merge($fuelReconciliation);
                 $manager->persist($fuelReconciliation);
                 $manager->flush();
 
-                return $this->redirectToRoute('fuelreconciliation_show', array('id' => $fuelReconciliation->getId()));
+                return $this->redirectToRoute('show_fuel_reconciliation', array('id' => $fuelReconciliation->getId()));
             } else {
                 $request->getSession()->getFlashBag()->add('fuelMsg', 'You must enter the vehicle or driver information.');
             }
@@ -260,7 +262,7 @@ class FuelReconciliationController extends AbstractController
      * @Route("fuel/reconciliation/remove-project/{id}", name="remove_project_from_print_side",options={"expose"=true})
      * @Method("GET")
      */
-    public function removeeProjectFromPrintSideAction($id)
+    public function removeProjectFromPrintSideAction($id)
     {
         $session = $this->get('session');
         $printSide = $session->get('print-side');
@@ -285,19 +287,17 @@ class FuelReconciliationController extends AbstractController
     public function completeDatas(FuelReconciliation $fuelReconciliation, ObjectManager $manager)
     {
         $mission = $this->testVehicleAndDriverToSearchForMission($fuelReconciliation, $manager);
-        $fuelReconciliation = new FuelReconciliation();
-        if ($mission) {
-            $fuelReconciliation->setCreatedAt(new \DateTime())
+        if ($mission && !$mission->getFinished()) {
+            return  $fuelReconciliation->setCreatedAt(new \DateTime())
                                 ->setIsPaid(false)
                                 ->setDepartment($mission->getDepartment())
                                 ->setDriver($mission->getDriver())
                                 ->setVehicle($mission->getAllocate()->getVehicle())
                                 ->setProject($mission->getProject())
                                 ->setUser($this->getUser())
-                                ->setInvoice(null);
+                                ->setInvoice(null)
+                                ->setMission($mission);
         }
-
-        return $fuelReconciliation;
     }
 
     public function testVehicleAndDriverToSearchForMission(FuelReconciliation $fuelReconciliation, ObjectManager $manager)

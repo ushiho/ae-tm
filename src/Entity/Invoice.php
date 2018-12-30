@@ -179,4 +179,16 @@ class Invoice
     {
         return $this->excelFile;
     }
+
+    /**
+     * @param mixed $reconciliations
+     *
+     * @return Invoice
+     */
+    public function setReconciliation($reconciliations)
+    {
+        $this->reconciliations = $reconciliations;
+
+        return $this;
+    }
 }

@@ -1,25 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block content %}
+{% block header %}
+    Fuel Reconciliations
+{% endblock %}
+{% block header_annex %}
+    <li><a href="index.html">Home</a></li>
+    <li class="active">Fuel Reconciliations</li>
+{% endblock %}
 
+{% block left_column %}
+    <a href="{{path('invoice_new')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Invoice</a>
+    <a href="{{path('invoice_index')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all Invoices</a>
+{% endblock %}
 
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title">Invoice creation<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
-            <div class="heading-elements">
-                <a href="{{ path('project_index') }}" class="btn btn-primary btn-xs "><b><i class="icon-loop3"></i></b> Back to list</a>
-            </div>
-        </div>
-        <div class="panel-body">
-            <p class="content-group-lg"></p>
-
-            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-            {{ form_widget(form) }}
-            <br />
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary legitRipple">Validate <i class="icon-arrow-right14 position-right"></i></button>
-            </div>
-            {{ form_end(form) }}
-        </div>
+{% block center_column %}
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Invoices</h3>
     </div>
+    <br>
+    <div class="panel-body">
+    {% if app.session.flashBag.has('invoiceMsg') %}
+        <div class="alert alert-success error">
+            {% for msg in app.session.flashBag.get('invoiceMsg') %}
+                <strong>{{ msg }}</strong>
+            {% endfor %}
+        </div>
+    {% endif %}
+        <a title="Add new Invoice" href="{{path('invoice_new')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
+        <br>
+        <div class="table-responsive">
+            <div class="panel panel-flat">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Invoice creation<a class="heading-elements-toggle"><i class="icon-more"></i></a></h6>
+                    <div class="heading-elements">
+                        <a href="{{ path('invoice_index') }}" class="btn btn-primary btn-xs "><b><i class="icon-loop3"></i></b> Back to list</a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <p class="content-group-lg"></p>
+
+                    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+                    {{ form_widget(form) }}
+                    <br />
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary legitRipple">Validate <i class="icon-arrow-right14 position-right"></i></button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
 {% endblock %}

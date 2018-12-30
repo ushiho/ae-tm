@@ -75,7 +75,7 @@ class FuelReconciliationRepository extends ServiceEntityRepository
     public function getSubTotals()
     {
         $query = $this->createQueryBuilder('fr')
-            ->select('SUM(fr.amount) as totalAmount ,SUM(fr.liters) as totalLiters , driver.lastName, driver.firstName')
+            ->select('SUM(fr.totalAmount) as totalAmount ,SUM(fr.totalLitres) as totalLiters , driver.lastName, driver.firstName')
             ->leftJoin('fr.driver', 'driver')
             ->groupBy('driver.lastName')
             ->orderBy('driver.lastName', 'DESC')
@@ -87,7 +87,7 @@ class FuelReconciliationRepository extends ServiceEntityRepository
     public function getTotal()
     {
         $query = $this->createQueryBuilder('fr')
-            ->select('SUM(fr.amount) as totalAmount ')
+            ->select('SUM(fr.totalAmount) as totalAmount ')
             ->getQuery();
 
         return $query->getResult();
@@ -109,7 +109,7 @@ class FuelReconciliationRepository extends ServiceEntityRepository
             $query->setParameter(3, $departmentID);
         }
         if ($isPaid !== null) {
-            $conds .= 'AND fr.isPayed = :isPaid ';
+            $conds .= 'AND fr.isPaid = :isPaid ';
             $query->setParameter('isPaid', $isPaid);
         }
         if ($gasStation) {
@@ -121,7 +121,7 @@ class FuelReconciliationRepository extends ServiceEntityRepository
             $query->setParameter(4, $projectID);
         }
         if ($firstDate !== null && $scondDate !== null) {
-            $conds .= 'AND fr.dateCreation BETWEEN :firstDate AND :scondDate';
+            $conds .= 'AND fr.createdAt BETWEEN :firstDate AND :scondDate';
             $query->setParameter('firstDate', $firstDate->format('Y-m-d'))
             ->setParameter('scondDate', $scondDate->format('Y-m-d'));
         }

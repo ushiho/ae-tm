@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -71,6 +73,16 @@ class Mission
      * @Assert\Valid()
      */
     private $driver;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="mission")
+     */
+    private $fuelReconciliations;
+
+    public function __construct()
+    {
+        $this->fuelReconciliations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -193,6 +205,37 @@ class Mission
     public function setDriver(?Driver $driver): self
     {
         $this->driver = $driver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FuelReconciliation[]
+     */
+    public function getFuelReconciliations(): Collection
+    {
+        return $this->fuelReconciliations;
+    }
+
+    public function addFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if (!$this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations[] = $fuelReconciliation;
+            $fuelReconciliation->setMission($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFuelReconciliation(FuelReconciliation $fuelReconciliation): self
+    {
+        if ($this->fuelReconciliations->contains($fuelReconciliation)) {
+            $this->fuelReconciliations->removeElement($fuelReconciliation);
+            // set the owning side to null (unless already changed)
+            if ($fuelReconciliation->getMission() === $this) {
+                $fuelReconciliation->setMission(null);
+            }
+        }
 
         return $this;
     }

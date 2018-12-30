@@ -14,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Repository\FuelReconciliationRepository;
+use App\Repository\VehicleRepository;
 
 class ExcelGenerator
 {
@@ -37,9 +39,9 @@ class ExcelGenerator
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function generateExcel($number)
+    public function generateExcel($number, FuelReconciliationRepository $fuelReconciliationRepository, VehicleRepository $vehicleRepo)
     {
-        $printSide = $this->getPrintSide();
+        $printSide = $this->getPrintSide($fuelReconciliationRepository);
         $spreadsheet = new Spreadsheet();
         $spreadsheet->setActiveSheetIndex(0);
         $spreadsheet->getDefaultStyle()->getFont()
@@ -61,7 +63,7 @@ class ExcelGenerator
             $startDate = $printSide->getProjectEarlierReconciliation($project);
             $subTotal = $printSide->getSubTotals()[$project->getId()];
             $subLitersTotal = $printSide->getSubLitersTotals()[$project->getId()];
-            $this->addProjectLines($sheet, $project, $startDate, $subTotal, $subLitersTotal);
+            $this->addProjectLines($sheet, $project, $startDate, $subTotal, $subLitersTotal, $vehicleRepo);
             $this->currentProject = $project;
         }
         ++$this->currentLine;
@@ -72,11 +74,11 @@ class ExcelGenerator
         return $spreadsheet;
     }
 
-    public function getPrintSide()
+    public function getPrintSide(FuelReconciliationRepository $fuelReconciliationRepository)
     {
         $session = $this->session;
         $printSide = $session->has('print-side') ? $session->get('print-side') : new PrintSide();
-        $refershedPrintSide = $printSide->refreshFromDatabase($this->em);
+        $refershedPrintSide = $printSide->refreshFromDatabase($fuelReconciliationRepository);
         $refershedPrintSide->sortDates();
 
         return $refershedPrintSide;
@@ -130,7 +132,7 @@ class ExcelGenerator
             ->setCellValue('A4', 'END DATE')
             ->setCellValue('C4', strtoupper($prinSide->getEndDate()->format('l d/m/Y')));
         $sheet->setBreak('A5', Worksheet::BREAK_ROW);
-        $project = $prinSide->getProjects()->first()->getReconciliations()[0]->getProject();
+        $project = $prinSide->getProjects()->first()->getFuelReconciliations()[0]->getProject();
         $sheet->setCellValue('I2', 'Project : '.$project->getName())->mergeCells('I2:J2');
         $sheet->setCellValue('I5', 'N° : '.$number)->mergeCells('I2:J2');
         $sheet->setCellValue('I3', 'AKRAM ELKOUZOUZ')->mergeCells('I3:J3');
@@ -174,13 +176,13 @@ class ExcelGenerator
         return $sheet;
     }
 
-    private function addProjectLines(Worksheet $sheet, Project $project, \DateTime $startDate, $subtotal, $subTotalLiters)
+    private function addProjectLines(Worksheet $sheet, Project $project, \DateTime $startDate, $subtotal, $subTotalLiters, $vehicleRepo)
     {
         $this->currentLine = $this->currentLine + 1;
         $this->addProjectHeader($sheet, $project, $startDate);
-        foreach ($project->getReconciliations() as $reconciliation) {
+        foreach ($project->getFuelReconciliations() as $reconciliation) {
             ++$this->currentLine;
-            $this->addReconciliationLine($sheet, $reconciliation);
+            $this->addReconciliationLine($sheet, $reconciliation, $vehicleRepo);
         }
         ++$this->currentLine;
         $this->addProjectTotalLine($sheet, $subtotal, $subTotalLiters);
@@ -222,20 +224,20 @@ class ExcelGenerator
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    private function addReconciliationLine(Worksheet $sheet, FuelReconciliation $reconciliation)
+    private function addReconciliationLine(Worksheet $sheet, FuelReconciliation $reconciliation, VehicleRepository $vehicleRepo)
     {
         $sheet->fromArray(
             array(
-                'A'.$this->currentLine => $reconciliation->getDateCreation()->format('d/m/Y'),
-                'B'.$this->currentLine => $reconciliation->getUiid(),
-                'C'.$this->currentLine => $reconciliation->getVehicle()->getMat(),
+                'A'.$this->currentLine => $reconciliation->getCreatedAt()->format('d/m/Y'),
+                'B'.$this->currentLine => $reconciliation->getReceiptNum(),
+                'C'.$this->currentLine => $reconciliation->getVehicle()->getMatricule(),
                 'D'.$this->currentLine => $reconciliation->getDriver()->getFirstName().' '.$reconciliation->getDriver()->getLastName(),
                 'E'.$this->currentLine => $reconciliation->getDepartment()->getName(),
-                'F'.$this->currentLine => $reconciliation->getKilometerage(),
-                'G'.$this->currentLine => $reconciliation->getLiters(),
-                'H'.$this->currentLine => $reconciliation->getAmount(),
-                'I'.$this->currentLine => strtoupper($reconciliation->getVehicle()->getType()),
-                'J'.$this->currentLine => $reconciliation->getRemarks(),
+                'F'.$this->currentLine => $reconciliation->getKilometrage(),
+                'G'.$this->currentLine => $reconciliation->getTotalLitres(),
+                'H'.$this->currentLine => $reconciliation->getTotalAmount(),
+                'I'.$this->currentLine => strtoupper($vehicleRepo->findById($reconciliation->getVehicle()->getId())->getType()->getName()),
+                'J'.$this->currentLine => $reconciliation->getNote(),
             ),
             null,
             'A'.$this->currentLine

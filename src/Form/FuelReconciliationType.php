@@ -15,6 +15,7 @@ use App\Entity\Project;
 use App\Entity\Vehicle;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Invoice;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class FuelReconciliationType extends AbstractType
 {
@@ -23,12 +24,21 @@ class FuelReconciliationType extends AbstractType
         $builder
             ->add('totalAmount', NumberType::class, array(
                 'required' => 'true',
+                'attr' => [
+                    'placeholder' => 'Amount (DH)',
+                ],
             ))
             ->add('totalLitres', NumberType::class, array(
                 'required' => 'true',
+                'attr' => [
+                    'placeholder' => 'Litres (L)',
+                ],
             ))
             ->add('kilometrage', NumberType::class, array(
                 'required' => 'true',
+                'attr' => [
+                    'placeholder' => 'Distance (KM)',
+                ],
             ))
             ->add('note', TextareaType::class, array(
                 'required' => false,
@@ -91,6 +101,12 @@ class FuelReconciliationType extends AbstractType
                     'data-live-search' => 'true',
                     'data-width' => '100%',
                 ),
+            ))
+            ->add('receiptNum', TextType::class, array(
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Receipt Number',
+                ],
             ))
             // ->add('invoice', EntityType::class, array(
             //     'class' => Invoice::class,

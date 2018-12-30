@@ -148,7 +148,7 @@ class VehicleController extends AbstractController
                 return $this->toStepThree($vehicle, $request, $driverRepo);
             }
             if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $vehicle = $this->checkVehicleState($searchForm->getData()['matricule']);
+                $vehicle = $manager->merge($this->checkVehicleState($searchForm->getData()['matricule']));
                 if ($vehicle->getState() != 'Busy') {
                     return $this->toStepThree($vehicle, $request, $driverRepo);
                 } else {

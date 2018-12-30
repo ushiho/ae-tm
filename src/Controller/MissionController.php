@@ -261,6 +261,7 @@ class MissionController extends AbstractController
 
             return $this->redirectToRoute('stepOne');
         }
+        $manager->merge($data['mission']);
         $manager->persist($data['mission']);
         $manager->flush();
         $session->clear();

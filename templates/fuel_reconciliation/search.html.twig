@@ -132,21 +132,21 @@
             {% set index = 0 %}
             {% set total = 0 %}
             {% for fuelReconciliation in list %}
-                {% set total = total + fuelReconciliation.amount %}
+                {% set total = total + fuelReconciliation.totalAmount %}
                 <tr data-type="reconciliation" data-id="{{ fuelReconciliation.id }}">
-                    <td>{% if fuelReconciliation.dateCreation %}{{ fuelReconciliation.dateCreation|date('Y-m-d') }}{% endif %}</td>
-                    <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                    <td>{% if fuelReconciliation.createdAt %}{{ fuelReconciliation.createdAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>{{ fuelReconciliation.vehicle.matricule }}</td>
                     <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
                     <td>{{ fuelReconciliation.department.name }}</td>
-                    <td>{{ fuelReconciliation.vehicle.kilometrage }}</td>
-                    <td>{{ fuelReconciliation.liters }}</td>
-                    <td>{{ fuelReconciliation.amount }}</td>
+                    <td>{{ fuelReconciliation.kilometrage }}</td>
+                    <td>{{ fuelReconciliation.totalLitres }}</td>
+                    <td>{{ fuelReconciliation.totalAmount }}</td>
                     <td>
-                        <span class="label {% if fuelReconciliation.isPayed %}label-success{% else %}label-danger{% endif %}">
-                            {% if fuelReconciliation.isPayed %}Yes{% else %}No{% endif %}</span>
+                        <span class="label {% if fuelReconciliation.isPaid %}label-success{% else %}label-danger{% endif %}">
+                            {% if fuelReconciliation.isPaid %}Yes{% else %}No{% endif %}</span>
                     </td>
-                    <td>{{ fuelReconciliation.vehicle.type }}</td>
-                    <td>{{ fuelReconciliation.remarks }}</td>
+                    <td>{{ fuelReconciliation.vehicle.type.name }}</td>
+                    <td>{{ fuelReconciliation.note }}</td>
                 </tr>
                 </tr>
 

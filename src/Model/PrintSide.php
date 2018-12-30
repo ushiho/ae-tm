@@ -29,7 +29,7 @@ class PrintSide
     {
         $project = new Project();
         $this->gasStation = $reconciliations[0]->getGasStation()->getName();
-        $project->setId(md5('project_'.rand(1, 10000)));
+        $project->setId(rand(1, 10000));
         foreach ($reconciliations as $reconciliation) {
             $this->addReconciliation($reconciliation, $project);
         }
@@ -40,7 +40,7 @@ class PrintSide
 
     public function addReconciliation(FuelReconciliation $reconciliation, Project $project)
     {
-        $project->addReconciliation($reconciliation);
+        $project->addFuelReconciliation($reconciliation);
         $this->subtotals[$project->getId()] = key_exists($project->getId(), $this->subtotals) ? $this->subtotals[$project->getId()] : 0;
         $this->subLiterstotals[$project->getId()] = key_exists($project->getId(), $this->subLiterstotals) ? $this->subLiterstotals[$project->getId()] : 0;
         $this->subtotals[$project->getId()] = $this->subtotals[$project->getId()] + $reconciliation->getTotalAmount();
@@ -99,7 +99,7 @@ class PrintSide
     {
         $reconciliations = array();
         foreach ($this->projects->toArray() as $project) {
-            foreach ($project->getReconciliations() as $reconciliation) {
+            foreach ($project->getFuelReconciliations() as $reconciliation) {
                 $reconciliations[] = $reconciliation->getId();
             }
         }
@@ -117,10 +117,10 @@ class PrintSide
         $clone->setSubTotals($this->getSubTotals());
         foreach ($this->getProjects()->toArray() as $project) {
             $cloneProject = clone $project;
-            $cloneProject->setReconciliations(array());
-            foreach ($project->getReconciliations() as $reconciliation) {
+            // $cloneProject->setFuelReconciliations(array());
+            foreach ($project->getFuelReconciliations() as $reconciliation) {
                 $cloneReconciliation = $recociliationRepo->find($reconciliation->getId());
-                $cloneProject->addReconciliation($cloneReconciliation);
+                $cloneProject->addFuelReconciliation($cloneReconciliation);
             }
             $clone->addProject($cloneProject, false);
         }

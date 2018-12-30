@@ -86,6 +86,17 @@ class FuelReconciliation
      */
     private $isPaid;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $receiptNum;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Mission", inversedBy="fuelReconciliations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $mission;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -243,6 +254,30 @@ class FuelReconciliation
     public function setIsPaid(bool $isPaid): self
     {
         $this->isPaid = $isPaid;
+
+        return $this;
+    }
+
+    public function getReceiptNum(): ?string
+    {
+        return $this->receiptNum;
+    }
+
+    public function setReceiptNum(string $receiptNum): self
+    {
+        $this->receiptNum = $receiptNum;
+
+        return $this;
+    }
+
+    public function getMission(): ?Mission
+    {
+        return $this->mission;
+    }
+
+    public function setMission(?Mission $mission): self
+    {
+        $this->mission = $mission;
 
         return $this;
     }

@@ -59,21 +59,22 @@
         <tbody>
         {% for fuelReconciliation in fuelReconciliations %}
             <tr>
+                <td>{{ fuelReconciliation.receiptNum }}</td>
                  <td>{% if fuelReconciliation.createdAt %}{{ fuelReconciliation.createdAt|date('Y-m-d') }}{% endif %}</td>
-                    <td>{{ fuelReconciliation.vehicle.mat }}</td>
+                    <td>{{ fuelReconciliation.vehicle.matricule }}</td>
                     <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
                     <td>{{ fuelReconciliation.department.name }}</td>
-                    <td>{{ fuelReconciliation.kilometerage }}</td>
-                    <td>{{ fuelReconciliation.totalLiters }}</td>
+                    <td>{{ fuelReconciliation.kilometrage }}</td>
+                    <td>{{ fuelReconciliation.totalLitres }}</td>
                     <td>{{ fuelReconciliation.totalAmount }}</td>
                     <td><span class="label {% if fuelReconciliation.isPaid %}label-success{% else %}label-danger{% endif %}">{% if fuelReconciliation.isPaid %}Yes{% else %}No{% endif %}</span></td>
 
             
                 <td class="text-center">
                     <div class="">
-                        <a title="Afficher les détails" href="{{ path('fuelreconciliation_show', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple"><i class="icon-eye position-left"></i></a>
-                        <a title="Modifier" href="{{ path('fuelreconciliation_edit', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple"><i class="icon-pen position-left"></i></a>
-                        <a title="Delete" onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');" href="{{ path('fuelreconciliation_delete', { 'id': fuelReconciliation.id }) }}" class="text-danger legitRipple"><i class="icon-trash position-left"></i></a>
+                        <a title="Show Details" href="{{ path('show_fuel_reconciliation', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple">Show</a>
+                        <a title="Edit" href="{{ path('editFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple">Edit</a>
+                        <a title="Delete" onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');" href="{{ path('deleteFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="text-danger legitRipple">Delete</a>
                     </div>
                 </td>
             </tr>
