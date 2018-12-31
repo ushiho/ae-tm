@@ -70,6 +70,11 @@ class InvoiceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $invoice = new Invoice();
         $printSide = $this->get('session')->get('print-side');
+        if (!$printSide) {
+            $request->getSession()->getFlashBag()->add('fuelMsg', 'Please select the reconciliations to create the related invoice.');
+
+            return $this->redirectToRoute('searchFuelReconciliation');
+        }
         $printSide = $printSide->refreshFromDatabase($fuelRecoRepo);
         $invoice->setTotalAmounts($printSide->getTotalAmount())
             ->setTotalLitres($printSide->getTotalLiters())

@@ -110,11 +110,12 @@ class RentController extends AbstractController
     }
 
     /**
-     * @Route("/project/mission/new/add_rent", name="stepTree")
+     * @Route("/project/mission/new/add_rent", name="stepFour")
      */
     public function addMissionStepTree(Request $request, ObjectManager $manager)
     {
-        if ($request->getSession()->get('vehicle') && $request->get('_route') == 'stepTree') {
+        $session = $request->getSession();
+        if ($session->get('mission'))  {
             $rent = $request->getSession()->get('rent');
             if ($rent && !empty((array) $rent)) {
                 $rent = $manager->merge($rent);
@@ -124,11 +125,15 @@ class RentController extends AbstractController
             $form = $this->createForm(RentType::class, $rent);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
+                if (MissionController::verifyDates($session->get('mission'), $rent)) {
                 if ($this->generateMsg($request->getSession(), $rent)) {
                     $rent->setFinished($this->verifyDateWithNewDate($rent->getEndDate()));
                     $request->getSession()->set('rent', $rent);
 
-                    return $this->redirectToRoute('stepFour');
+                    return $this->redirectToRoute('verifyDatas');
+                }
+            } else {
+                    $request->getSession()->getFlashBag()->add('rentMsg', 'Attention the  date of the mission should be included inside the date of the rent!');
                 }
             }
 
@@ -137,9 +142,9 @@ class RentController extends AbstractController
                 'form' => $form->createView(),
             ]);
         } else {
-            $request->getSession()->getFlashBag()->add('vehicleError', 'You must add the vehicle Information to continue!');
+            $request->getSession()->getFlashBag()->add('vehicleError', 'You must add the mission Information to continue!');
 
-            return $this->redirectToRoute('stepTwo');
+            return $this->redirectToRoute('stepTree');
         }
     }
 
@@ -172,20 +177,20 @@ class RentController extends AbstractController
 
     public function generateMsg(SessionInterface $session, Allocate $rent)
     {
-        $driver = $session->get('driver');
-        if ($driver && $rent) {
-            if ($rent->getWithDriver() && ($driver->getSalaire() == 0 && $rent->getPeriod() == $driver->getPeriodOfTravel())) {
+        $mission = $session->get('mission');
+        if ($mission && $rent) {
+            if ($rent->getWithDriver() && ($mission->getSalaire() == 0 && $rent->getPeriod() == $mission->getPeriodOfWork())) {
                 return true;
             }
-            if (!$rent->getWithDriver() && $driver->getSalaire() != 0) {
+            if (!$rent->getWithDriver() && $mission->getSalaire() != 0) {
                 return true;
             }
-            if ($rent->getWithDriver() && ($driver->getSalaire() != 0 || $driver->getPeriodOfTravel() != $rent->getPeriod())) {
+            if ($rent->getWithDriver() && ($mission->getSalaire() != 0 || $mission->getPeriodOfTravel() != $rent->getPeriod())) {
                 $session->getFlashBag()->add('rentMsg', "The vehicle was rented with the driver but the driver's salary was set or the period of work the driver and the period of rent are not matching, you must change the driver's salary or the period of work or change the rent's info to continue the process!");
 
                 return false;
             }
-            if (!$rent->getWithDriver() && $driver->getSalaire() == 0) {
+            if (!$rent->getWithDriver() && $mission->getSalaire() == 0) {
                 $session->getFlashBag()->add('rentMsg', "The vehicle was not rented with driver but the driver's salary was not set, you must change the driver's salary or change the state of the rent!");
 
                 return false;

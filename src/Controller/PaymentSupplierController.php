@@ -70,7 +70,7 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/{idPayment}/paymentSupplier/{id}/edit", name="editPaymentSupplier", requirements={"id"="\d+"})
      */
     public function action(PaymentSupplier $paymentSupplier=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo, PaymentRepository $paymentRepo, $idPayment=null){
-        $payment = $paymentRepo->find($idPayment);
+        $payment = $request->getSession()->get('payment');
         if($payment || $paymentSupplier){
         $params = $this->testParams($request, $payment, $paymentSupplier);
         $form = $this->createForm(PaymentSupplierType::class, $params['paymentSupplier']);

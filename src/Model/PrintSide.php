@@ -155,7 +155,7 @@ class PrintSide
     public function addProject(Project $project, $cleanReconciliations = true)
     {
         if ($cleanReconciliations) {
-            $project->setReconciliations(array());
+            $project->setFuelReconciliations(array());
         }
         $this->projects->add($project);
 
@@ -288,8 +288,8 @@ class PrintSide
 
     public function getGenericProjectName()
     {
-        if ($this->getProjects()->count() > 0 && count($this->getProjects()->first()->getReconciliations()) > 0) {
-            return $this->getProjects()->first()->getReconciliations()[0]->getProject()->getName();
+        if ($this->getProjects()->count() > 0 && count($this->getProjects()->first()->getFuelReconciliations()) > 0) {
+            return $this->getProjects()->first()->getFuelReconcReconciliations()[0]->getProject()->getName();
         }
     }
 }

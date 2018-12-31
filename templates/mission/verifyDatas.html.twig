@@ -137,9 +137,6 @@
                         <tr class="bg">
                             <td class="first"><strong>Vehicle Type</strong></td>
                             <td class="last">
-                            <pre>
-                                {{ dump(driver.vehicleType) }}
-                            </pre>
                             {% for type in driver.vehicleType %}
                                 <strong style="color:red;">{{ type.name }}</strong>&nbsp;&nbsp;
                             {% endfor %}

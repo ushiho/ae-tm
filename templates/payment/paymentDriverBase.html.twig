@@ -53,8 +53,8 @@
                             <td >{{ payment.datePayment|date('d-M-Y') }}</td>
                             <td bgcolor="#359e98" >{{ payment.totalPrice }} DH</td>
                             <td bgcolor="#7c9e35">{{payment.price}} DH</td>
-                            <td bgcolor="#7c9e35">{{payment.daysToPay}} DH</td>
-                            <td bgcolor="#7c9e35">{{payment.daysPaid}}</td>
+                            <td bgcolor="#7c9e35">{{payment.daysToPay}} Days</td>
+                            <td bgcolor="#7c9e35">{{payment.daysPaid}} Days</td>
                             <td>
                                 <div class="btn-group btn-sm">
                                     <a href="{{ path('editPaymentDriver', {'id': payment.id, 'idPayment': payment.payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this payment?')"class="btn btn-default" >Edit</a>

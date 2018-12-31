@@ -127,11 +127,11 @@ class MissionController extends AbstractController
     }
 
     /**
-     * @Route("/project/mission/new/add_mission", name="stepFour")
+     * @Route("/project/mission/new/add_mission", name="stepTree")
      */
     public function addMissionStepFour(Request $request, SessionInterface $session, ObjectManager $manager)
     {
-        if ($session->get('rent')) {
+        if ($request->getSession()->get('vehicle') && $request->get('_route') == 'stepTree') {
             $mission = $session->get('mission');
             if ($mission) {
                 $mission = $manager->merge($mission);
@@ -141,14 +141,15 @@ class MissionController extends AbstractController
             $form = $this->createForm(MissionType::class, $mission);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($this->verifyDates($mission, $session->get('rent'))) {
-                    $mission->setFinished($this->verifyDateWithNewDate($mission->getEndDate()));
+                // if ($this->verifyDates($mission, $session->get('rent'))) {
+                    $mission->setFinished($mission->getEndDate() >= new \DateTime());
+                    $mission->setSalaire($session->get('driver')->getSalaire());
+                    $mission->setPeriodOfWork($session->get('driver')->getPeriodOfTravel());
                     $session->set('mission', $mission);
-
-                    return $this->redirectToRoute('verifyDatas');
-                } else {
-                    $request->getSession()->getFlashBag()->add('missionError', 'Attention the  date of the mission should be included inside the date of the rent!');
-                }
+                    return $this->redirectToRoute('stepFour');
+                // } else {
+                //     $request->getSession()->getFlashBag()->add('missionError', 'Attention the  date of the mission should be included inside the date of the rent!');
+                // }
             }
 
             return $this->render('/mission/missionForm.html.twig', [
@@ -158,12 +159,12 @@ class MissionController extends AbstractController
         }
     }
 
-    private function verifyDates(Mission $mission, Allocate $rent)
+    public function verifyDates(Mission $mission, Allocate $rent)
     {
         return $mission->getStartDate()->format('U') >= $rent->getStartDate()->format('U') && $mission->getEndDate()->format('U') <= $rent->getEndDate()->format('U');
     }
 
-    private function verifyDateWithNewDate(\DateTime $date)
+    public function verifyDateWithNewDate(\DateTime $date)
     {
         return $date->format('U') >= (new \DateTime())->format('U');
     }
@@ -179,8 +180,9 @@ class MissionController extends AbstractController
     /**
      * @Route("/project/mission/new/verify", name="verifyDatas")
      */
-    public function verifyDatas(Request $request, SessionInterface $session, ObjectManager $manager, DriverRepository $driverRepo)
+    public function verifyDatas(Request $request)
     {
+        $session = $request->getSession();
         if ($session->count() > 0) {
             $data = $this->getDatasFromSession($session);
 
@@ -230,19 +232,20 @@ class MissionController extends AbstractController
                            ->setVehicleType(DriverController::merge($data['driver'], $manager));
             $data['vehicle']->setAllocate($data['rent'])
                             ->setType($manager->merge($data['vehicle']->getType()));
+            $data['mission']->setDriver($data['driver'])
+                            ->setAllocate($data['rent'])
+                            ->setCreatedAt(new \DateTime())
+                            ->setDepartment($manager->merge($data['mission']->getDepartment()))
+                            ->setProject($manager->merge($data['project']))
+                            ->setPayment(PaymentController::init($data['mission']))
+                            ->setSalaire($data['driver']->getSalairePerDay())
+                            ->setPeriodOfWork($data['driver']->getPeriodOfTravel());
             $data['rent']->setCreatedAt(new \DateTime())
                          ->setMission($data['mission'])
                          ->setVehicle($data['vehicle'])
                          ->setSupplier($manager->merge($data['rent']->getSupplier()));
             $data['rent']->setPricePerDay(RentController::pricePerDay($data['rent']));
             $data['project']->getMission()->add($data['mission']);
-            $data['mission']->setDriver($data['driver'])
-                            ->setAllocate($data['rent'])
-                            ->setCreatedAt(new \DateTime())
-                            ->setDepartment($manager->merge($data['mission']->getDepartment()))
-                            ->setProject($manager->merge($data['project']))
-                            ->setPayment(PaymentController::init($data['mission']));
-
             return $data;
         } else {
             return null;
@@ -261,7 +264,7 @@ class MissionController extends AbstractController
 
             return $this->redirectToRoute('stepOne');
         }
-        $manager->merge($data['mission']);
+        // $manager->merge($data['mission']);
         $manager->persist($data['mission']);
         $manager->flush();
         $session->clear();

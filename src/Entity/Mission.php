@@ -79,6 +79,16 @@ class Mission
      */
     private $fuelReconciliations;
 
+    /**
+     * @ORM\Column(type="decimal", precision=50, scale=2)
+     */
+    private $salaire;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $periodOfWork;
+
     public function __construct()
     {
         $this->fuelReconciliations = new ArrayCollection();
@@ -236,6 +246,30 @@ class Mission
                 $fuelReconciliation->setMission(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSalaire()
+    {
+        return $this->salaire;
+    }
+
+    public function setSalaire($salaire): self
+    {
+        $this->salaire = $salaire;
+
+        return $this;
+    }
+
+    public function getPeriodOfWork(): ?int
+    {
+        return $this->periodOfWork;
+    }
+
+    public function setPeriodOfWork(int $periodOfWork): self
+    {
+        $this->periodOfWork = $periodOfWork;
 
         return $this;
     }

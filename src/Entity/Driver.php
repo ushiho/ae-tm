@@ -77,19 +77,12 @@ class Driver
      */
     private $vehicleType;
 
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
     private $salaire;
 
-    /**
-     * @ORM\Column(type="smallint")
-     */
+    
     private $periodOfTravel;
 
-    /**
-     * @ORM\Column(type="decimal", precision=50, scale=2)
-     */
+    
     private $salairePerDay;
 
     /**

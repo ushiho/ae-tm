@@ -19,20 +19,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PaymentDriverController extends AbstractController
 {
-    /**
-     * @Route("/payment/driver", name="payment_driver")
-     */
-    public function index()
-    {
-        return $this->render('payment_driver/index.html.twig', [
-            'controller_name' => 'PaymentDriverController',
-        ]);
-    }
 
     public function calculateTotalPrice(Mission $mission)
     {
         if ($mission) {
-            return $mission->getDriver()->getSalairePerDay() * ($mission->getEndDate()->diff($mission->getStartDate())->days + 1);
+            $days = $mission->getEndDate()->diff($mission->getStartDate())->days + 1;
+            $amount = $mission->getDriver()->getSalairePerDay() * $days;
+            return ['days' => $days, 'amount' => $amount];
         } else {
             return null;
         }
@@ -52,7 +45,9 @@ class PaymentDriverController extends AbstractController
     {
         if ($mission) {
             $paymentDriver = new PaymentDriver();
-            $paymentDriver->setTotalPrice(PaymentDriverController::calculateTotalPrice($mission));
+            $data = PaymentDriverController::calculateTotalPrice($mission);
+            $paymentDriver->setTotalPrice($data['amount']);
+            $paymentDriver->setDaysToPay($data['days']);
 
             return $paymentDriver;
         } else {
@@ -91,7 +86,8 @@ class PaymentDriverController extends AbstractController
      */
     public function action(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment = null, PaymentRepository $paymentRepo)
     {
-        $payment = $paymentRepo->find($idPayment);
+        // $payment = $paymentRepo->find($idPayment);
+        $payment = $request->getSession()->get('payment');
         if (!$paymentDriver) {
             $paymentDriver = new PaymentDriver();
         }
@@ -103,7 +99,7 @@ class PaymentDriverController extends AbstractController
                 if ($this->compareDays($params['paymentDriver'], $request, $params['payment'], $params['days'])) {
                     $driver = $driverRepo->findByMission($payment->getMission());
                     $paymentDriver = $this->completeDatas($params['paymentDriver'], $params['payment'], $driver);
-                    $paymentDriver->setPrice($driver->getSalaire() * $params['days']);
+                    $paymentDriver->setPrice(($payment->getMission()->getSalaire()/$payment->getMission()->getPeriodOfWork()) * $params['days']);
                     $this->save($manager, $paymentDriver, $params['payment'], $request, $params);
 
                     return $this->redirectToRoute('paymentDriverByPayment', [

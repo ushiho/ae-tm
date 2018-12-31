@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class DriverController extends AbstractController
 {
@@ -149,7 +150,7 @@ class DriverController extends AbstractController
     {
         if ($request->attributes->get('_route') == 'stepOne') {
             $driver = $session->get('driver');
-            if ($driver) {
+            if ($driver && $driver->getId()) {
                 $driver = $manager->merge($driver);
             } else {
                 $driver = new Driver();
@@ -160,8 +161,7 @@ class DriverController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 return $this->toStepTwo($request, $driver);
-            }
-            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            }else if ($searchForm->isSubmitted() && $searchForm->isValid()) {
                 $driver = $manager->merge($searchForm->getData()['firstName']);
                 if ($driver->getId()) {
                     if (!$driver->getBusy()) {

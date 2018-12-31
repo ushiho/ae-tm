@@ -1,10 +1,10 @@
-{% extends 'mission/missionBase.html.twig'  %}
+{% extends 'mission/missionBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% block center_column %}
-    <div class="panel-heading main-color-bg">
-        <h3 class="panel-title"><a title="Add new Mission" href="#" class="button">Step One: Create the driver
-            </a></h3>
-    </div>
+<div class="panel-heading main-color-bg">
+    <h3 class="panel-title"><a title="Add new Mission" href="#" class="button">Step One: Create the driver
+        </a></h3>
+</div>
 {% block path %}
 {{ parent() }}
 
@@ -12,136 +12,138 @@
 
 {% endblock %}
 
-    <div class="panel-body">
+<div class="panel-body">
 
-        <div class="error">
-            <strong>{% if app.session.flashBag.has('driverError') %}
+    <div class="error">
+        <strong>{% if app.session.flashBag.has('driverError') %}
             <div class="alert alert-success">
                 {% for msg in app.session.flashBag.get('driverError') %}
-                    {{ msg }}
+                {{ msg }}
                 {% endfor %}
             </div>{% endif %}</strong>
-        </div>
+    </div>
     <div class="container-fluid table-responsive">
-<br>
-    
-    <div class="panel-group" id="accordion2">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion2" href="#collapse1">
-        Search For </a>
-      </h4>
-    </div>
-    <div id="collapse1" class="panel-collapse collapse in">
-        <div class="panel-body">
-            {{ form_start(searchForm) }}
-            <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
-                    <tr class='first'>
-                        <td class="col-4">
-                        {{ form_widget(searchForm.firstName, {
-                            'attr': {
-                                'class': 'bootstrap-select .col-6 .col-sm-4',
-                                'placeholder': 'First Name'
-                                }
-                        }) }}
-                        </td>
-                        {# <td>{{ form_widget(searchForm.search, {
-                            'attr': {
-                                'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
-                            }
-                        }) }}
-                        </td> #}
-                    </tr>
-            </table>
-            <div class="btn-group btn-group-justified ">
-            <div class="btn-group">
-                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('cancelStepOne') }}" > Cancel</a>
-            </div>
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" > Next</button>
-            </div>
-        </div>
-            {{ form_end(searchForm) }}
-        </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
-        Add New Driver</a>
-      </h4>
-    </div>
-    <div id="collapse2" class="panel-collapse collapse">
-      <div class="panel-body">
-        {{ form_start(form) }}
-        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
-                    <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.firstName) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.firstName, {'attr' : 
-                    {'placeholder':'First Name', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.lastName) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.lastName, {'attr' : 
-                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.cin) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.cin, {'attr' : 
-                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.licenceNumber) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.licenceNumber, {
-                        'attr' : {'placeholder':'Licence Number', 'class':'text',}}) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.vehicleType) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.vehicleType)}}</td>
-                </tr>
-                <tr>
-                    <td class="first"><strong>{{ form_label(form.periodOfTravel) }}</strong></td>
-                    <td class="last">{{ form_widget(form.periodOfTravel) }}</td>
-                </tr>     
-                <tr>
-                    <td class="first"><strong>{{ form_label(form.salaire) }}</strong></td>
-                    <td class="last">{{ form_widget(form.salaire, {
-                        'attr' : {'placeholder':'salary for this period', 'class':'text'}
-                    }) }}</td>
-                </tr>
-                <tr>
-                    <td class="first" width="172">
-                        <strong>{{ form_label(form.numberPhone) }}</strong>
-                    </td>
-                    <td class="last">{{ form_widget(form.numberPhone, {
-                        'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
-                </tr>
-        </table>
-        <div class="btn-group btn-group-justified ">
-            <div class="btn-group">
-                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('cancelStepOne') }}" > Cancel</a>
-            </div>
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" > Next</button>
-            </div>
-        </div>
-        {{ form_end(form) }}
-      </div>
-    </div>
-  </div>
-  </div>
+        <br>
 
-</div>
-{% endblock %}
+        <div class="panel-group" id="accordion2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion2" href="#collapse1">
+                            Search For </a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        {{ form_start(searchForm) }}
+                        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+                            <tr class='first'>
+                                <td class="col-4">
+                                    {{ form_widget(searchForm.firstName, {
+                                    'attr': {
+                                    'class': 'bootstrap-select .col-6 .col-sm-4',
+                                    'placeholder': 'First Name'
+                                    }
+                                    }) }}
+                                </td>
+                                {# <td>{{ form_widget(searchForm.search, {
+                                    'attr': {
+                                    'class': 'bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault',
+                                    }
+                                    }) }}
+                                </td> #}
+                            </tr>
+                        </table>
+                        <div class="btn-group btn-group-justified ">
+                            <div class="btn-group">
+                                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('cancelStepOne') }}">
+                                    Cancel</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Next</button>
+                            </div>
+                        </div>
+                        {{ form_end(searchForm) }}
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
+                            Add New Driver</a>
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        {{ form_start(form) }}
+                        <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.firstName) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.firstName, {'attr' :
+                                    {'placeholder':'First Name', 'class':'text' }}) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.lastName) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.lastName, {'attr' :
+                                    {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.cin) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.cin, {'attr' :
+                                    {'placeholder':'CIN', 'class':'text' }}) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.licenceNumber) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.licenceNumber, {
+                                    'attr' : {'placeholder':'Licence Number', 'class':'text',}}) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.vehicleType) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.vehicleType)}}</td>
+                            </tr>
+                            <tr>
+                                <td class="first"><strong>{{ form_label(form.periodOfTravel) }}</strong></td>
+                                <td class="last">{{ form_widget(form.periodOfTravel) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first"><strong>{{ form_label(form.salaire) }}</strong></td>
+                                <td class="last">{{ form_widget(form.salaire, {
+                                    'attr' : {'placeholder':'salary for this period', 'class':'text'}
+                                    }) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" width="172">
+                                    <strong>{{ form_label(form.numberPhone) }}</strong>
+                                </td>
+                                <td class="last">{{ form_widget(form.numberPhone, {
+                                    'attr' : {'placeholder':'Phone Number', 'class':'text',}})}}</td>
+                            </tr>
+                        </table>
+                        <div class="btn-group btn-group-justified ">
+                            <div class="btn-group">
+                                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('cancelStepOne') }}">
+                                    Cancel</a>
+                            </div>
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Next</button>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endblock %}

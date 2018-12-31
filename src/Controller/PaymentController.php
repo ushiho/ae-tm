@@ -42,10 +42,11 @@ class PaymentController extends AbstractController
     {
         if ($mission) {
             $payment = new Payment();
+            $data = PaymentDriverController::calculateTotalPrice($mission);
             $toPayToSupplier = PaymentSupplierController::calculateTotalPrice($mission);
-            $toPayToDriver = PaymentDriverController::calculateTotalPrice($mission);
+            $toPayToDriver = $data['amount'];
             $total = $toPayToDriver + $toPayToSupplier;
-            $days = date_diff($mission->getStartDate(), $mission->getEndDate())->format('%a');
+            $days = $data['days'];
             $payment->setTotalPriceToPayToDriver($toPayToDriver)
                     ->setTotalPriceToPayToSupplier($toPayToSupplier)
                     ->setTotalPrice($total)

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\VehicleType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method VehicleType|null find($id, $lockMode = null, $lockVersion = null)
