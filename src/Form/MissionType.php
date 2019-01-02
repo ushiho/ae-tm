@@ -10,6 +10,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class MissionType extends AbstractType
 {
@@ -37,9 +39,24 @@ class MissionType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => '--Choose the department--',
                 'attr' => array(
-                    'style' => 'width:250px;',
+                    'style' => 'width:270px;',
                     'class' => 'selectDepa',
                 ),
+            ))
+            ->add('salaire', NumberType::class)
+            ->add('periodOfWork', ChoiceType::class, array(
+                'label' => 'Period Of Workd',
+                'choices' => array(
+                    'Daily' => 1,
+                    'Weekly' => 2,
+                    'Monthly' => 3,
+                ),
+                'placeholder' => '--Select a period--',
+                'required' => true,
+                'attr' => [
+                    'style' => 'width:270px',
+                ],
+                'multiple' => false,
             ))
         ;
     }

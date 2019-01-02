@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PaymentDriverRepository")
@@ -23,11 +24,13 @@ class PaymentDriver
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $price; // amount paid in this date
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPrice; // number of days * salary per day, calculated in creating mission process
 
@@ -50,11 +53,13 @@ class PaymentDriver
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $daysToPay;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $daysPaid;
 

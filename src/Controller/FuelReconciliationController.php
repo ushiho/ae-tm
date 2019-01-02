@@ -24,7 +24,7 @@ class FuelReconciliationController extends AbstractController
     public function index(FuelReconciliationRepository $repo, Request $request)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
         $fuelReconciliations = $repo->findAll();
 
@@ -40,7 +40,7 @@ class FuelReconciliationController extends AbstractController
     public function searchAction(Request $request, FuelReconciliationRepository $repo)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
         $form = $this->createForm(SearchReconciliationType::class);
         $form->handleRequest($request);
@@ -80,7 +80,7 @@ class FuelReconciliationController extends AbstractController
      $manager)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
         if (!$fuelReconciliation) {
             $fuelReconciliation = new Fuelreconciliation();
@@ -123,10 +123,10 @@ class FuelReconciliationController extends AbstractController
      * @Route("/fuel/reconciliation/show/{id}", name="show_fuel_reconciliation", requirements={"id"= "\d+"})
      * @Method("GET")
      */
-    public function showAction(FuelReconciliation $fuelReconciliation = null)
+    public function showAction(FuelReconciliation $fuelReconciliation = null, Request $request)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
 
         return $this->render('fuel_reconciliation/show.html.twig', array(
@@ -142,7 +142,7 @@ class FuelReconciliationController extends AbstractController
     public function deleteAction(Request $request, FuelReconciliation $fuelReconciliation = null, ObjectManager $manager)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
         $manager->remove($fuelReconciliation);
         $manager->flush();
@@ -277,9 +277,9 @@ class FuelReconciliationController extends AbstractController
         return $this->getUser()->getRole() == 2 ? false : true;
     }
 
-    public function toProfil()
+    public function toProfil(Request $request)
     {
-        $requst->getSession()->getFlashBag()->add('profilMsg', "You don't have access.");
+        $request->getSession()->getFlashBag()->add('profilMsg', "You don't have access.");
 
         return $this->redirectToRoute('profil');
     }

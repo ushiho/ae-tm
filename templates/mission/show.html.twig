@@ -27,6 +27,17 @@
                     <td class="last">{{ mission.endDate|date('d-m-Y')}}</td>
                 </tr>
                 <tr class="bg">
+                        <td class="first" title="Driver Salaire"><strong>Driver Salaire</strong></td>
+                        <td class="last">{{ driverSalaire }}</td>
+                    </tr>
+                    <tr class="bg">
+                        <td class="first" title="Period Of Work For The Driver"><strong>Period Of Work</strong></td>
+                        <td class="last">{% if driver.periodOfTravel == 1 %}Daily
+                        {% elseif driver.periodOfTravel == 2 %}Weekly
+                        {% elseif driver.periodOfTravel == 3 %}Monthly
+                        {% else %}Not Specified {% endif %}</td>
+                    </tr>
+                <tr class="bg">
                     <td class="first"><strong>Department</strong></td>
                     <td class="last"><a href="{{ path('showDepartment', {'id': mission.department.id}) }}" title="More Details" class="link">{{ mission.department.name }}</a></td>
                 </tr>

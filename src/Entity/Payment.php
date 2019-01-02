@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PaymentRepository")
@@ -20,11 +22,13 @@ class Payment
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPricePaid; # total amount paid = paymentDriever + paymentSupplier
 
     /**
      * @ORM\Column(type="decimal", precision=60, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPrice; # 
 
@@ -50,51 +54,61 @@ class Payment
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPriceToPayToDriver;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPriceToPayToSupplier;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $remainingPrice;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $remainigPriceToSupplier;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $remainingPriceToDriver;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPricePaidToSupplier;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPricePaidToDriver;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalDaysToPay;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalDaysPaid;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\GreaterThan(value = 0)
      */
     private $remainingDays;
 

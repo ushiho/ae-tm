@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PaymentSupplierRepository")
@@ -23,11 +25,13 @@ class PaymentSupplier
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $price;
 
     /**
      * @ORM\Column(type="decimal", precision=50, scale=2)
+     * @Assert\GreaterThan(value = 0)
      */
     private $totalPriceToPay;
 

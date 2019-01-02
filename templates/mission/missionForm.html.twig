@@ -43,6 +43,18 @@
                 </tr>
                 <tr>
                     <td class="first" width="172">
+                        <strong title="Driver's Period Of Work">{{ form_label(form.periodOfWork) }}</strong>
+                    </td>
+                    <td class="last">{{form_widget(form.periodOfWork)}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
+                        <strong title="Driver's Salary for this Period">{{ form_label(form.salaire) }}</strong>
+                    </td>
+                    <td class="last">{{form_widget(form.salaire)}}</td>
+                </tr>
+                <tr>
+                    <td class="first" width="172">
                         <strong>{{ form_label(form.department) }}</strong>
                     </td>
                     <td class="last">{{ form_widget(form.department) }}</td>
@@ -57,7 +69,7 @@
             <br>
             <div class="btn-group btn-group-justified ">
                 <div class="btn-group">
-                    <a href="{{ path('stepTree') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" title="Back to rent" > Back</a>
+                    <a href="{{ path('stepTwo') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" title="Back to rent" > Back</a>
                 </div>
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil" title="Verify your given datas"> Next</button>

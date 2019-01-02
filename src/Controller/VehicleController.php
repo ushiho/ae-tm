@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Allocate;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Repository\DriverRepository;
 
 class VehicleController extends AbstractController
@@ -25,24 +26,29 @@ class VehicleController extends AbstractController
     public function show(VehicleRepository $repo, VehicleTypeRepository $typeRepo,
         VehicleType $type = null, Request $request)
     {
-        $vehicles = [];
-        if ($type && $request->attributes->get('_route') == 'showVehiclesByType') {
-            $vehicles = $this->setTheState($repo->findByType($type));
-        } else {
-            $vehicles = $this->setTheState($repo->findAll());
-        }
-        $searchForm = $this->searchForm();
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $vehicles = $searchForm->getData();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->render('vehicle/vehicleBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'types' => $typeRepo->findAll(),
-            'vehicles' => $vehicles,
-            'searchForm' => $searchForm->createView(),
-        ]);
+            $vehicles = [];
+            if ($type && $request->attributes->get('_route') == 'showVehiclesByType') {
+                $vehicles = $this->setTheState($repo->findByType($type));
+            } else {
+                $vehicles = $this->setTheState($repo->findAll());
+            }
+            $searchForm = $this->searchForm();
+            $searchForm->handleRequest($request);
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $vehicles = $searchForm->getData();
+            }
+    
+            return $this->render('vehicle/vehicleBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'types' => $typeRepo->findAll(),
+                'vehicles' => $vehicles,
+                'searchForm' => $searchForm->createView(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -53,39 +59,44 @@ class VehicleController extends AbstractController
     public function action($idType = null, Vehicle $vehicle = null, ObjectManager $manager, Request $request,
         VehicleTypeRepository $typeRepo)
     {
-        if ($vehicle == null) {
-            $vehicle = new Vehicle();
-        }
-        if ($idType != null) {
-            $vehicle->setType($typeRepo->find($idType));
-        }
-        $form = $this->createForm(VehicleFormType::class, $vehicle);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('image')->getData();
-            if ($image) {
-                $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
-                try {
-                    $image = $image->move($this->getParameter('Vehicle_Images'), $imageName);
-                } catch (FileException $e) {
-                    $request->getSession()->getFlashBag()->add('uploadError', 'Sorry, There were a problem with uploading please try again.');
+        if($this->getUser()->getRole() != 3){
 
-                    return $this->redirectToRoute('addVehicle');
-                }
-                $vehicle->setImage($imageName);
+            if ($vehicle == null) {
+                $vehicle = new Vehicle();
             }
-            $manager->persist($vehicle);
-            $manager->flush();
-
-            return $this->redirectToRoute('allVehicles');
+            if ($idType != null) {
+                $vehicle->setType($typeRepo->find($idType));
+            }
+            $form = $this->createForm(VehicleFormType::class, $vehicle);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $image = $form->get('image')->getData();
+                if ($image) {
+                    $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
+                    try {
+                        $image = $image->move($this->getParameter('Vehicle_Images'), $imageName);
+                    } catch (FileException $e) {
+                        $request->getSession()->getFlashBag()->add('uploadError', 'Sorry, There were a problem with uploading please try again.');
+    
+                        return $this->redirectToRoute('addVehicle');
+                    }
+                    $vehicle->setImage($imageName);
+                }
+                $manager->persist($vehicle);
+                $manager->flush();
+    
+                return $this->redirectToRoute('allVehicles');
+            }
+    
+            return $this->render('/vehicle/vehicleForm.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUser(),
+                'vehicle' => $vehicle,
+                'types' => $typeRepo->findAll(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-
-        return $this->render('/vehicle/vehicleForm.html.twig', [
-            'form' => $form->createView(),
-            'connectedUser' => $this->getUser(),
-            'vehicle' => $vehicle,
-            'types' => $typeRepo->findAll(),
-        ]);
     }
 
     /**
@@ -93,10 +104,15 @@ class VehicleController extends AbstractController
      */
     public function delete($id, VehicleRepository $repo, ObjectManager $manager)
     {
-        $manager->remove($repo->find($id));
-        $manager->flush();
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allVehicles');
+            $manager->remove($repo->find($id));
+            $manager->flush();
+    
+            return $this->redirectToRoute('allVehicles');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -104,15 +120,20 @@ class VehicleController extends AbstractController
      */
     public function showDetails(Vehicle $vehicle = null, VehicleTypeRepository $typeRepo)
     {
-        if ($vehicle) {
-            return $this->render('vehicle/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'vehicle' => $vehicle,
-                'types' => $typeRepo->findAll(),
-            ]);
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allVehicles');
+            if ($vehicle) {
+                return $this->render('vehicle/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'vehicle' => $vehicle,
+                    'types' => $typeRepo->findAll(),
+                ]);
+            }
+    
+            return $this->redirectToRoute('allVehicles');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -120,12 +141,17 @@ class VehicleController extends AbstractController
      */
     public function deleteAll(ObjectManager $manager, VehicleRepository $repo)
     {
-        foreach ($repo->findAll() as $vehicle) {
-            $manager->remove($vehicle);
-            $manager->flush();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allVehicles');
+            foreach ($repo->findAll() as $vehicle) {
+                $manager->remove($vehicle);
+                $manager->flush();
+            }
+    
+            return $this->redirectToRoute('allVehicles');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -133,38 +159,44 @@ class VehicleController extends AbstractController
      */
     public function addMissionStepTwo(Request $request, SessionInterface $session, ObjectManager $manager, DriverRepository $driverRepo)
     {
-        if ($session->get('driver')) {
-            $vehicle = $session->get('vehicle');
-            if ($vehicle && !empty($vehicle)) {
-                $vehicle = $manager->merge($vehicle);
-            } else {
-                $vehicle = new Vehicle();
-            }
-            $searchForm = $this->searchForm();
-            $searchForm->handleRequest($request);
-            $form = $this->createForm(VehicleFormType::class, $vehicle);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                return $this->toStepThree($vehicle, $request, $driverRepo);
-            }
-            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $vehicle = $manager->merge($this->checkVehicleState($searchForm->getData()['matricule']));
-                if ($vehicle->getState() != 'Busy') {
-                    return $this->toStepThree($vehicle, $request, $driverRepo);
+        if($this->getUser()->getRole() != 3){
+
+            if ($session->get('driver')) {
+                $vehicle = $session->get('vehicle');
+                if ($vehicle && !empty($vehicle)) {
+                    $vehicle = $manager->merge($vehicle);
                 } else {
-                    $request->getSession()->getFlashBag()->add('vehicleError', 'The vehicle selected is busy.');
+                    $vehicle = new Vehicle();
                 }
+                $searchForm = $this->searchForm();
+                $searchForm->handleRequest($request);
+                $form = $this->createForm(VehicleFormType::class, $vehicle);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    return $this->toStepThree($vehicle, $request, $driverRepo);
+                }
+                if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                    $vehicle = $manager->merge($this->checkVehicleState($searchForm->getData()['matricule']));
+                    if ($vehicle->getState() != 'Busy') {
+                        return $this->toStepThree($vehicle, $request, $driverRepo);
+                    } else {
+                        $request->getSession()->getFlashBag()->add('vehicleError', 'The vehicle selected is busy.');
+                    }
+                }
+    
+                return $this->render('mission/vehicleForm.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'form' => $form->createView(),
+                    'searchForm' => $searchForm->createView(),
+                ]);
+            } else {
+                $session->getFlashBag()->add('driverError', 'This is the first step in creating the mission process!');
+    
+                return $this->redirectToRoute('stepOne');
             }
+        }else{
+            return $this->redirectToRoute('error403');
 
-            return $this->render('mission/vehicleForm.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'form' => $form->createView(),
-                'searchForm' => $searchForm->createView(),
-            ]);
-        } else {
-            $session->getFlashBag()->add('driverError', 'This is the first step in creating the mission process!');
-
-            return $this->redirectToRoute('stepOne');
         }
     }
 
@@ -270,10 +302,15 @@ class VehicleController extends AbstractController
      */
     public function addMissionToVehicle(Request $request, Vehicle $vehicle = null)
     {
-        if ($vehicle) {
-            $request->getSession()->set('vehicle', $vehicle);
-
-            return $this->redirectToRoute('addMission');
+        if($this->getUser()->getRole() != 3){
+            
+            if ($vehicle) {
+                $request->getSession()->set('vehicle', $vehicle);
+    
+                return $this->redirectToRoute('addMission');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 

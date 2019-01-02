@@ -144,11 +144,11 @@
                         </tr>
                         <tr class="bg">
                             <td class="first"><strong>Salaire</strong></td>
-                            <td class="last">{{driver.salaire}}</td>
+                            <td class="last">{{driverSalary}}</td>
                         </tr>
                         <tr class="bg">
                             <td class="first"><strong>Period Of Travel</strong></td>
-                            <td class="last">{% if driver.periodOfTravel == 1 %}Daily
+                            <td class="last">{% if mission.periodOfWork == 1 %}Daily
                             {% elseif driver.periodOfTravel == 2 %}Weekly
                             {% elseif driver.periodOfTravel == 3 %}Monthly
                             {% else %}Not Specified {% endif %}</td>

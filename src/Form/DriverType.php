@@ -37,24 +37,6 @@ class DriverType extends AbstractType
                 'multiple' => true,
                 'by_reference' => false,
             ))
-            ->add('salaire', NumberType::class, array(
-                'attr' => array(
-                    'style' => 'width:265px;',
-                )
-            ))
-            ->add('periodOfTravel', ChoiceType::class, array(
-                'choices' => array(
-                    'Daily' => 1,
-                    'Weekly' => 2,
-                    'Monthly' => 3,
-                ),
-                'placeholder' => '--Select a period--',
-                'required' => true,
-                'attr' => [
-                    'style' => 'width:270px',
-                ],
-                'multiple' => false,
-            ))
         ;
     }
 

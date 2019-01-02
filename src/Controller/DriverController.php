@@ -24,23 +24,28 @@ class DriverController extends AbstractController
      */
     public function show(DriverRepository $repo, Request $request, VehicleType $type = null)
     {
-        $drivers = [];
-        if ($type && $request->attributes->get('_route') == 'showDriverForType') {
-            $drivers = $repo->findByType($type);
-        } else {
-            $drivers = $repo->findAll();
+        if($this->getUser()->getRole() != 3){
+            
+            $drivers = [];
+            if ($type && $request->attributes->get('_route') == 'showDriverForType') {
+                $drivers = $repo->findByType($type);
+            } else {
+                $drivers = $repo->findAll();
+            }
+            $searchForm = $this->searchForm();
+            $searchForm->handleRequest($request);
+            if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                $drivers = $searchForm->getData();
+            }
+    
+            return $this->render('driver/driverBase.html.twig', [
+                     'connectedUser' => $this->getUser(),
+                     'drivers' => $drivers,
+                     'searchForm' => $searchForm->createView(),
+                    ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        $searchForm = $this->searchForm();
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $drivers = $searchForm->getData();
-        }
-
-        return $this->render('driver/driverBase.html.twig', [
-                 'connectedUser' => $this->getUser(),
-                 'drivers' => $drivers,
-                 'searchForm' => $searchForm->createView(),
-                ]);
     }
 
     public function checkIfBusy(array $drivers)
@@ -68,25 +73,30 @@ class DriverController extends AbstractController
     public function action(Request $request, ObjectManager $manager, Driver $driver = null,
     VehicleTypeRepository $typeRepo)
     {
-        if ($driver == null) {
-            $driver = new Driver();
-        }
-        $form = $this->createForm(DriverType::class, $driver);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $driver->setSalairePerDay($this->salaryPerDay($driver));
-            $driver->setBusy($this->isBusy($driver));
-            $manager->persist($driver);
-            $manager->flush();
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('allDrivers');
+            if ($driver == null) {
+                $driver = new Driver();
+            }
+            $form = $this->createForm(DriverType::class, $driver);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $driver->setSalairePerDay($this->salaryPerDay($driver));
+                $driver->setBusy($this->isBusy($driver));
+                $manager->persist($driver);
+                $manager->flush();
+    
+                return $this->redirectToRoute('allDrivers');
+            }
+    
+            return $this->render('driver/driverForm.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUSer(),
+                'driver' => $driver,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-
-        return $this->render('driver/driverForm.html.twig', [
-            'form' => $form->createView(),
-            'connectedUser' => $this->getUSer(),
-            'driver' => $driver,
-        ]);
     }
 
     /**
@@ -94,10 +104,15 @@ class DriverController extends AbstractController
      */
     public function delete($id, ObjectManager $manager, DriverRepository $repo)
     {
-        $manager->remove($repo->find($id));
-        $manager->flush();
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allDrivers');
+            $manager->remove($repo->find($id));
+            $manager->flush();
+    
+            return $this->redirectToRoute('allDrivers');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -105,11 +120,16 @@ class DriverController extends AbstractController
      */
     public function showDetails(Driver $driver = null)
     {
-        if ($driver) {
-            return $this->render('driver/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'driver' => $driver,
-            ]);
+        if($this->getUser()->getRole() != 3){
+
+            if ($driver) {
+                return $this->render('driver/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'driver' => $driver,
+                ]);
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -118,12 +138,17 @@ class DriverController extends AbstractController
      */
     public function deleteAll(ObjectManager $manager, DriverRepository $repo)
     {
-        foreach ($repo->findAll() as $driver) {
-            $manager->remove($driver);
-            $manager->flush();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allDrivers');
+            foreach ($repo->findAll() as $driver) {
+                $manager->remove($driver);
+                $manager->flush();
+            }
+    
+            return $this->redirectToRoute('allDrivers');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     public function salaryPerDay(Driver $driver)
@@ -148,40 +173,45 @@ class DriverController extends AbstractController
      */
     public function addMissionStepOne(Request $request, SessionInterface $session, ObjectManager $manager)
     {
-        if ($request->attributes->get('_route') == 'stepOne') {
-            $driver = $session->get('driver');
-            if ($driver && $driver->getId()) {
-                $driver = $manager->merge($driver);
-            } else {
-                $driver = new Driver();
-            }
-            $searchForm = $this->searchForm();
-            $searchForm->handleRequest($request);
-            $form = $this->createForm(DriverType::class, $driver);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                return $this->toStepTwo($request, $driver);
-            }else if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-                $driver = $manager->merge($searchForm->getData()['firstName']);
-                if ($driver->getId()) {
-                    if (!$driver->getBusy()) {
-                        return $this->toStepTwo($request, $driver);
-                    } else {
-                        $session->getFlashBag()->add('driverErro', 'The Driver selected has a mission not finished yet.');
+        if($this->getUser()->getRole() != 3){
+
+            if ($request->attributes->get('_route') == 'stepOne') {
+                $driver = $session->get('driver');
+                if ($driver && $driver->getId()) {
+                    $driver = $manager->merge($driver);
+                } else {
+                    $driver = new Driver();
+                }
+                $searchForm = $this->searchForm();
+                $searchForm->handleRequest($request);
+                $form = $this->createForm(DriverType::class, $driver);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    return $this->toStepTwo($request, $driver);
+                }else if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+                    $driver = $manager->merge($searchForm->getData()['firstName']);
+                    if ($driver->getId()) {
+                        if (!$driver->getBusy()) {
+                            return $this->toStepTwo($request, $driver);
+                        } else {
+                            $session->getFlashBag()->add('driverErro', 'The Driver selected has a mission not finished yet.');
+                        }
                     }
                 }
+    
+                return $this->render('mission/driverForm.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'form' => $form->createView(),
+                    'searchForm' => $searchForm->createView(),
+                ]);
+            } else {
+                $session->clear();
+                $session->getFlashBag()->add('missionCancel', 'The process has been canceled by the user!');
+    
+                return $this->redirectToRoute('allMissions');
             }
-
-            return $this->render('mission/driverForm.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'form' => $form->createView(),
-                'searchForm' => $searchForm->createView(),
-            ]);
-        } else {
-            $session->clear();
-            $session->getFlashBag()->add('missionCancel', 'The process has been canceled by the user!');
-
-            return $this->redirectToRoute('allMissions');
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -211,14 +241,19 @@ class DriverController extends AbstractController
      */
     public function addMissionToDriver(Driver $driver = null, SessionInterface $session)
     {
-        if ($driver && !$driver->getBusy()) {
-            $session->set('driver', $driver);
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('stepOne');
-        } else {
-            $session->getFlashBag()->add('driverError', 'The driver '.$driver->getFirstName().' is busy, he has a mission not finished!');
-
-            return $this->redirectToRoute('allDrivers');
+            if ($driver && !$driver->getBusy()) {
+                $session->set('driver', $driver);
+    
+                return $this->redirectToRoute('stepOne');
+            } else {
+                $session->getFlashBag()->add('driverError', 'The driver '.$driver->getFirstName().' is busy, he has a mission not finished!');
+    
+                return $this->redirectToRoute('allDrivers');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 

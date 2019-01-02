@@ -46,7 +46,6 @@ class UserController extends AbstractController
      */
     public function userForm(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
-        // if($this->getUser()->getRole() == 1){
         $user = $this->getUser();
         $form = $this->createForm(UserRegistrationType::class, $user)
             ->add('password', PasswordType::class)
@@ -71,9 +70,6 @@ class UserController extends AbstractController
             'user' => $user,
             'connectedUser' => $this->getUser(),
         ]);
-        // } else{
-        //     throw $this->createAccessDeniedException("You don't have access to this page!");
-        // }
     }
 
     /**
@@ -89,7 +85,7 @@ class UserController extends AbstractController
             $form = $this->createForm(UserRegistrationType::class, $user);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer);
+                $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer, $request);
                 $request->getSession()->getFlashBag()->add('success', $this->customizeMsg($request, $user));
 
                 return $this->redirectToRoute('allUsers');
@@ -100,10 +96,8 @@ class UserController extends AbstractController
                 'connectedUser' => $this->getUser(),
                 'user' => $user,
             ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('profilMsg', "You don't have permission.");
-
-            return $this->redirectToRoute('profil');
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -123,7 +117,7 @@ class UserController extends AbstractController
      */
     public function findAll(UserRepository $repo)
     {
-        // if($this->getUser()->getRole()==1){
+        if($this->getUser()->getRole()==1){
         $users = $repo->findAll();
 
         return $this->render('user/userBase.html.twig', array(
@@ -131,9 +125,9 @@ class UserController extends AbstractController
             'connectedUser' => $this->getUser(),
             )
             );
-        // }else{
-        //     throw $this->createAccessDeniedException("You don't have access to this page!");
-        // }
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -141,13 +135,13 @@ class UserController extends AbstractController
      */
     public function delete(User $user, ObjectManager $manager)
     {
-        if ($this->getUser()->getRole() == 1) {
+        if ($this->getUser()->getRole() != 1) {
+            return $this->redirectToRoute('error403');
+        }else{
             $manager->remove($user);
             $manager->flush();
 
             return $this->redirectToRoute('allUsers');
-        } else {
-            throw $this->createAccessDeniedException("You don't have access to this page");
         }
     }
 
@@ -174,14 +168,18 @@ class UserController extends AbstractController
      */
     public function showDetails(User $user = null)
     {
-        if ($user) {
-            return $this->render('user/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'user' => $user,
-            ]);
-        }
+        if($this->getUser()->getRole == 1){
+            if ($user) {
+                return $this->render('user/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'user' => $user,
+                ]);
+            }
 
-        return $this->redirectToRoute('allUsers');
+            return $this->redirectToRoute('allUsers');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -189,14 +187,18 @@ class UserController extends AbstractController
      */
     public function deleteAll(ObjectManager $manager, UserRepository $repo)
     {
-        foreach ($repo->findAll() as $user) {
-            if ($user != $this->getUser()) {
-                $manager->remove($user);
-                $manager->flush();
+        if($this->getUser()->getRole == 1){
+            foreach ($repo->findAll() as $user) {
+                if ($user != $this->getUser()) {
+                    $manager->remove($user);
+                    $manager->flush();
+                }
             }
+            return $this->redirectToRoute('allUsers');
+        }else{
+            return $this->redirectToRoute('error403');
         }
 
-        return $this->redirectToRoute('allUsers');
     }
 
     public function sendEmail($user, $passwordNotCrypted, \Swift_Mailer $mailer)
@@ -221,7 +223,7 @@ class UserController extends AbstractController
             print_r($failures);
         }
 
-        dd($mailer->send($message));
+        $mailer->send($message);
     }
 
     /**
@@ -258,12 +260,25 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function generatePasswordAndSendEmail(ObjectManager $manager, $user, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer)
+    public function generatePasswordAndSendEmail(ObjectManager $manager, $user, UserPasswordEncoderInterface $encoder, \Swift_Mailer $mailer, Request $request)
     {
-        $passwordNotCrypted = random_bytes(10);
-        $user->setPassword($encoder->encodePassword($user, $passwordNotCrypted));
+        if($request->attributes->get('_route') != 'editUser'){
+            $passwordNotCrypted = $this->randomPassword(8);
+            $user->setPassword($encoder->encodePassword($user, $passwordNotCrypted));
+            $this->sendEmail($user, $passwordNotCrypted, $mailer);
+        }
         $manager->persist($user);
         $manager->flush();
-        $this->sendEmail($user, $passwordNotCrypted, $mailer);
+    }
+
+    function randomPassword($limit) {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < $limit; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 }

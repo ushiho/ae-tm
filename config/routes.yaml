@@ -4,3 +4,20 @@
 resetPassword:
   path: /resetPassword
   controller: App\Controller\UserController::resetPassword
+
+error404:
+    path: /_error/404
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    TwigBundle:Exception:error404.html.twig # not working
+
+error500:
+    path: /_error/500
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    TwigBundle:Exception:error500.html.twig # not working
+
+error403:
+    path: /_error/403
+    defaults:
+        _controller: FrameworkBundle:Template:template

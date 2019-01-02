@@ -65,21 +65,26 @@ class PaymentDriverController extends AbstractController
      */
     public function show(Request $request, PaymentDriverRepository $repo, ProjectRepository $projectRepo, MissionRepository $missionRepo, $idMission = null, $idProject = null, PaymentRepository $paymentRepo, $idPayment = null)
     {
-        $paymentDriver = [];
-        if ($idMission && $request->attributes->get('_route') == 'paymentDriverByMission') {
-            $paymentDriver = $repo->findByMission($missionRepo->find($idMission));
-        } elseif ($idProject && $request->attributes->get('_route') == 'paymentDriverByProject') {
-            $paymentDriver = $repo->findByProject($projectRepo->find($idProject));
-        } elseif ($idPayment && $request->attributes->get('_route') == 'paymentDriverByPayment') {
-            $paymentDriver = $repo->findByPayment($paymentRepo->find($idPayment));
-        } else {
-            $paymentDriver = $repo->findAll();
+        if($this->getUser()->getRole() != 3){
+            
+            $paymentDriver = [];
+            if ($idMission && $request->attributes->get('_route') == 'paymentDriverByMission') {
+                $paymentDriver = $repo->findByMission($missionRepo->find($idMission));
+            } elseif ($idProject && $request->attributes->get('_route') == 'paymentDriverByProject') {
+                $paymentDriver = $repo->findByProject($projectRepo->find($idProject));
+            } elseif ($idPayment && $request->attributes->get('_route') == 'paymentDriverByPayment') {
+                $paymentDriver = $repo->findByPayment($paymentRepo->find($idPayment));
+            } else {
+                $paymentDriver = $repo->findAll();
+            }
+    
+            return $this->render('payment/paymentDriverBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'paymentDriver' => $paymentDriver,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-
-        return $this->render('payment/paymentDriverBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'paymentDriver' => $paymentDriver,
-        ]);
     }
 
     /**
@@ -88,37 +93,42 @@ class PaymentDriverController extends AbstractController
      */
     public function action(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment = null, PaymentRepository $paymentRepo)
     {
-        $payment = $paymentRepo->find($idPayment);
-        if (!$paymentDriver) {
-            $paymentDriver = new PaymentDriver();
-        }
-        if ($payment) {
-            $form = $this->createForm(PaymentDriverType::class, $paymentDriver);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
+        if($this->getUser()->getRole() != 3){
 
-                $paymentDriver = $this->completeDatas($payment, $paymentDriver);
-                if ($this->compareDays($paymentDriver, $request, $repo)) {
-
-                    $this->save($manager, $paymentDriver, $request, $repo);
-
-                    return $this->redirectToRoute('paymentDriverByPayment', [
-                        'idPayment' => $payment->getId(),
-                    ]);
-                } else {
-                    $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Number of days paid to that driver is more than his expanses!');
-                }
+            $payment = $paymentRepo->find($idPayment);
+            if (!$paymentDriver) {
+                $paymentDriver = new PaymentDriver();
             }
-
-            return $this->render('payment/paymentDriverForm.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'form' => $form->createView(),
-                'paymentDriver' => $paymentDriver,
-            ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('paymentMsg', 'Please select a payment from the list below to link the new payment!');
-
-            return $this->redirectToRoute('allPayments');
+            if ($payment) {
+                $form = $this->createForm(PaymentDriverType::class, $paymentDriver);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+    
+                    $paymentDriver = $this->completeDatas($payment, $paymentDriver);
+                    if ($this->compareDays($paymentDriver, $request, $repo)) {
+    
+                        $this->save($manager, $paymentDriver, $request, $repo);
+    
+                        return $this->redirectToRoute('paymentDriverByPayment', [
+                            'idPayment' => $payment->getId(),
+                        ]);
+                    } else {
+                        $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Number of days paid to that driver is more than his expanses!');
+                    }
+                }
+    
+                return $this->render('payment/paymentDriverForm.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'form' => $form->createView(),
+                    'paymentDriver' => $paymentDriver,
+                ]);
+            } else {
+                $request->getSession()->getFlashBag()->add('paymentMsg', 'Please select a payment from the list below to link the new payment!');
+    
+                return $this->redirectToRoute('allPayments');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -147,15 +157,20 @@ class PaymentDriverController extends AbstractController
      */
     public function showDetails(PaymentDriver $paymentDriver = null, Request $request)
     {
-        if ($paymentDriver && $paymentDriver->getId()) {
-            return $this->render('payment/paymentDriverShow.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'paymentDriver' => $paymentDriver,
-            ]);
-        }
-        $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Please select a payment from the list below to show details!');
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allPaymentsDriver');
+            if ($paymentDriver && $paymentDriver->getId()) {
+                return $this->render('payment/paymentDriverShow.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'paymentDriver' => $paymentDriver,
+                ]);
+            }
+            $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Please select a payment from the list below to show details!');
+    
+            return $this->redirectToRoute('allPaymentsDriver');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -163,18 +178,23 @@ class PaymentDriverController extends AbstractController
      */
     public function delete(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request)
     {
-        if ($paymentDriver && $paymentDriver->getId()) {
-            $payment = $this->addMoneyToPayment($paymentDriver);
-            $manager->persist($manager->merge($payment));
-            $manager->remove($paymentDriver);
-            $manager->flush();
-            $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'The payment was successfully  deleted!');
-            $request->getSession()->clear();
-        } else {
-            $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'There is no selected payment to delete!');
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allPaymentsDriver');
+            if ($paymentDriver && $paymentDriver->getId()) {
+                $payment = $this->addMoneyToPayment($paymentDriver);
+                $manager->persist($manager->merge($payment));
+                $manager->remove($paymentDriver);
+                $manager->flush();
+                $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'The payment was successfully  deleted!');
+                $request->getSession()->clear();
+            } else {
+                $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'There is no selected payment to delete!');
+            }
+    
+            return $this->redirectToRoute('allPaymentsDriver');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     public function addMoneyToPayment(PaymentDriver $paymentDriver)

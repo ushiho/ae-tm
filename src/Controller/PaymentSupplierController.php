@@ -48,21 +48,26 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/payment/{idPayment}", name="paymentSupplierByPayment", requirements={"idPayment"="\d+"})
      */
     public function show(Request $request, PaymentSupplierRepository $repo, ProjectRepository $projectRepo, MissionRepository $missionRepo, $idMission=null, $idProject=null, PaymentRepository $paymentRepo, $idPayment=null){
-        $paymentSupplier = [];
-        if($idMission && $request->attributes->get('_route') == "paymentSupplierByMission"){
-            $paymentSupplier = $repo->findByMission($missionRepo->find($idMission));
-        }else if($idProject && $request->attributes->get('_route') == "paymentSipplierByProject"){
-            $paymentSupplier = $repo->findByProject($projectRepo->find($idProject));
-        }else if($idPayment && $request->attributes->get('_route') == "paymentSupplierByPayment"){
-            $paymentSupplier = $repo->findByPayment($paymentRepo->find($idPayment));
+        if($this->getUser()->getRole() != 3){
+
+            $paymentSupplier = [];
+            if($idMission && $request->attributes->get('_route') == "paymentSupplierByMission"){
+                $paymentSupplier = $repo->findByMission($missionRepo->find($idMission));
+            }else if($idProject && $request->attributes->get('_route') == "paymentSipplierByProject"){
+                $paymentSupplier = $repo->findByProject($projectRepo->find($idProject));
+            }else if($idPayment && $request->attributes->get('_route') == "paymentSupplierByPayment"){
+                $paymentSupplier = $repo->findByPayment($paymentRepo->find($idPayment));
+            }else{
+                $paymentSupplier = $repo->findAll();
+            }
+            
+            return $this->render('payment/paymentSupplierBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'paymentSupplier' => $paymentSupplier,
+            ]);
         }else{
-            $paymentSupplier = $repo->findAll();
+            return $this->redirectToRoute('error403');
         }
-        
-        return $this->render('payment/paymentSupplierBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'paymentSupplier' => $paymentSupplier,
-        ]);
     }
 
     /**
@@ -70,28 +75,33 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/{idPayment}/paymentSupplier/{id}/edit", name="editPaymentSupplier", requirements={"id"="\d+"})
      */
     public function action(PaymentSupplier $paymentSupplier=null, PaymentSupplierRepository $repo, ObjectManager $manager, Request $request, AllocateRepository $rentRepo, SupplierRepository $supplierRepo, PaymentRepository $paymentRepo, $idPayment=null){
-        $payment = $paymentRepo->find($idPayment);
-        if($payment || $paymentSupplier){
-        $params = $this->testParams($request, $payment, $paymentSupplier);
-        $form = $this->createForm(PaymentSupplierType::class, $params['paymentSupplier']);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            if($this->comparePrice($params['paymentSupplier'], $request, $params['payment'], $params['price'])){
-                $paymentSupplier = $this->completeDatas($params['paymentSupplier'], $params['payment'], $rentRepo, $supplierRepo);
-                $this->save($manager, $paymentSupplier, $params['payment'], $request, $params['price']);
-                return $this->redirectToRoute("paymentSupplierByPayment", ['idPayment' => $params['payment']->getId(),]);
-            }else{
-                $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The price given to that supplier is more than his remaining expenses!");
+        if($this->getUser()->getRole() != 3){
+
+            $payment = $paymentRepo->find($idPayment);
+            if($payment || $paymentSupplier){
+            $params = $this->testParams($request, $payment, $paymentSupplier);
+            $form = $this->createForm(PaymentSupplierType::class, $params['paymentSupplier']);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                if($this->comparePrice($params['paymentSupplier'], $request, $params['payment'], $params['price'])){
+                    $paymentSupplier = $this->completeDatas($params['paymentSupplier'], $params['payment'], $rentRepo, $supplierRepo);
+                    $this->save($manager, $paymentSupplier, $params['payment'], $request, $params['price']);
+                    return $this->redirectToRoute("paymentSupplierByPayment", ['idPayment' => $params['payment']->getId(),]);
+                }else{
+                    $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The price given to that supplier is more than his remaining expenses!");
+                    }
                 }
+                    return $this->render('payment/paymentSupplierForm.html.twig', [
+                        'connectedUser' => $this->getUser(),
+                        'form' => $form->createView(),
+                        'paymentSupplier' => $params['paymentSupplier'],
+                    ]);
+            }else{
+                $request->getSession()->getFlashBag()->add('paymentMsg', "Please select a payment from the list below to link the new payment!");
+                return $this->redirectToRoute('allPayments');
             }
-                return $this->render('payment/paymentSupplierForm.html.twig', [
-                    'connectedUser' => $this->getUser(),
-                    'form' => $form->createView(),
-                    'paymentSupplier' => $params['paymentSupplier'],
-                ]);
         }else{
-            $request->getSession()->getFlashBag()->add('paymentMsg', "Please select a payment from the list below to link the new payment!");
-            return $this->redirectToRoute('allPayments');
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -109,31 +119,41 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/{id}/show", name="showPaymentSupplier")
      */
     public function showDetails(PaymentSupplier $paymentSupplier=null, Request $request){
-        if($paymentSupplier && $paymentSupplier->getId()){
-            return $this->render('payment/paymentSupplierShow.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'paymentSupplier' => $paymentSupplier,
-            ]);
+        if($this->getUser()->getRole() != 3){
+
+            if($paymentSupplier && $paymentSupplier->getId()){
+                return $this->render('payment/paymentSupplierShow.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'paymentSupplier' => $paymentSupplier,
+                ]);
+            }
+                $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "Please select a payment from the lise below to show details!");
+                return $this->redirectToRoute("allPaymentsSupplier");
+        }else{
+            return $this->redirectToRoute('error403');
         }
-            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "Please select a payment from the lise below to show details!");
-            return $this->redirectToRoute("allPaymentsSupplier");
     }
 
     /**
      * @Route("/payment/paymentSupplier/{id}/delete", name="deletePaymentSupplier")
      */
     public function delete(PaymentSupplier $paymentSupplier=null, ObjectManager $manager, Request $request, PaymentSupplierRepository $repo){
-        if($paymentSupplier&&$paymentSupplier->getId()){
-            $payment = $this->addMoneyToPayment($paymentSupplier);
-            $manager->remove($paymentSupplier);
-            $manager->persist($manager->merge($payment));
-            $manager->flush();
-            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment was successfully deleted!");
-            $request->getSession()->clear();
+        if($this->getUser()->getRole() != 3){
+
+            if($paymentSupplier&&$paymentSupplier->getId()){
+                $payment = $this->addMoneyToPayment($paymentSupplier);
+                $manager->remove($paymentSupplier);
+                $manager->persist($manager->merge($payment));
+                $manager->flush();
+                $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The payment was successfully deleted!");
+                $request->getSession()->clear();
+            }else{
+                $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "There is no selected payment to delete!");
+            }
+            return $this->redirectToRoute('allPaymentsSupplier');
         }else{
-            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "There is no selected payment to delete!");
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allPaymentsSupplier');
     }
 
     public function addMoneyToPayment(PaymentSupplier $paymentSupplier){
@@ -178,9 +198,14 @@ class PaymentSupplierController extends AbstractController
      * @Route("/payment/paymentSupplier/cancel", name="cancelAddPaymentSupplier")
      */
     public function cancelAdd(Request $request){
-        $request->getSession()->clear();
-        $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The process is cancled by the user!");
-        return $this->redirectToRoute('allPaymentsSupplier');
+        if($this->getUser()->getRole() != 3){
+
+            $request->getSession()->clear();
+            $request->getSession()->getFlashBag()->add('paymentSupplierMsg', "The process is cancled by the user!");
+            return $this->redirectToRoute('allPaymentsSupplier');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     public function testParams(Request $request, Payment $payment, PaymentSupplier $paymentSupplier=null){

@@ -28,21 +28,26 @@ class MissionController extends AbstractController
      */
     public function index(MissionRepository $repo, ProjectRepository $projectRepo, DepartmentRepository $depaRepo, DriverRepository $driverRepo, $idDepartment = null, Request $request, $idProject = null, $idDriver = null)
     {
-        $missions = [];
-        if ($idDepartment && $request->attributes->get('_route') == 'showMissionOfDepartment') {
-            $missions = $repo->findByDepartment($depaRepo->find($idDepartment));
-        } elseif ($idProject && $request->attributes->get('_route') == 'showMissionOfProject') {
-            $missions = $repo->findByProject($projectRepo->find($idProject));
-        } elseif ($idDriver && $request->attributes->get('_route') == 'showMissionsByDriver') {
-            $missions = $repo->findByDriver($driverRepo->find($idDriver));
-        } else {
-            $missions = $repo->findAll();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->render('mission/missionBase.html.twig', [
-            'missions' => $missions,
-            'connectedUser' => $this->getUser(),
-        ]);
+            $missions = [];
+            if ($idDepartment && $request->attributes->get('_route') == 'showMissionOfDepartment') {
+                $missions = $repo->findByDepartment($depaRepo->find($idDepartment));
+            } elseif ($idProject && $request->attributes->get('_route') == 'showMissionOfProject') {
+                $missions = $repo->findByProject($projectRepo->find($idProject));
+            } elseif ($idDriver && $request->attributes->get('_route') == 'showMissionsByDriver') {
+                $missions = $repo->findByDriver($driverRepo->find($idDriver));
+            } else {
+                $missions = $repo->findAll();
+            }
+    
+            return $this->render('mission/missionBase.html.twig', [
+                'missions' => $missions,
+                'connectedUser' => $this->getUser(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     //  /**
@@ -85,16 +90,21 @@ class MissionController extends AbstractController
      */
     public function delete($id, ObjectManager $manager, MissionRepository $repo, Request $request)
     {
-        $mission = $repo->find($id);
-        if ($mission) {
-            $manager->remove($mission);
-            $manager->flush();
-
-            return $this->redirectToRoute('allMissions');
-        } else {
-            $request->getSession()->getFlashBag()->add('missionError', 'There is no selected mission to delete!');
-
-            return $this->redirectToRoute('allMissions');
+        if($this->getUser()->getRole() != 3){
+            
+            $mission = $repo->find($id);
+            if ($mission) {
+                $manager->remove($mission);
+                $manager->flush();
+    
+                return $this->redirectToRoute('allMissions');
+            } else {
+                $request->getSession()->getFlashBag()->add('missionError', 'There is no selected mission to delete!');
+    
+                return $this->redirectToRoute('allMissions');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -103,12 +113,17 @@ class MissionController extends AbstractController
      */
     public function deleteAll(MissionRepository $repo, ObjectManager $manager)
     {
-        foreach ($repo->findAll() as $mission) {
-            $manager->remove($mission);
-            $manager->flush();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allMissions');
+            foreach ($repo->findAll() as $mission) {
+                $manager->remove($mission);
+                $manager->flush();
+            }
+    
+            return $this->redirectToRoute('allMissions');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -116,46 +131,57 @@ class MissionController extends AbstractController
      */
     public function showDetails(Mission $mission = null)
     {
-        if ($mission) {
-            return $this->render('/mission/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'mission' => $mission,
-            ]);
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allMissions');
+            if ($mission) {
+                $salary = $mission->getSalaire() * $this->periodFromToNumber($mission->getPeriodOfWork());
+                return $this->render('/mission/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'mission' => $mission,
+                    'driverSalaire' => $salary,
+                ]);
+            }
+    
+            return $this->redirectToRoute('allMissions');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
      * @Route("/project/mission/new/add_mission", name="stepTree")
      */
-    public function addMissionStepFour(Request $request, SessionInterface $session, ObjectManager $manager)
+    public function addMissionStepThree(Request $request, SessionInterface $session, ObjectManager $manager)
     {
-        if ($request->getSession()->get('vehicle') && $request->get('_route') == 'stepTree') {
-            $mission = $session->get('mission');
-            if ($mission) {
-                $mission = $manager->merge($mission);
-            } else {
-                $mission = new Mission();
-            }
-            $form = $this->createForm(MissionType::class, $mission);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                // if ($this->verifyDates($mission, $session->get('rent'))) {
-                    $mission->setFinished($mission->getEndDate() >= new \DateTime());
-                    $mission->setSalaire($session->get('driver')->getSalaire());
-                    $mission->setPeriodOfWork($session->get('driver')->getPeriodOfTravel());
-                    $session->set('mission', $mission);
-                    return $this->redirectToRoute('stepFour');
-                // } else {
-                //     $request->getSession()->getFlashBag()->add('missionError', 'Attention the  date of the mission should be included inside the date of the rent!');
-                // }
-            }
+        if($this->getUser()->getRole() != 3){
 
-            return $this->render('/mission/missionForm.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'form' => $form->createView(),
-            ]);
+            if ($request->getSession()->get('vehicle') && $request->get('_route') == 'stepTree') {
+                $mission = $session->get('mission');
+                if ($mission) {
+                    $mission = $manager->merge($mission);
+                } else {
+                    $mission = new Mission();
+                }
+                $form = $this->createForm(MissionType::class, $mission);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    // if ($this->verifyDates($mission, $session->get('rent'))) {
+                        $mission->setFinished($mission->getEndDate() <= new \DateTime())
+                                ->setSalaire($this->salaryPerDay($mission));
+                        $session->set('mission', $mission);
+                        return $this->redirectToRoute('stepFour');
+                    // } else {
+                    //     $request->getSession()->getFlashBag()->add('missionError', 'Attention the  date of the mission should be included inside the date of the rent!');
+                    // }
+                }
+    
+                return $this->render('/mission/missionForm.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'form' => $form->createView(),
+                ]);
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -182,21 +208,27 @@ class MissionController extends AbstractController
      */
     public function verifyDatas(Request $request)
     {
-        $session = $request->getSession();
-        if ($session->count() > 0) {
-            $data = $this->getDatasFromSession($session);
+        if($this->getUser()->getRole() != 3){
 
-            return $this->render('mission/verifyDatas.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'mission' => $data['mission'],
-                'rent' => $data['rent'],
-                'vehicle' => $data['vehicle'],
-                'driver' => $data['driver'],
-            ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('driverError', 'This is the first step in creating mission process!');
-
-            return $this->redirectToRoute('stepOne');
+            $session = $request->getSession();
+            if ($session->count() > 0) {
+                $data = $this->getDatasFromSession($session);
+    
+                return $this->render('mission/verifyDatas.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'mission' => $data['mission'],
+                    'rent' => $data['rent'],
+                    'vehicle' => $data['vehicle'],
+                    'driver' => $data['driver'],
+                    'driverSalary' => $data['mission']->getSalaire() * $this->periodFromToNumber($data['mission']->getPeriodOfWork())
+                ]);
+            } else {
+                $request->getSession()->getFlashBag()->add('driverError', 'This is the first step in creating mission process!');
+    
+                return $this->redirectToRoute('stepOne');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -232,17 +264,15 @@ class MissionController extends AbstractController
                            ->setVehicleType(DriverController::merge($data['driver'], $manager));
             $data['vehicle']->setAllocate($data['rent'])
                             ->setType($manager->merge($data['vehicle']->getType()));
-            $data['mission']->setDriver($data['driver'])
+            $data['mission']->setDriver($manager->merge($data['driver']))
                             ->setAllocate($data['rent'])
                             ->setCreatedAt(new \DateTime())
                             ->setDepartment($manager->merge($data['mission']->getDepartment()))
                             ->setProject($manager->merge($data['project']))
-                            ->setPayment(PaymentController::init($data['mission']))
-                            ->setSalaire($data['driver']->getSalairePerDay())
-                            ->setPeriodOfWork($data['driver']->getPeriodOfTravel());
+                            ->setPayment($manager->merge(PaymentController::init($data['mission'])));
             $data['rent']->setCreatedAt(new \DateTime())
                          ->setMission($data['mission'])
-                         ->setVehicle($data['vehicle'])
+                         ->setVehicle($manager->merge($data['vehicle']))
                          ->setSupplier($manager->merge($data['rent']->getSupplier()));
             $data['rent']->setPricePerDay(RentController::pricePerDay($data['rent']));
             $data['project']->getMission()->add($data['mission']);
@@ -258,19 +288,24 @@ class MissionController extends AbstractController
      */
     public function save(SessionInterface $session, ObjectManager $manager, Request $request)
     {
-        $data = $this->completeData($session, $manager);
-        if (!$data) {
-            $request->getSession()->getFlashBag()->add('driverError', 'This is the first step in creating mission process!');
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('stepOne');
+            $data = $this->completeData($session, $manager);
+            if (!$data) {
+                $request->getSession()->getFlashBag()->add('driverError', 'This is the first step in creating mission process!');
+    
+                return $this->redirectToRoute('stepOne');
+            }
+            $manager->merge($data['mission']);
+            $manager->persist($data['mission']);
+            $manager->flush();
+            $session->clear();
+            $request->getSession()->getFlashBag()->add('missionSuccess', 'Your mission has been created successfully!');
+    
+            return $this->redirectToRoute('allMissions');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        // $manager->merge($data['mission']);
-        $manager->persist($data['mission']);
-        $manager->flush();
-        $session->clear();
-        $request->getSession()->getFlashBag()->add('missionSuccess', 'Your mission has been created successfully!');
-
-        return $this->redirectToRoute('allMissions');
     }
 
     /**
@@ -278,10 +313,15 @@ class MissionController extends AbstractController
      */
     public function edit(SessionInterface $session, Mission $mission = null)
     {
-        if ($mission && $mission->getId()) {
-            $session = $this->setDatasToSession($session, $mission);
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('stepOne');
+            if ($mission && $mission->getId()) {
+                $session = $this->setDatasToSession($session, $mission);
+    
+                return $this->redirectToRoute('stepOne');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -290,8 +330,34 @@ class MissionController extends AbstractController
      */
     public function addMission(Request $request)
     {
-        $request->getSession()->getFlashBag()->add('projectError', 'Please specify the project to link the new mission!');
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allProjects');
+            $request->getSession()->getFlashBag()->add('projectError', 'Please specify the project to link the new mission!');
+    
+            return $this->redirectToRoute('allProjects');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
+    }
+
+    public function salaryPerDay(Mission $mission)
+    {
+        $salary = 0;
+        if ($mission) {
+            $salary = $mission->getSalaire() / $this->periodFromToNumber($mission->getPeriodOfWork());
+        }
+
+        return $salary;
+    }
+
+    public function periodFromToNumber($period){
+        switch ($period) {
+            case '1':
+                return 1;
+            case '2':
+                return 7;
+            case '3':
+                return 30;
+        }
     }
 }

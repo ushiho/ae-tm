@@ -17,10 +17,14 @@ class DepartmentController extends AbstractController
      */
     public function show(DepartmentRepository $repo)
     {
-        return $this->render('department/departmentBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'departments' => $repo->findAll(),
-        ]);
+        if($this->getUser()->getRole() != 3){
+            return $this->render('department/departmentBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'departments' => $repo->findAll(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -29,60 +33,73 @@ class DepartmentController extends AbstractController
      */
     public function action(Department $department=null, Request $request, ObjectManager $manager)
     {
-        if($department==null){
-            $department = new Department();
+        if($this->getUser()->getRole() != 3){
+            if($department==null){
+                $department = new Department();
+            }
+            $form = $this->createForm(DepartmentType::class, $department);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $manager->persist($department);
+                $manager->flush();
+                return $this->redirectToRoute('allDepartments');
+            }
+            return $this->render('department/departmentForm.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUser(),
+                'department' => $department,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        $form = $this->createForm(DepartmentType::class, $department);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $manager->persist($department);
-            $manager->flush();
-            return $this->redirectToRoute('allDepartments');
-        }
-        return $this->render('department/departmentForm.html.twig', [
-            'form' => $form->createView(),
-            'connectedUser' => $this->getUser(),
-            'department' => $department,
-        ]);
     }
 
     /**
      * @Route("/department/delete/{id}", name="deleteDepartment")
      */
     public function delete(Department $department, ObjectManager $manager){
-        foreach ($department->getMissions() as $mission) {
-        $manager->remove($mission);
+        if($this->getUser()->getRole() != 3 ){
+            foreach ($department->getMissions() as $mission) {
+            $manager->remove($mission);
+            }
+            $manager->remove($department);
+            $manager->flush();
+            return $this->redirectToRoute('allDepartments');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        $manager->remove($department);
-        $manager->flush();
-        return $this->redirectToRoute('allDepartments');
     }
 
     /**
      * @Route("/department/show/{id}", name="showDepartment")
      */
     public function showDetails(Department $department=null){
-        if($department){
-            return $this->render('department/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'department' => $department,
-            ]);
+        if($this->getUser()->getRole() != 3){
+            if($department){
+                return $this->render('department/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'department' => $department,
+                ]);
+            }
+            return $this->redirectToRoute('allDepartments');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allDepartments');
     }
 
     /**
      * @Route("/department/deleteAll", name="deleteAllDepartments")
      */
     public function deleteAll(ObjectManager $manager, DepartmentRepository $repo){
-        foreach ($repo->findAll() as $department) {
-            $manager->remove($department);
-            $manager->flush();
+        if($this->getUser()->getRole() != 3){
+            foreach ($repo->findAll() as $department) {
+                $manager->remove($department);
+                $manager->flush();
+            }
+            return $this->redirectToRoute('allDepartments');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allDepartments');
     }
 
-    public function clone(Department $department){
-        
-    }
 }

@@ -24,13 +24,15 @@ class UserRegistrationType extends AbstractType
             ->add('confirmEmail', EmailType::class)
             ->add('phoneNumber', TelType::class)
             ->add('role', ChoiceType::class, array(
-                'label' => 'Gender',
+                'label' => 'Role',
                 'choices' => array(
                     'Admin' => 1,
                     'User' => 2,
+                    'Pompie' => 3,
                 ),
             ))
             ->add('gender', ChoiceType::class, array(
+                'label' => 'Gender',
                 'choices' => array(
                     'Female' => 1,
                     'Male' => 2,

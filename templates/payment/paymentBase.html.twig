@@ -3,7 +3,7 @@
 {% block center_column %}
 
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title">Payments Supplier  </h3>
+        <h3 class="panel-title">Payments  </h3>
     </div>
 <br>
     {% block content %}
@@ -43,11 +43,9 @@
                                 <a href="{{path('paymentSupplierByPayment', {'idPayment': payment.id })}}" class="link" >Show</a>
                             {% endif %}
                             {% if payment.remainigPriceToSupplier != 0 %}
-                            &nbsp;&nbsp;&nbsp;
-                            &nbsp;
                             <a href="{{path('addPaymentSupplier', {'idPayment': payment.id})}}">Add One</a>
                             {% else %}
-                                &nbsp;|&nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok" disabled="true" style="color: black;text-align:center"> Supplier is paid </a>
+                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok" disabled="true" style="color: black;text-align:center"> Supplier is paid </a>
                             {% endif %}
                             </td>
                     <td class="last">
@@ -55,10 +53,9 @@
                                 <a href="{{path('paymentDriverByPayment', {'idPayment': payment.id })}}" class="link" >Show</a>
                             {% endif %}
                             {% if payment.remainingPriceToDriver != 0 %}
-                            &nbsp;&nbsp;
                             <a href="{{path('addPaymentDriver', {'idPayment': payment.id})}}">Add One</a>
                             {% else %}
-                                &nbsp;|&nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok"  disabled="true" style="color: black;text-align:center"> Driver is paid</a>
+                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok"  disabled="true" style="color: black;text-align:center"> Driver is paid</a>
                             {% endif %}
                             </td>
                     <td>

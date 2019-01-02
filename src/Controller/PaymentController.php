@@ -24,19 +24,24 @@ class PaymentController extends AbstractController
      */
     public function show(PaymentRepository $repo, ProjectRepository $projectRepo, MissionRepository $missionRepo, $idMission = null, $idProject = null, Request $request)
     {
-        $payments = [];
-        if ($idMission && $request->attributes->get('_route') == 'paymentsOfMission') {
-            $payments = $repo->findByMission($missionRepo->find($idMission));
-        } elseif ($idProject && $request->attributes->get('_route') == 'paymentsOfProject') {
-            $payments = $repo->findByProject($projectRepo->find($idProject));
-        } else {
-            $payments = $repo->findAll();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->render('payment/paymentBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'payments' => $payments,
-        ]);
+            $payments = [];
+            if ($idMission && $request->attributes->get('_route') == 'paymentsOfMission') {
+                $payments = $repo->findByMission($missionRepo->find($idMission));
+            } elseif ($idProject && $request->attributes->get('_route') == 'paymentsOfProject') {
+                $payments = $repo->findByProject($projectRepo->find($idProject));
+            } else {
+                $payments = $repo->findAll();
+            }
+    
+            return $this->render('payment/paymentBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'payments' => $payments,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     public function init(Mission $mission)
@@ -60,7 +65,8 @@ class PaymentController extends AbstractController
                     ->setTotalDaysToPay($days)
                     ->setTotalDaysPaid(0)
                     ->setRemainingDays($days)
-                    ->setMission($mission);
+                    ->setMission($mission)
+                    ->setFinished(false);
 
             return $payment;
         } else {
@@ -81,15 +87,20 @@ class PaymentController extends AbstractController
      */
     public function detail($payment = null)
     {
-        if ($payment) {
-            return $this->render('payment/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'payment' => $payment,
-            ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('paymentError', "There is No selected Payment to show it's details!");
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('allPayments');
+            if ($payment) {
+                return $this->render('payment/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'payment' => $payment,
+                ]);
+            } else {
+                $request->getSession()->getFlashBag()->add('paymentError', "There is No selected Payment to show it's details!");
+    
+                return $this->redirectToRoute('allPayments');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
@@ -98,16 +109,21 @@ class PaymentController extends AbstractController
      */
     public function edit($id = null, ObjectManager $manager, Request $request, PaymentRepository $repo)
     {
-        $payment = $repo->find($id);
-        if ($payment) {
-            return $this->render('payment/show.html.twig', [
-                'payment' => $payment,
-                'connectedUser' => $this->getUser(),
-            ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('paymentError', 'Please select a payment to show more details!');
+        if($this->getUser()->getRole() != 3 ){
 
-            return $this->redirectToRoute('allPayments');
+            $payment = $repo->find($id);
+            if ($payment) {
+                return $this->render('payment/show.html.twig', [
+                    'payment' => $payment,
+                    'connectedUser' => $this->getUser(),
+                ]);
+            } else {
+                $request->getSession()->getFlashBag()->add('paymentError', 'Please select a payment to show more details!');
+    
+                return $this->redirectToRoute('allPayments');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 

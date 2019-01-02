@@ -23,11 +23,16 @@ class ProjectController extends AbstractController
      */
     public function show(ProjectRepository $repo)
     {
+        if($this->getUser()->getRole() != 3){
+
+            return $this->render('project/projectBase.html.twig', [
+               'connectedUser' => $this->getUser(),
+               'projects' => $repo->findAll(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
         
-        return $this->render('project/projectBase.html.twig', [
-           'connectedUser' => $this->getUser(),
-           'projects' => $repo->findAll(),
-        ]);
     }
 
     /**
@@ -35,24 +40,29 @@ class ProjectController extends AbstractController
      * @Route("project/edit/{id}", name="editProject", requirements={"id"="\d+"})
      */
     public function action(Request $request, ObjectManager $manager, Project $project=null){
-        if($project==null){
-            $project = new Project();
-        }
-        $form = $this->createForm(ProjectType::class, $project);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $project->setCreatedAt(new \DateTime());
-            $manager->persist($project);
-            $manager->flush();
-            $request->getSession()->getFlashBag()->add('projectSuccess', "Your project is successfully added, link some mission to it!");
-            return $this->redirectToRoute('allProjects');
-        }
-        return $this->render('project/projectForm.html.twig', [
-            'form' => $form->createView(),
-            'project' => $project,
-            'connectedUser' => $this->getUser(),
+        if($this->getUser()->getRole() != 3){
 
-        ]);
+            if($project==null){
+                $project = new Project();
+            }
+            $form = $this->createForm(ProjectType::class, $project);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $project->setCreatedAt(new \DateTime());
+                $manager->persist($project);
+                $manager->flush();
+                $request->getSession()->getFlashBag()->add('projectSuccess', "Your project is successfully added, link some mission to it!");
+                return $this->redirectToRoute('allProjects');
+            }
+            return $this->render('project/projectForm.html.twig', [
+                'form' => $form->createView(),
+                'project' => $project,
+                'connectedUser' => $this->getUser(),
+    
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -60,63 +70,75 @@ class ProjectController extends AbstractController
      */
     public function delete(Project $project, ObjectManager $manager, ProjectRepository $repo,
      MissionRepository $missionRepo){
-        if($project) {
-            foreach ($missionRepo->findByProject($project) as $mission) {
-                $manager->remove($mission);
-                $manager->flush();
-            }
-            $manager->remove($project);
-            $manager->flush();
-        }
-        return $this->redirectToRoute('allProjects');
+         if($this->getUser()->getRole() != 3){
+
+             if($project) {
+                 foreach ($missionRepo->findByProject($project) as $mission) {
+                     $manager->remove($mission);
+                     $manager->flush();
+                 }
+                 $manager->remove($project);
+                 $manager->flush();
+             }
+             return $this->redirectToRoute('allProjects');
+         }else{
+            return $this->redirectToRoute('error403');
+         }
     }
 
-    /**
-     * @Route("project/calendar", name="projectCalendar")
-     */
-    public function calendar(){
-        return $this->render('project/calendar.html.twig', [
-            'connectedUser' => $this->getUser(),
-        ]);
-    }
 
     /**
      * @Route("project/show/{id}", name="showProject", requirements={"id"="\d+"})
      */
     public function showDetails(Project $project=null){
-        if($project){
-            return $this->render('project/show.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'project' => $project,
-            ]);
+        if($this->getUser()->getRole() != 3){
+
+            if($project){
+                return $this->render('project/show.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'project' => $project,
+                ]);
+            }
+            return $this->redirectToRoute('allProjects');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allProjects');
     }
 
     /**
      * @Route("project/deleteAll", name="deleteAllProjects")
      */
     public function deleteAll(ProjectRepository $repo, ObjectManager $manager, MissionRepository $missionRepo){
-        foreach($repo->findAll() as $project){
-            foreach ($missionRepo->findByProject($project) as $mission) {
-                $manager->remove($mission);
+        if($this->getUser()->getRole() != 3){
+
+            foreach($repo->findAll() as $project){
+                foreach ($missionRepo->findByProject($project) as $mission) {
+                    $manager->remove($mission);
+                    $manager->flush();
+                }
+                $manager->remove($project);
                 $manager->flush();
             }
-            $manager->remove($project);
-            $manager->flush();
+            return $this->redirectToRoute('allProjects');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allProjects');
     }
 
     /**
      * @Route("/project/{id}/mission/add", name="addMissionToProject", requirements={"id"="\d+"})
      */
     public function createMission(SessionInterface $session, Project $project=null){
-        if($project){
-            $session->set('project', $project);
-            return $this->redirectToRoute('stepOne');
+        if($this->getUser()->getRole() != 3){
+
+            if($project){
+                $session->set('project', $project);
+                return $this->redirectToRoute('stepOne');
+            }
+            return $this->redirectToRoute('allProjects');
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        return $this->redirectToRoute('allProjects');
     }
 
 }

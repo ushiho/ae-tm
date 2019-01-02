@@ -17,10 +17,10 @@ class GasStationController extends AbstractController
      * @Route("/gaz/station/all", name="allGasStation")
      * @Method("GET")
      */
-    public function indexAction(GasStationRepository $repo)
+    public function indexAction(GasStationRepository $repo, Request $request)
     {
         if (!$this->testRole()) {
-            $this->toProfil();
+            return $this->toProfil($request);
         }
 
         return $this->render('gas_station/gasStationBase.html.twig', array(
@@ -113,9 +113,9 @@ class GasStationController extends AbstractController
         return $this->getUser()->getRole() == 2 ? false : true;
     }
 
-    public function toProfil()
+    public function toProfil(Request $request)
     {
-        $requst->getSession()->getFlashBag()->add('profilMsg', "You don't have access.");
+        $request->getSession()->getFlashBag()->add('profilMsg', "You don't have access.");
 
         return $this->redirectToRoute('profil');
     }

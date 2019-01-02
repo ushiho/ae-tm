@@ -23,17 +23,22 @@ class RentController extends AbstractController
     public function show(AllocateRepository $repo, Supplier $supplier = null,
     SupplierRepository $supplierRepo)
     {
-        $rents = [];
-        if ($supplier) {
-            $rents = $repo->findBySupplier($supplier);
-        } else {
-            $rents = $repo->findAll();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->render('rent/rentBase.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'Rents' => $rents,
-        ]);
+            $rents = [];
+            if ($supplier) {
+                $rents = $repo->findBySupplier($supplier);
+            } else {
+                $rents = $repo->findAll();
+            }
+    
+            return $this->render('rent/rentBase.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'Rents' => $rents,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -44,29 +49,34 @@ class RentController extends AbstractController
     public function action(Request $request, ObjectManager $manager, Allocate $rent = null, $idMission = null,
                     MissionRepository $missionRepo)
     {
-        if ($rent == null) {
-            $rent = new Allocate();
-        }
-        if ($idMission != null) {
-            $rent->setMission($missionRepo->find($idMission));
-        }
-        $form = $this->createForm(RentType::class, $rent);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // if(compare two date start date of rent and start date of mission )
-            $rent = $this->checkIfFinished($rent);
-            $rent->setCreatedAt(new \DateTime());
-            $manager->persist($rent);
-            $manager->flush();
+        if($this->getUser()->getRole() != 3){
 
-            return $this->redirectToRoute('allRents');
+            if ($rent == null) {
+                $rent = new Allocate();
+            }
+            if ($idMission != null) {
+                $rent->setMission($missionRepo->find($idMission));
+            }
+            $form = $this->createForm(RentType::class, $rent);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                // if(compare two date start date of rent and start date of mission )
+                $rent = $this->checkIfFinished($rent);
+                $rent->setCreatedAt(new \DateTime());
+                $manager->persist($rent);
+                $manager->flush();
+    
+                return $this->redirectToRoute('allRents');
+            }
+    
+            return $this->render('rent/rentForm.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'form' => $form->createView(),
+                'rent' => $rent,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
-
-        return $this->render('rent/rentForm.html.twig', [
-            'connectedUser' => $this->getUser(),
-            'form' => $form->createView(),
-            'rent' => $rent,
-        ]);
     }
 
     /**
@@ -74,10 +84,15 @@ class RentController extends AbstractController
      */
     public function delete($id, AllocateRepository $repo, ObjectManager $manager)
     {
-        $manager->remove($repo->find($id));
-        $manager->flush();
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allRents');
+            $manager->remove($repo->find($id));
+            $manager->flush();
+    
+            return $this->redirectToRoute('allRents');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -85,15 +100,20 @@ class RentController extends AbstractController
      */
     public function showDetails(AllocateRepository $repo, $idRent = 0)
     {
-        $rent = $repo->find($idRent);
-        if ($rent) {
-            return $this->render('rent/show.html.twig', [
-                'rent' => $rent,
-                'connectedUser' => $this->getUser(),
-            ]);
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allRents');
+            $rent = $repo->find($idRent);
+            if ($rent) {
+                return $this->render('rent/show.html.twig', [
+                    'rent' => $rent,
+                    'connectedUser' => $this->getUser(),
+                ]);
+            }
+    
+            return $this->redirectToRoute('allRents');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -101,12 +121,17 @@ class RentController extends AbstractController
      */
     public function deleteAll(AllocateRepository $repo, ObjectManager $manager)
     {
-        foreach ($repo->findAll() as $rent) {
-            $manager->remove($rent);
-            $manager->flush();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('allRents');
+            foreach ($repo->findAll() as $rent) {
+                $manager->remove($rent);
+                $manager->flush();
+            }
+    
+            return $this->redirectToRoute('allRents');
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
@@ -114,44 +139,51 @@ class RentController extends AbstractController
      */
     public function addMissionStepTree(Request $request, ObjectManager $manager)
     {
-        $session = $request->getSession();
-        if ($session->get('mission'))  {
-            $rent = $request->getSession()->get('rent');
-            if ($rent && !empty((array) $rent)) {
-                $rent = $manager->merge($rent);
-            } else {
-                $rent = new Allocate();
-            }
-            $form = $this->createForm(RentType::class, $rent);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                if (MissionController::verifyDates($session->get('mission'), $rent)) {
-                if ($this->generateMsg($request->getSession(), $rent)) {
-                    $rent->setFinished($this->verifyDateWithNewDate($rent->getEndDate()));
-                    $request->getSession()->set('rent', $rent);
+        if($this->getUser()->getRole() != 3){
 
-                    return $this->redirectToRoute('verifyDatas');
+            $session = $request->getSession();
+            if ($session->get('mission'))  {
+                $rent = $request->getSession()->get('rent');
+                if ($rent && !empty((array) $rent)) {
+                    $rent = $this->merge($rent);
+                } else {
+                    $rent = new Allocate();
                 }
-            } else {
-                    $request->getSession()->getFlashBag()->add('rentMsg', 'Attention the  date of the mission should be included inside the date of the rent!');
+                $form = $this->createForm(RentType::class, $rent);
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    if (MissionController::verifyDates($session->get('mission'), $rent)) {
+                    if ($this->generateMsg($request->getSession(), $rent)) {
+                        $rent->setFinished($this->verifyDateWithNewDate($rent->getEndDate()))
+                            ->setPricePerDay($this->pricePerDay($rent));
+                        $request->getSession()->set('rent', $rent);
+    
+                        return $this->redirectToRoute('verifyDatas');
+                    }
+                } else {
+                        $request->getSession()->getFlashBag()->add('rentMsg', 'Attention the  date of the mission should be included inside the date of the rent!');
+                    }
                 }
+    
+                return $this->render('mission/rentForm.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'form' => $form->createView(),
+                ]);
+            } else {
+                $request->getSession()->getFlashBag()->add('vehicleError', 'You must add the mission Information to continue!');
+    
+                return $this->redirectToRoute('stepTree');
             }
-
-            return $this->render('mission/rentForm.html.twig', [
-                'connectedUser' => $this->getUser(),
-                'form' => $form->createView(),
-            ]);
-        } else {
-            $request->getSession()->getFlashBag()->add('vehicleError', 'You must add the mission Information to continue!');
-
-            return $this->redirectToRoute('stepTree');
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 
     public function merge(Allocate $rent, ObjectManager $manager)
     {
         if ($rent) {
-            $rent->setSupplier($manager->merge($rent->getSupplier()));
+            $rent->setSupplier($manager->merge($rent->getSupplier()))
+                ->setVehicle($manager->merge($rent->getVehicle()));
 
             return $rent;
         } else {
