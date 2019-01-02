@@ -24,7 +24,7 @@ class PaymentDriverController extends AbstractController
     {
         if ($mission) {
             $days = $mission->getEndDate()->diff($mission->getStartDate())->days + 1;
-            $amount = $mission->getDriver()->getSalairePerDay() * $days;
+            $amount = $mission->getSalaire() * $days;
             return ['days' => $days, 'amount' => $amount];
         } else {
             return null;
@@ -46,8 +46,10 @@ class PaymentDriverController extends AbstractController
         if ($mission) {
             $paymentDriver = new PaymentDriver();
             $data = PaymentDriverController::calculateTotalPrice($mission);
-            $paymentDriver->setTotalPrice($data['amount']);
-            $paymentDriver->setDaysToPay($data['days']);
+            $paymentDriver->setTotalPrice($data['amount'])
+                        ->setDaysToPay($data['days'])
+                        ->setPrice($data['amount'] * $data['days']);
+
 
             return $paymentDriver;
         } else {
@@ -86,24 +88,22 @@ class PaymentDriverController extends AbstractController
      */
     public function action(PaymentDriver $paymentDriver = null, ObjectManager $manager, Request $request, DriverRepository $driverRepo, PaymentDriverRepository $repo, $idPayment = null, PaymentRepository $paymentRepo)
     {
-        // $payment = $paymentRepo->find($idPayment);
-        $payment = $request->getSession()->get('payment');
+        $payment = $paymentRepo->find($idPayment);
         if (!$paymentDriver) {
             $paymentDriver = new PaymentDriver();
         }
-        if ($payment || $paymentDriver) {
-            $params = $this->testParams($payment, $paymentDriver, $request);
-            $form = $this->createForm(PaymentDriverType::class, $params['paymentDriver']);
+        if ($payment) {
+            $form = $this->createForm(PaymentDriverType::class, $paymentDriver);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                if ($this->compareDays($params['paymentDriver'], $request, $params['payment'], $params['days'])) {
-                    $driver = $driverRepo->findByMission($payment->getMission());
-                    $paymentDriver = $this->completeDatas($params['paymentDriver'], $params['payment'], $driver);
-                    $paymentDriver->setPrice(($payment->getMission()->getSalaire()/$payment->getMission()->getPeriodOfWork()) * $params['days']);
-                    $this->save($manager, $paymentDriver, $params['payment'], $request, $params);
+
+                $paymentDriver = $this->completeDatas($payment, $paymentDriver);
+                if ($this->compareDays($paymentDriver, $request, $repo)) {
+
+                    $this->save($manager, $paymentDriver, $request, $repo);
 
                     return $this->redirectToRoute('paymentDriverByPayment', [
-                        'idPayment' => $params['payment']->getId(),
+                        'idPayment' => $payment->getId(),
                     ]);
                 } else {
                     $request->getSession()->getFlashBag()->add('paymentDriverMsg', 'Number of days paid to that driver is more than his expanses!');
@@ -113,7 +113,7 @@ class PaymentDriverController extends AbstractController
             return $this->render('payment/paymentDriverForm.html.twig', [
                 'connectedUser' => $this->getUser(),
                 'form' => $form->createView(),
-                'paymentDriver' => $params['paymentDriver'],
+                'paymentDriver' => $paymentDriver,
             ]);
         } else {
             $request->getSession()->getFlashBag()->add('paymentMsg', 'Please select a payment from the list below to link the new payment!');
@@ -122,23 +122,12 @@ class PaymentDriverController extends AbstractController
         }
     }
 
-    public function completeDatas(PaymentDriver $paymentDriver, Payment $payment, $driver)
-    {
-        if ($paymentDriver && !$paymentDriver->getId()) {
-            $paymentDriver->setDriver($driver)
-                        ->setPayment($payment)
-                        ->setTotalPrice($payment->getTotalPriceToPayToDriver())
-                        ->setDaysToPay($payment->getTotalDaysToPay());
-        }
 
-        return $paymentDriver;
-    }
-
-    public function save(ObjectManager $manager, PaymentDriver $paymentDriver, Payment $payment, Request $request, $params)
+    public function save(ObjectManager $manager, PaymentDriver $paymentDriver, Request $request, PaymentDriverRepository $repo)
     {
-        $payment = PaymentController::addPaymentDriver($paymentDriver, $payment, $params['price'], $params['days']);
+        $payment = PaymentController::addPaymentDriver($paymentDriver, $repo);
         $manager->persist($manager->merge($payment));
-        $manager->persist($manager->merge($paymentDriver));
+        $manager->persist($paymentDriver);
         $manager->flush();
         $request->getSession()->clear();
         $request->getSession()->getFlashBag()->add('paymentDriverMsg', $this->messageOfAction($paymentDriver));
@@ -192,7 +181,9 @@ class PaymentDriverController extends AbstractController
     {
         if ($paymentDriver && $paymentDriver->getId()) {
             $payment = $paymentDriver->getPayment();
-            $payment->setRemainingPrice($payment->getRemainingPrice() + $paymentDriver->getPrice())
+            
+            return $paymentDriver->getPayment()
+                    ->setRemainingPrice($payment->getRemainingPrice() + $paymentDriver->getPrice())
                     ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() + $paymentDriver->getPrice())
                     ->setTotalPricePaid($payment->getTotalPricePaid() - $paymentDriver->getPrice())
                     ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() - $paymentDriver->getPrice())
@@ -200,38 +191,43 @@ class PaymentDriverController extends AbstractController
                     ->setRemainingDays($payment->getRemainingDays() + $paymentDriver->getDaysPaid())
                     ->removePaymentDriver($paymentDriver);
 
-            return $paymentDriver;
         }
     }
 
-    public function compareDays(PaymentDriver $paymentDriver, Request $request, Payment $payment, $days)
+    public function compareDays(PaymentDriver $paymentDriver, Request $request, PaymentDriverRepository $paymentDriverRepo)
     {
         if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == 'editPaymentDriver') {
             //$cond = $paymentDriver->getPrice() <= $price + $payment->getRemainingPriceToDriver();
-            $cond = $paymentDriver->getDaysPaid() <= $days + $payment->getRemainingDays();
+            $cond = $paymentDriver->getDaysPaid() <= $paymentDriverRepo->find($paymentDriver->getId())->getDaysPaid() + $paymentDriver->getPayment()->getRemainingDays();
         } else {
-            $cond = $paymentDriver->getDaysPaid() <= $payment->getRemainingDays();
+            $cond = $paymentDriver->getDaysPaid() <= $paymentDriver->getPayment()->getRemainingDays();
         }
 
         return $cond;
     }
 
-    public function testParams(Payment $payment, PaymentDriver $paymentDriver = null, Request $request)
+    public function completeDatas(Payment $payment, PaymentDriver $paymentDriver)
     {
-        if ($paymentDriver && $paymentDriver->getId() && $request->attributes->get('_route') == 'editPaymentDriver') {
-            $days = $paymentDriver->getDaysPaid();
-            $price = $paymentDriver->getDriver()->getSalaire() * $days;
-            $payment = $paymentDriver->getPayment();
-        } else {
-            $paymentDriver = new PaymentDriver();
-            $price = 0;
-            $days = 0;
-        }
+        $mission = $payment->getMission();
+        $pricePaid = $mission->getSalaire() * $paymentDriver->getDaysPaid();
 
-        return ['price' => $price,
-        'days' => $days,
-        'payment' => $payment,
-        'paymentDriver' => $paymentDriver,
-        ];
+        return $paymentDriver->setTotalPrice($payment->getTotalPriceToPayToDriver())
+                    ->setDaysToPay($payment->getTotalDaysToPay())
+                    ->setDriver($mission->getDriver())
+                    ->setPayment($payment)
+                    ->setPrice($pricePaid);
+    }
+
+    public function periodOfWork($period){
+        switch ($period) {
+            case '1':
+                return 1;
+            case '2':
+                return 7;
+            case '3':
+                return 30;
+            default:
+                return 0;
+        }
     }
 }

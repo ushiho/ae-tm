@@ -24,6 +24,7 @@ class PaymentSupplierType extends AbstractType
                 ]
             ))
             ->add('note', TextareaType::class, [
+                'required' => false,
                 'attr' => [
                     'rows' => '3',
                     'cols' => '60',

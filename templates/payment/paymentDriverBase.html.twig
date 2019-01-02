@@ -23,12 +23,7 @@
         {% endif %}
         <br>
         <div class="table-responsive">
-            <a title="Add new Mission" href="{{path('addPaymentDriver', {'idPayment': -1})}}"class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
-
-            <br>
-            {{parent()}}
-            <h3 class="panel-title">
-                &nbsp;          :&nbsp;<a class="btn btn-info" href="#">Payments Driver</a></h3>
+            <a title="Add new Payment Driver" href="{{path('addPaymentDriver', {'idPayment': -1})}}"class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
 
             <br>
             <table class="table table-striped table-hover" cellpadding="0" cellspacing="0">
@@ -40,21 +35,23 @@
                     </tr>
                 {% else %}
                     <tr  >
+                        <th>Driver</th>
                         <th >Payment Date</th>
-                        <th  width="180px" title="Total Rent expenses">Total Price To Pay (DH)</th>
+                        <!-- <th  width="180px" title="Total Rent expenses">Price To Pay (DH)</th> -->
+                        <th title="Days Paid">Days To Pay </th>
                         <th  title="The price paid in that date">Price (DH)</th>
-                        <th title="Days Paid">Days To Pay</th>
                         <th  title="Number of days paid">Days</th>
 
                         <th  class="last">Actions</th>
                     </tr>
                     {% for payment in paymentDriver %}
                         <tr class="bg">
+                            <td><a href="{{path('showDriver', {'id': payment.driver.id})}}">{{ payment.driver.firstName }} {{ payment.driver.lastName }}</a></td>
                             <td >{{ payment.datePayment|date('d-M-Y') }}</td>
-                            <td bgcolor="#359e98" >{{ payment.totalPrice }} DH</td>
-                            <td bgcolor="#7c9e35">{{payment.price}} DH</td>
-                            <td bgcolor="#7c9e35">{{payment.daysToPay}} Days</td>
-                            <td bgcolor="#7c9e35">{{payment.daysPaid}} Days</td>
+                            <!-- <td bgcolor="#359e98" >{{ payment.totalPrice }}</td> -->
+                            <td bgcolor="#7c9e35">{{payment.daysToPay}} </td>
+                            <td bgcolor="#7c9e35">{{payment.price}} </td>
+                            <td bgcolor="#7c9e35">{{payment.daysPaid}} </td>
                             <td>
                                 <div class="btn-group btn-sm">
                                     <a href="{{ path('editPaymentDriver', {'id': payment.id, 'idPayment': payment.payment.id}) }}" onclick="return confirm('Are u sure, You want to edit this payment?')"class="btn btn-default" >Edit</a>
@@ -67,12 +64,14 @@
                     {% endfor %}
                     <tr class="last">
 
-                    <th colspan="1" >Total:</th>
-                        <td bgcolor="#7c9e35">
+                        <td></td>
+                        <td></td>
+                        <th colspan="1" >Total:</th>
+                        <td bgcolor="#7c9e35" >
                             {{paymentDriver|first.payment.totalPricePaidToDriver}} DH
                         </td>
-                        <td bgcolor="#7c9e35">
-                            {{paymentDriver|first.payment.totalDaysPaid}} Days
+                        <td bgcolor="#7c9e35" >
+                            {{paymentDriver|last.payment.totalDaysPaid}} Days
                         </td>
                     </tr>
                 {% endif %}

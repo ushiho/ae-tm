@@ -7,6 +7,7 @@ use App\Entity\Payment;
 use App\Repository\MissionRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\PaymentDriverRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -124,20 +125,25 @@ class PaymentController extends AbstractController
         }
     }
 
-    public function addPaymentDriver(PaymentDriver $paymentDriver, Payment $payment, $price, $days)
+    public function addPaymentDriver(PaymentDriver $paymentDriver, PaymentDriverRepository $paymentDriverRepo)
     {
-        if ($paymentDriver && $payment) {
-            $priceToAdd = $paymentDriver->getPrice() - $price;
-            $daysToAdd = $paymentDriver->getDaysPaid() - $days;
-            $payment->setTotalPricePaid($payment->getTotalPricePaid() + $priceToAdd)
-                ->setRemainingPrice($payment->getRemainingPrice() - $priceToAdd)
-                ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() + $priceToAdd)
-                ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() - $priceToAdd)
-                ->setFinished($payment->getRemainingPrice() == 0)
-                ->setRemainingDays($payment->getRemainingDays() - $daysToAdd)
-                ->setTotalDaysPaid($payment->getTotalDaysPaid() + $daysToAdd);
-
-            return $payment;
+        $pastPrice = 0;
+        $pastDays = 0;
+        if($paymentDriver && $paymentDriver->getId()){
+            $pastPrice = $paymentDriverRepo->find($paymentDriver->getId())->getPrice();
+            $pastDays = $paymentDriverRepo->find($paymentDriver->getId())->getDaysPaid();
         }
+        $payment = $paymentDriver->getPayment();
+        $priceToAdd = $paymentDriver->getPrice() - $pastPrice;
+        $daysToAdd = $paymentDriver->getDaysPaid() - $pastDays;
+        $payment->setTotalPricePaid($payment->getTotalPricePaid() + $priceToAdd)
+            ->setRemainingPrice($payment->getRemainingPrice() - $priceToAdd)
+            ->setTotalPricePaidToDriver($payment->getTotalPricePaidToDriver() + $priceToAdd)
+            ->setRemainingPriceToDriver($payment->getRemainingPriceToDriver() - $priceToAdd)
+            ->setRemainingDays($payment->getRemainingDays() - $daysToAdd)
+            ->setTotalDaysPaid($payment->getTotalDaysPaid() + $daysToAdd)
+            ->setFinished($payment->getRemainingPrice() == 0 && $payment->getRemainingDays() == 0);
+
+        return $payment;
     }
 }

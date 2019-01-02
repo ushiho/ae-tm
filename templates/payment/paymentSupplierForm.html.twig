@@ -3,12 +3,9 @@
 
     {% block path %}
         <div class="panel-heading main-color-bg">
-            <h3 class="panel-title">Suppliers </h3>
+            <h3 class="panel-title">Payment Suppliers </h3>
         </div>
         <div class="panel-body">
-        {{ parent() }}
-         <a class=" btn-info btn-xs " href="#">
-            /{% if paymentSupplier and paymentSupplier.id %} Edit{% else %} Create {% endif %}</a>
 
     {% endblock %}
     {{ form_start(form) }}
