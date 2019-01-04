@@ -5,7 +5,9 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Mission;
 use App\Entity\Project;
+use App\Controller\PdfController;
 use App\Form\ProjectType;
+use App\Form\ExportProjectsType;
 use App\Repository\MissionRepository;
 use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,18 +18,33 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
+
 class ProjectController extends AbstractController
 {
     /**
      * @Route("/project", name="allProjects")
      */
-    public function show(ProjectRepository $repo)
+    public function show(ProjectRepository $repo, Request $request)
     {
         if($this->getUser()->getRole() != 3){
+            $searchForm = $this->createForm(ExportProjectsType::class);
+            $searchForm->handleRequest($request);
+            if($searchForm->isSubmitted() && $searchForm->isValid()){
+
+                // return $this->renderView('exportedFile/project.html.twig', [
+                //     'projects' => $repo->findByDates($searchForm->getData()),
+                // ]);
+                return $this->print($repo->findByDates($searchForm->getData()));
+            }
 
             return $this->render('project/projectBase.html.twig', [
                'connectedUser' => $this->getUser(),
                'projects' => $repo->findAll(),
+               'searchForm' => $searchForm->createView(),
             ]);
         }else{
             return $this->redirectToRoute('error403');
@@ -141,4 +158,41 @@ class ProjectController extends AbstractController
         }
     }
 
+
+    /**
+     * @Route("/project/{id}/print", name="printMissionOfProject")
+     */
+    public function print(Project $project=null)
+    {
+        if($this->getUser()->getRole()!=3 && $project){
+            $fileName = (new \DateTime())->format('Hidmy');
+            // Configure Dompdf according to your needs
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            
+            // Instantiate Dompdf with our options
+            $dompdf = new Dompdf($pdfOptions);
+            
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('exportedFile/project.html.twig', [
+                'project' => $project,
+            ]);
+            
+            // Load HTML to Dompdf
+            $dompdf->loadHtml($html);
+            
+            // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+            $dompdf->setPaper('A4', 'landscape');
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+    
+            // Output the generated PDF to Browser (force download)
+            $dompdf->stream($fileName.".pdf", [
+                "Attachment" => false,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
+    }
 }

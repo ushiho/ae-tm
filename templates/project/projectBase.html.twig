@@ -53,6 +53,35 @@
             <a href="/project/new" class="btn-group-justified btn-primary btn-xs "  >ADD NEW Project</a>
         {% endif %}
         <div class="table-responsive">
+                {% if projects%}
+                <!-- <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+            <tr class='first'>
+                <th colspan="12" class='fa-align-right text-capitalize text-center full'> Search for existing driver</th></tr>
+                <tr class='first'>
+                <br>
+                    {{ form_start(searchForm) }}
+                    <td>
+                    {{ form_widget(searchForm.startDate, {
+                        'attr': {
+                            'class': 'bootstrap-select .col-6 .col-sm-4',
+                            }
+                    }) }}
+                    </td>
+                    <td>
+                    {{ form_widget(searchForm.endDate, {
+                        'attr': {
+                            'class': 'bootstrap-select .col-6 .col-sm-4',
+                            }
+                    }) }}
+                    </td>
+                    <td>
+                <input type="submit" value="Search" class="bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault">                    
+                    </td>
+                    {{ form_end(searchForm) }}
+                    </td>
+                    </tr>
+                </table> -->
+            {% endif %}
             <br>
             <table class="table table-striped table-hover">
             {% if projects is empty or projects is null %}
@@ -66,7 +95,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Budget</th>
-                    <th class="last">Actions</th>
+                    <th class="last" style="text-align: center;vertical-align: middle;">Actions</th>
                 </tr>
                 {% for project in projects %}
                 <tr class="bg">
@@ -80,8 +109,9 @@
                             <a href="{{ path('showProject', {'id': project.id}) }}" class="btn btn-info"> Details</a>&nbsp;
                             {% if connectedUser.role == 1 %}
                             <a href="{{ path('editProject', {'id': project.id}) }}" class="btn btn-default" > Edit</a>&nbsp;
-                            <a href="{{ path('deleteProject', {'id': project.id}) }}" class="btn btn-danger" onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" > Delete </a>&nbsp;
-                            <a href="{{ path('addMissionToProject', {'id': project.id}) }}"class="btn btn-success"> Add Mission</a>&nbsp;
+                            <a href="{{ path('deleteProject', {'id': project.id}) }}" class="btn btn-danger" onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" > Delete </a>
+                            <a title="Add Mission" href="{{ path('addMissionToProject', {'id': project.id}) }}"class="btn btn-success"> Add</a>
+                            <a title="Print Missions" href="{{ path('printMissionOfProject', {'id': project.id}) }}"class="btn btn-default">Print</a>
                             {% endif %}
                         </div>
                     </td>

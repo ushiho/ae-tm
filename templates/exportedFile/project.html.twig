@@ -1,0 +1,44 @@
+{% extends 'exportedFile/base.html.twig' %}
+    {% set missions = project.mission %}
+    
+    {% block table_header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block table %}
+        <table border="1" class="table">
+                <tr>
+                    <th>Mission Date</th>
+                    <th>Budget (DH)</th>
+                    <th>Rent Date</th>
+                    <th>Expenses (DH)</th>
+                    <th>Licence Plate</th>
+                    <th>Driver</th>
+                    <th>Salary (Dh)</th>
+                    <th>Departement</th>
+                    <th>Note</th>
+                </tr>
+                
+            
+    {% for x in 0..missions.count()*50 %}
+        {% for mission in missions %}
+        {% set driver = mission.driver %}
+        {% set allocate = mission.allocate %}
+            <tr>
+                <td>{{mission.startDate|date(' d/m/y')|upper}} - {{mission.endDate|date(' d/m/y')|upper}}</td>
+                <td>{{mission.payment.totalPrice }}</td>
+                <td>{{allocate.startDate|date(' d/m/y')|upper}} - {{allocate.endDate|date(' d/m/y')|upper}}</td>
+                <td>{{allocate.price}}-{% if allocate.period == 1 %}Dai{% elseif allocate.period == 2 %}Wee{% else %}Mon{% endif %}</td>
+                <td>{{allocate.vehicle.matricule}}</td>
+                <td>{{driver.firstName}} {{driver.lastName}}</td>
+                <td>{{mission.salaire}} - {% if mission.periodOfWork == 1 %}Dai{% elseif mission.periodOfWork == 2 %}Wee{% else %}Mon{%endif%}</td>
+                <td>{{mission.department.name}}</td>
+                <td>{{mission.note}}</td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+                
+                
+                
+                
+    {% endblock %}
+        

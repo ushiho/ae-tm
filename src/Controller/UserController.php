@@ -234,6 +234,7 @@ class UserController extends AbstractController
         $form = $this->createFormBuilder()
                     ->add('login', EmailType::class)
                     ->add('submit', SubmitType::class, array(
+                        'label' => 'Send Password',
                         'attr' => array(
                             'class' => 'btn btn-primary btn-block',
                         ),
@@ -244,12 +245,12 @@ class UserController extends AbstractController
             $user = $repo->findByEmail($form->getData()['login']);
             if (!$user) {
                 $request->getSession()->getFlashBag()->add('resetPassMsg', 'The email is not exist, please enter a valid email.');
-
+                
                 return $this->render('user/resetPassword.html.twig', [
                     'form' => $form->createView(),
-                ]);
-            }
-            $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer);
+                    ]);
+                }
+            $this->generatePasswordAndSendEmail($manager, $user, $encoder, $mailer, $request);
             $request->getSession()->getFlashBag()->add('resetPassMsg', 'The password is reseted successfully please verify your boite email.');
 
             return $this->redirectToRoute('login');

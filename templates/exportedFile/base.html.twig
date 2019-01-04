@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+
+		<style type="text/css">
+
+			body {
+
+				width:1125px;
+				padding: 0px;
+				margin: -50px -20px -47px -47px;
+				font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+				background-color: #dcdcdc;
+				height:100%;
+			}
+
+			table td {
+				background: rgb(255, 255, 255,0.8);
+				border:0px;
+				border-left: 1px solid #666;
+				border-bottom: 1px solid #666;
+				padding: 20px 0px;
+				vertical-align: middle ;
+				text-align: center;
+
+			}
+			table th{
+				background: #44777B;
+				font-size: 16px;
+				color: #FFFFFF;
+				padding:5px 0px;
+				text-align: center;
+			}
+			thead td {
+				background:#44777B;
+				font-size: 17px;
+				color:#FFFFFF;
+				text-align: center;
+				vertical-align: middle;
+				padding: 10px 0px;
+				border: none;
+			}
+			/* body,div,table,thead,tbody,tfoot,tr,th,p { font-size:15px; } */
+			/* a.comment-indicator:hover + comment { background:#ffd; position:absolute; display:block; border:1px solid black; padding:0.5em;  } 
+			a.comment-indicator { background:red; display:inline-block; border:1px solid black; width:0.5em; height:0.5em;  } 
+			comment { display:none;  }  */
+
+			.head {
+				color: #fff;
+				background:#44777B;
+				padding:20px;
+				font-size: 30px;
+				text-align: center;
+				display: block;
+				width:100%
+			}
+
+			.info_div {
+				color: #2E4F52;
+				background:#dcdcdc;
+				padding:5px;
+				text-align: center;
+				display: block;
+				width:100%;
+				height:120px;
+				margin-bottom: 10px;
+			}
+
+			.info_div .info {
+
+				display:block;
+				width:35%;
+				right: 20px;
+				text-align: left;
+				position: absolute;
+			}
+			.info_title{
+				font-size: 16px;
+			}
+            .table{
+                width:100%;
+                margin-top: 30px;
+                border-collapse: collapse;
+            }
+		</style>
+	
+</head>
+
+<body >
+	{% block table_header %}
+		<div class="head">{{ project.name|upper }}</div>
+		<div class="info_div">
+			
+			<p style="font-size:17px;color: #2E4F52; box-shadow: -10px 10px 0px   #59c5c7 ;">
+				AKRAM EL KOUZOUZ  TRANSPORT MANAGER 0662737535
+			</p> 
+			<br>
+
+			<img src="{{asset('/home/ushi/Documents/ae-tm/public/img/pdf_logo.jpeg')}}" />
+			<div class="info">
+				<p class="info_title"><b>FROM: </b>{{project.startDate|date('l d/m/y')|upper}} <b>, TO: </b>{{project.startDate|date('M d/m/y')|upper}}</p>
+				<p class="info_title"><b>OWNER : </b>{{project.owner|upper}} <b>, BUDGET : </b>{{project.budget|upper}}</p>
+			</div>
+
+		</div>
+	{% endblock %}
+<br>
+<div style="margin-left: 2px;margin-right: 2px;margin-top: 20px;">
+{% block table %}
+<table border="1" style="width:100%; margin-top: 40px;" >
+
+	<thead>
+		<tr>
+			<td>Receipt</td>
+			<td>Date</td>
+			<td>Licence plate</td>
+			<td>Driver</td>
+			<td>Departement</td>
+			<td>Amount</td>
+			<td>Litters</td>
+			<td>Km</td>
+			<td>Vehicles</td>
+			<td>Note</td>
+		</tr>
+	</thead>
+		<tr>
+			<td>1305</td>
+			<td>October 7, 2018</td>
+			<td>Licence Plate</td>
+			<td>ALI</td>
+			<td>MAKE UP</td>
+			<td>630.00 MAD</td>
+			<td>62.62  LTRS</td>
+			<td>46,144.00 Km</td>
+			<td>MINIBUS</td>
+			<td>Note</td>
+			
+		</tr>
+	</table>
+{% endblock %}
+</div>
+</body>
+</html>

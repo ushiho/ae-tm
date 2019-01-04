@@ -47,4 +47,28 @@ class ProjectRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByDates($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        
+        return $this->generateWhere($data, $query);
+    }
+
+    public function generateWhere($data, $query)
+    {
+     $cond = " 1=1 ";
+     if($data['startDate']){
+         $cond .= " AND p.startDate >= :start";
+         $query->setParameter('start', $data['startDate']);
+     }
+     if($data['endDate']){
+         $cond .= " AND p.endDate <= :end ";
+         $query->setParameter('end', $data['endDate']);
+     }
+     return $query->where($cond)
+                ->orderBy('p.createdAt')
+                ->getQuery()
+                ->getResult();
+    }
 }
