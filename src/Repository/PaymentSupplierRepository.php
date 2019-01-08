@@ -86,7 +86,7 @@ class PaymentSupplierRepository extends ServiceEntityRepository
 
     //  public function editAllAmounts($payment, $price){
     //      return $this->createQueryBuilder('ps')
-    //                 ->update('App:PaymentSupplier', 'ps')
+    //                 ->upsate('App:PaymentSupplier', 'ps')
     //                 ->set('ps.totalPricePaid', 'ps.totalPricePaid - '.$price)
     //                 ->set('ps.remainingPrice', 'ps.remainingPrice + '.$price)
     //                 ->getQuery()
@@ -94,4 +94,33 @@ class PaymentSupplierRepository extends ServiceEntityRepository
     //     // return $req;
     //  }
 
+    public function generateWhere($query, $data)
+    {
+        $cond = " 1=1 ";
+        if ($data['startDate'] !== null && $data['endDate'] !== null) {
+            $cond .= 'AND ps.datePayment BETWEEN :firstDate AND :scondDate';
+            $query->setParameter('firstDate', $data['startDate'])
+                ->setParameter('scondDate', $data['endDate']);
+        }
+        if($data['project']){
+            $cond .= ' AND pr = :project';
+            $query->setParameter('project', $data['project']);
+        }
+
+        return $query->where($cond)
+        ->orderBy('ps.datePayment', 'DESC')
+        ->getQuery();
+    }
+
+    public function findByProjectAndDate($data){
+        $query = $this->createQueryBuilder('ps')
+                    ->select('ps')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'ps.payment = p')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'm.payment = p')
+                    ->innerJoin('App:Project', 'pr', Join::WITH, 'm.project = pr');
+        
+        return $this->generateWhere($query, $data)
+                    ->getResult();
+                    
+    }
 }

@@ -87,4 +87,34 @@ class PaymentDriverRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function generateWhere($query, $data)
+    {
+        $cond = " 1=1 ";
+        if ($data['startDate'] !== null && $data['endDate'] !== null) {
+            $cond .= 'AND pd.datePayment BETWEEN :firstDate AND :scondDate';
+            $query->setParameter('firstDate', $data['startDate'])
+                ->setParameter('scondDate', $data['endDate']);
+        }
+        if($data['project']){
+            $cond .= ' AND pr = :project';
+            $query->setParameter('project', $data['project']);
+        }
+
+        return $query->where($cond)
+        ->orderBy('pd.datePayment', 'DESC')
+        ->getQuery();
+    }
+
+    public function findByProjectAndDate($data){
+        $query = $this->createQueryBuilder('pd')
+                    ->select('pd')
+                    ->innerJoin('App:Payment', 'p', Join::WITH, 'pd.payment = p')
+                    ->innerJoin('App:Mission', 'm', Join::WITH, 'm.payment = p')
+                    ->innerJoin('App:Project', 'pr', Join::WITH, 'm.project = pr');
+        
+        return $this->generateWhere($query, $data)
+                    ->getResult();
+                    
+    }
 }

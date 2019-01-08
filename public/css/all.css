@@ -397,6 +397,9 @@ div.table .select select {
 			color: blue;
 		}
 .error{
-	color:blue;text-decoration: underline red;text-align:center;font-size:10pt
+	color:blue;
+	text-decoration: underline red;
+	text-align:center;
+	font-size:10pt
 }
 

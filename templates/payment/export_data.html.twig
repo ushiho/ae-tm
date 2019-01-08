@@ -1,0 +1,57 @@
+{% extends 'payment/base.html.twig' %}
+
+{% block center_column %}
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Export Payments  </h3>
+    </div>
+    <br>
+    {% block content %}
+        {% if app.session.flashBag.has('paymentMsg') %}
+            <div class="alert alert-success error" style="text-align: center">
+                {% for msg in app.session.flashBag.get('paymentMsg') %}
+                    <strong>{{ msg }}</strong>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="panel-body">
+            <div class="container-fluid table-responsive">
+                    {{ form_start(form) }}
+                    <br>
+                        <table class="listing form table table-striped table-hover" >
+                            <tr>
+                                <td class="first" >
+                                    <strong>{{ form_label(form.startDate) }}</strong>
+                                </td>
+                                <td class="last" >{{ form_widget(form.startDate, {'attr' :
+                                {'placeholder':'First Name', 'class':'text' }})
+                                    }}</td>
+                                <td class="first" >
+                                    <strong>{{ form_label(form.endDate) }}</strong>
+                                </td>
+                                <td class="last" >{{ form_widget(form.endDate, {'attr' :
+                                        {'placeholder':'Last Name', 'class':'text' }}) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="first" >
+                                    <strong>{{ form_label(form.project) }}</strong>
+                                </td>
+                                <td class="last" >{{ form_widget(form.project) }}</td>
+                                <td class="first"> <strong>{{form_label(form.paymentOf)}}</strong> </td>
+                                <td class="last">{{form_widget(form.paymentOf)}}</td>
+                            </tr>
+                        </table>
+                        <div class="btn-group btn-group-justified ">
+                            <div class="btn-group">
+                                <a class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" href="{{ path('allPayments') }}">
+                                    Cancel</a>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil"> Print</button>
+                                </div>
+                        </div>
+                    {{ form_end(form) }}
+            </div>
+
+        </div>
+    {% endblock %}
+{% endblock %}

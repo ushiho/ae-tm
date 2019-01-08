@@ -4,16 +4,23 @@ namespace App\Controller;
 
 use App\Entity\Mission;
 use App\Entity\Payment;
+use App\Entity\Project;
+use App\Form\ExportPaymentType;
 use App\Repository\MissionRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\PaymentDriverRepository;
+use App\Repository\PaymentSupplierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Entity\PaymentSupplier;
 use App\Entity\PaymentDriver;
+
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class PaymentController extends AbstractController
 {
@@ -161,5 +168,75 @@ class PaymentController extends AbstractController
             ->setFinished($payment->getRemainingPrice() == 0 && $payment->getRemainingDays() == 0);
 
         return $payment;
+    }
+
+    /**
+     * @Route("/payment/search", name="exportPayments")
+     */
+    public function exportPayment(Request $request, PaymentDriverRepository $paymentDriverRepo, PaymentSupplierRepository $paymentSupplierRepo)
+    {
+        if($this->getUser()->getRole() != 3){
+            $form = $this->createForm(ExportPaymentType::class);
+            $form->handleRequest($request);
+            if($form->isSubmitted()&&$form->isValid()){
+                $data = $form->getData();
+                if ($data['paymentOf']==1) {
+                    $payments = $paymentDriverRepo->findByProjectAndDate($data);
+                    return $this->print($data['project'], $payments, 'payment_driver.html.twig');
+                }else{
+                    $payments = $paymentSupplierRepo->findByProjectAndDate($data);
+                    return $this->print($data['project'], $payments, 'payment_supplier.html.twig');
+                }
+                if(!$payments){
+                    $request->getSession()->getFlashBag()->add('paymentMsg', 'There is no payments for the range of dates given');
+                }
+            }
+
+            return $this->render('payment/export_data.html.twig', [
+                'connectedUser' => $this->getUser(),
+                'form' => $form->createView(),
+            ]);
+        }else{
+
+            return $this->redirectToRoute('error403');
+        }
+    }
+
+    /**
+     * @Route("/payment/search/export", name="exportSearchedPayments")
+     */
+    public function print(Project $project, array $payments, $whereToGo)
+    {
+        if($this->getUser()->getRole()!=3 && $project){
+            $fileName = (new \DateTime())->format('Hidmy');
+            // Configure Dompdf according to your needs
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            
+            // Instantiate Dompdf with our options
+            $dompdf = new Dompdf($pdfOptions);
+            
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('exportedFile/'.$whereToGo, [
+                'project' => $project,
+                'payments' => $payments,
+            ]);
+            
+            // Load HTML to Dompdf
+            $dompdf->loadHtml($html);
+            
+            // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+            $dompdf->setPaper('A4', 'landscape');
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+    
+            // Output the generated PDF to Browser (force download)
+            $dompdf->stream($fileName.".pdf", [
+                "Attachment" => false,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 }
