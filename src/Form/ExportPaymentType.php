@@ -32,7 +32,7 @@ class ExportPaymentType extends AbstractType
                 'Driver' => 1,
                 'Supplier' => 2,
             ],
-            'label' => 'Period Of Workd',
+            'label' => 'Payment Of',
             'placeholder' => '--Select a Payment--',
             'required' => true,
             'multiple' => false,
