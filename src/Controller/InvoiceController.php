@@ -14,6 +14,8 @@ use App\Form\InvoiceType;
 use App\Entity\FuelReconciliation;
 use App\Repository\FuelReconciliationRepository;
 use App\Repository\VehicleRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+
 
 class InvoiceController extends Controller
 {
@@ -178,5 +180,19 @@ class InvoiceController extends Controller
         $spreadsheet = $this->get('App\Service\ExcelGenerator')->generateExcel($invoice->getNumber(), $fuelRecoRepo, $vehicleRepo);
         $writer = new Xlsx($spreadsheet);
         $writer->save('spreadsheets/'.$invoice->getNumber().'_'.$invoice->getExcelFile().'.xls');
+    }
+
+    public function init($reconciliations, Request $request, $fileName, ObjectManager $manager)
+    {
+        $invoice = new Invoice();
+        $invoice->setCreatedAt(new \DateTime())
+                ->setTotalAmounts($request->getSession()->get('totalAmount'))
+                ->setTotalLitres($request->getSession()->get('totalLitres'))
+                ->setExcelFile($fileName)
+                // ->setReconciliation($reconciliations)
+                ->setIsPaid(false);
+        
+        
+        return $invoice;
     }
 }

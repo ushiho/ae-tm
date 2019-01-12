@@ -48,7 +48,7 @@ class FuelReconciliation
     private $department;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="fuelReconciliations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="fuelReconciliations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -66,18 +66,18 @@ class FuelReconciliation
     private $vehicle;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="fuelReconciliations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Driver", inversedBy="fuelReconciliations" )
      * @ORM\JoinColumn(nullable=false)
      */
     private $driver;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\GasStation", inversedBy="reconciliations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\GasStation", inversedBy="reconciliations", cascade={"persist"})
      */
     private $gasStation;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Invoice", inversedBy="reconciliations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Invoice", inversedBy="reconciliations", cascade={"persist"})
      */
     private $invoice;
 
@@ -92,7 +92,7 @@ class FuelReconciliation
     private $receiptNum;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Mission", inversedBy="fuelReconciliations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Mission", inversedBy="fuelReconciliations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $mission;

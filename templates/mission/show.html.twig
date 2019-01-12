@@ -32,9 +32,9 @@
                     </tr>
                     <tr class="bg">
                         <td class="first" title="Period Of Work For The Driver"><strong>Period Of Work</strong></td>
-                        <td class="last">{% if driver.periodOfTravel == 1 %}Daily
-                        {% elseif driver.periodOfTravel == 2 %}Weekly
-                        {% elseif driver.periodOfTravel == 3 %}Monthly
+                        <td class="last">{% if mission.driver.periodOfTravel == 1 %}Daily
+                        {% elseif mission.driver.periodOfTravel == 2 %}Weekly
+                        {% elseif mission.driver.periodOfTravel == 3 %}Monthly
                         {% else %}Not Specified {% endif %}</td>
                     </tr>
                 <tr class="bg">

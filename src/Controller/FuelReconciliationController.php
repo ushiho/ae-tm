@@ -10,11 +10,20 @@ use App\Entity\FuelReconciliation;
 use App\Form\FuelReconciliationType;
 use App\Model\PrintSide;
 use App\Entity\Mission;
+use App\Controller\InvoiceController;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use App\Form\SearchReconciliationType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Invoice;
+use App\Repository\PaymentRepository;
+use App\Repository\SupplierRepository;
+use App\Repository\MissionRepository;
+use App\Repository\AllocateRepository;
+use App\Repository\DriverRepository;
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class FuelReconciliationController extends AbstractController
 {
@@ -37,7 +46,7 @@ class FuelReconciliationController extends AbstractController
     /**
      * @Route("fuel/reconciliation/search", name="searchFuelReconciliation")
      */
-    public function searchAction(Request $request, FuelReconciliationRepository $repo)
+    public function searchAction(Request $request, FuelReconciliationRepository $repo, MissionRepository $missionRepo)
     {
         if (!$this->testRole()) {
             return $this->toProfil($request);
@@ -311,5 +320,61 @@ class FuelReconciliationController extends AbstractController
         }
 
         return $mission;
+    }
+
+    /**
+     * @Route("fuel/reconciliation/make/invoice", name="makeAsFactured")
+     */
+    public function makeAsFactured(Request $request, ObjectManager $manager, PaymentRepository $paymentRepo, SupplierRepository $supplierRepo, MissionRepository $missionRepo, DriverRepository $driverRepo)
+    {
+        $fileName = (new \DateTime())->format('Hidmy');
+        $reconciliations = $request->getSession()->get('reconciliations');
+        $invoice = InvoiceController::init($reconciliations, $request, $fileName, $manager);
+        foreach ($reconciliations as $item) {
+            // $mission = $missionRepo->find($item->getMission()->getId());
+            // $item->setMission($mission);
+            // dd($item);
+            $item->setInvoice($invoice);
+            $invoice->addReconciliation($item);
+            // $manager->merge($item);
+        }
+        $manager->merge($invoice);
+        $manager->flush();
+        // dd($reconciliations);
+
+        $this->print($reconciliations, $fileName);
+    }
+
+    public function print(array $reconciliations, $fileName)
+    {
+        if($this->getUser()->getRole()!=3){
+            
+            // Configure Dompdf according to your needs
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            
+            // Instantiate Dompdf with our options
+            $dompdf = new Dompdf($pdfOptions);
+            
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('exportedFile/invoice.html.twig', [
+                'reconciliations' => $reconciliations,
+            ]);
+            
+            // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+            $dompdf->setPaper('A4', 'landscape');
+
+            // Load HTML to Dompdf
+            $dompdf->loadHtml($html);
+            
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+    
+            // Output the generated PDF to Browser (force download)
+            $dompdf->stream('invoice/pdf/'.$fileName.".pdf");
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 }

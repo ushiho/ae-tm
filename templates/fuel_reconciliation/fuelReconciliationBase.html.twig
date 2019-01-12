@@ -4,7 +4,7 @@
     Fuel Reconciliations
 {% endblock %}
 {% block header_annex %}
-    <li><a href="index.html">Home</a></li>
+    <li><a href="#">Home</a></li>
     <li class="active">Fuel Reconciliations</li>
 {% endblock %}
 
@@ -42,9 +42,6 @@
             <tr>
                 <th>Receipt N°</th>
                 <th>Date</th>
-                <th>Licence plate</th>
-                <th>Driver</th>
-                <th>Department</th>
                 <th>KM</th>
 
 
@@ -53,7 +50,7 @@
                 <th>Paid</th>
 
 
-                <th>Actions</th>
+                <th style="text-align: center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -61,9 +58,6 @@
             <tr>
                 <td>{{ fuelReconciliation.receiptNum }}</td>
                  <td>{% if fuelReconciliation.createdAt %}{{ fuelReconciliation.createdAt|date('Y-m-d') }}{% endif %}</td>
-                    <td>{{ fuelReconciliation.vehicle.matricule }}</td>
-                    <td>{{ fuelReconciliation.driver.lastName }} {{ fuelReconciliation.driver.firstName }}</td>
-                    <td>{{ fuelReconciliation.department.name }}</td>
                     <td>{{ fuelReconciliation.kilometrage }}</td>
                     <td>{{ fuelReconciliation.totalLitres }}</td>
                     <td>{{ fuelReconciliation.totalAmount }}</td>
@@ -72,9 +66,9 @@
             
                 <td class="text-center">
                     <div class="">
-                        <a title="Show Details" href="{{ path('show_fuel_reconciliation', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple">Show</a>
-                        <a title="Edit" href="{{ path('editFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="text-primary legitRipple">Edit</a>
-                        <a title="Delete" onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');" href="{{ path('deleteFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="text-danger legitRipple">Delete</a>
+                        <a title="Show Details" href="{{ path('show_fuel_reconciliation', { 'id': fuelReconciliation.id }) }}" class="btn btn-info">Show</a>&nbsp;
+                        <a title="Edit" href="{{ path('editFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="btn btn-default">Edit</a>&nbsp;
+                        <a title="Delete" onclick="return confirm('Êtes-vous sûr ? Cette action est irréversible.');" href="{{ path('deleteFuelReconciliation', { 'id': fuelReconciliation.id }) }}" class="btn btn-danger">Delete</a>
                     </div>
                 </td>
             </tr>

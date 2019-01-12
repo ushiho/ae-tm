@@ -39,14 +39,10 @@ class Invoice
     private $isPaid;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="invoice")
+     * @ORM\OneToMany(targetEntity="App\Entity\FuelReconciliation", mappedBy="invoice", cascade={"persist"})
      */
     private $reconciliations;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $number;
 
     /**
      * @var string
