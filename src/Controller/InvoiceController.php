@@ -157,7 +157,9 @@ class InvoiceController extends Controller
     public function deleteAction(Request $request, Invoice $invoice = null, ObjectManager $manager)
     {
       
-        
+        foreach ($invoice->getReconciliations() as $reconciliation) {
+            $reconciliation->setInvoice(null);
+        }   
         $manager->remove($invoice);
         $manager->flush();
         $request->getSession()->getFlashBag()->add('InvoiceMsg', "The invoice was deleted successfully.");

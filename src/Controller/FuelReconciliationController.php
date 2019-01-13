@@ -111,10 +111,9 @@ class FuelReconciliationController extends AbstractController
                         'fuelReconciliation' => $fuelReconciliation,
                     ));
                 }
-                // $manager->merge($fuelReconciliation);
                 $manager->persist($fuelReconciliation);
-                dd($fuelReconciliation);
                 $manager->flush();
+                
 
                 return $this->redirectToRoute('show_fuel_reconciliation', array('id' => $fuelReconciliation->getId()));
             } else {
