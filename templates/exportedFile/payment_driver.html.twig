@@ -18,8 +18,8 @@
 
       body {
         position: relative;
-        width: 21cm;  
-        height: 29.7cm; 
+        width: 100%;  
+        height: 100%; 
         margin: 0 auto; 
         color: #001028;
         background: #ffffff; 
@@ -65,8 +65,8 @@
 
       #project span {
         color: #5D6975;
-        text-align: right;
-        width: 52px;
+        text-align: left;
+        width: 100px;
         margin-right: 10px;
         display: inline-block;
         font-size: 0.8em;
@@ -74,7 +74,7 @@
 
       #company {
         float: right;
-        text-align: right;
+        /* text-align: right; */
       }
 
       #project div,
@@ -106,6 +106,7 @@
         white-space: nowrap;        
         font-weight: normal;
       }
+      
 
       table .service,
       table .desc {
@@ -113,19 +114,20 @@
       }
 
       table td {
-        padding: 20px;
+        padding: 5px;
         text-align: right;
       }
 
       table td.service,
       table td.desc {
         vertical-align: top;
+        text-align: right;
       }
 
       table td.unit,
       table td.qty,
       table td.total {
-        font-size: 1.2em;
+        font-size: 10px;
       }
 
       table td.grand {
@@ -153,12 +155,17 @@
         text-align: center;
         vertical-align: middle;
       }
+      .title{
+        text-align: left;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
     <header class="clearfix" >
 
-      <img  class="element" src="demo.png" > 
+      <!-- Image  -->
+      <!-- End of image -->
       <h1>PAYMENT DRIVER INVOICE</h1>
       <div id="company" class="clearfix">
         <div>Akram el kouzouz   </div>
@@ -167,11 +174,14 @@
         <div><a href="mailto:company@example.com">Admin@example.com   </a></div>
       </div>
       <div id="project">
-        <div><span>PROJECT</span> {{project.name}}</div>
-        <div><span>Owner</span> {{project.owner}} </div>
-        <div><span>BUDGET</span> {{ project.budget }} </div>        
-        <div><span>START DATE</span> {{project.startDate|date('M d, y')}} </div>
-        <div><span>END DATE</span> {{project.endDate|date('M d, y')}} </div>
+        <div><span >PROJECT: </span> {{project.name}}</div>
+        <div><span>DRIVER: </span> {{ driver.firstName }}&nbsp;{{driver.lastName}}</div>
+        <div><span>CIN: </span> {{ driver.cin }}&nbsp;</div>
+        <div><span>LICENCE: </span> {{ driver.licenceNumber }}&nbsp;</div>
+        <div><span>PHONE NUMBER: </span> {{ driver.numberPhone }}&nbsp;</div>
+        
+      </div>
+      <div class="driver">
       </div>
 
 
@@ -180,55 +190,68 @@
       <table>
         <thead>
           <tr>
-            <th class="service">DRIVER</th>
-            <th>PAYMENT DATE</th>
-            <th>DAYS</th>
-            <th>AMOUNT</th>
-            <th>NOTE</th>
+            <th class="service" >MISSIONS</th>
+            <th style="text-align: right;">DAYS</th>
+            <th style="text-align: right;">PRICE</th>
+            <th style="text-align: right;">PAYMENT</th>
           </tr>
         </thead>
         <tbody>
-          {% if payments == null or  payments is empty %}
-            <tr><td colspan="8" class="noPayment"><strong> There is no payments </strong></td></tr>
-          {% else %}
-          {% set totalDays = 0 %}
-          {% set totalAmount = 0 %}
-            {% for paymentDriver in payments %}
+          {% set totalDaysToPay = 0 %}
+          {% set totalPriceToPay = 0 %}
+          {% set totalDaysPaid = 0 %}
+          {% set totalPricePaid = 0 %}
+          {% for mission, paymentsDriver in data %}
+            {% set payment = paymentsDriver|first.payment %}
+            {% set totalDaysToPay = totalDaysToPay + payment.totalDaysToPay %}
+            {% set totalPriceToPay = totalPriceToPay + payment.totalPriceToPayToDriver %}
             <tr>
-              <td>
-                {{ paymentDriver.driver.firstName }}&nbsp;{{ paymentDriver.driver.lastName }}
+              <td colspan="" style="text-align: left; background:#61585834; " ><b>{{ mission }}</b> </td>
+              <td style="background:#61585834; "> 
+                {{ payment.totalDaysToPay }} Days
               </td>
-              <td>
-                {{ paymentDriver.datePayment|date('M d, y') }}
+              <td style="background:#61585834; ">
+                {{ payment.totalPriceToPayToDriver }} DHs
               </td>
-              <td>
-                {{ paymentDriver.daysPaid }}
-              </td>
-              <td>
-                {{ paymentDriver.price }}
-              </td>
-              <td>
-                {{ paymentDriver.note }}
-              </td>
+              <td style="background:#61585834; ">0 DHs</td>
             </tr>
-            {% set totalDays = totalDays + paymentDriver.daysPaid %}
-            {% set totalAmount = totalAmount + paymentDriver.price %}
+            {% for paymentDriver in paymentsDriver %}
+            {% set totalDaysPaid = totalDaysPaid + paymentDriver.daysPaid %}
+            {% set totalPricePaid = totalPricePaid + paymentDriver.price %}
+              <tr>
+                <td colspan="" style="text-align: center;">
+                    {{ paymentDriver.datePayment|date('M d/m/y') }}
+                </td>
+                <td>
+                  {{ paymentDriver.daysPaid }} Days
+                </td>
+                <td>0 DHs</td>
+                <td>
+                  {{ paymentDriver.price }} DHs
+                </td>
+              </tr>
             {% endfor %}
+            {% endfor %}
+            <tr><td colspan="4" ></td></tr>
             <tr>
-              <td colspan="2">
-                Total
-              </td>
-              <td>{{ totalDays }}</td>
-              <td>{{ totalAmount }}</td>
+                <td></td>
+                <td>{{ totalDaysToPay }} - {{ totalDaysPaid }}</td>
+                <td>{{totalPriceToPay }}</td>
+                <td>{{ totalPricePaid }}</td>
             </tr>
-          {% endif %}
+            
+            <tr>
+              <td style="text-align: center;"><b>REMAINING</b></td>
+              <td>{{ totalDaysToPay - totalDaysPaid }}</td>
+              <td colspan="2" style="text-align: center" > {{totalPriceToPay - totalPricePaid }}</td>
+            </tr>
           </tbody>
         </table>
       <br>
-      <div id="notices">
+      <!-- <div id="notices">
         <div>NOTICE:</div>
         <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
-      </div>
+      </div> -->
     </main>
     <footer>
       Invoice was created on a computer and is valid without the signature and seal.

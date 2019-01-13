@@ -92,6 +92,31 @@ class MissionRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByDriverAndProject($project, $driver)
+    {
+        return $this->createQueryBuilder('m')
+        ->andWhere('m.project = :project')
+        ->setParameter('project', $project)
+        ->andWhere('m.driver = :driver')
+        ->setParameter('driver', $driver)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
+    public function findBySupplierAndProject($project, $supplier)
+    {
+        return $this->createQueryBuilder('m')
+                    ->innerJoin('App:Allocate', 'rent', Join::WITH, 'm.allocate = rent')
+                    ->andWhere('m.project = :project')
+                    ->setParameter('project', $project)
+                    ->andWhere('rent.supplier = :supplier')
+                    ->setParameter('supplier', $supplier)
+                    ->getQuery()
+                    ->getResult()
+                    ;
+    }
+
     public function updateMissionTable()
     {
         return $this->createQueryBuilder('m')

@@ -4,20 +4,26 @@ namespace App\Controller;
 
 use App\Entity\Mission;
 use App\Entity\Allocate;
+use App\Entity\Project;
+use App\Entity\Supplier;
+use App\Entity\Payment;
 use App\Entity\PaymentSupplier;
 use App\Form\PaymentSupplierType;
+use App\Repository\AllocateRepository;
+use App\Repository\SupplierRepository;
 use App\Repository\MissionRepository;
 use App\Repository\PaymentRepository;
 use App\Repository\ProjectRepository;
+use App\Form\ExportPaymentSupplierType;
 use App\Repository\PaymentSupplierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use App\Entity\Payment;
-use App\Repository\AllocateRepository;
-use App\Repository\SupplierRepository;
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class PaymentSupplierController extends AbstractController
 {
@@ -221,5 +227,75 @@ class PaymentSupplierController extends AbstractController
             'payment' => $payment,
             'paymentSupplier' => $paymentSupplier,
         ];
+    }
+
+    /**
+     * @Route("/supplier/payment/export", name="exportPaymentSupplier")
+     */
+    public function exportPayment(Request $request, MissionRepository $missionRepo, PaymentSupplierRepository $paymentSupplierRepo)
+    {
+        if($this->getUser()->getRole() != 3){
+            $form = $this->createForm(ExportPaymentSupplierType::class);
+
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $form->getData();
+                $managedData = $this->manageData($missionRepo->findBySupplierAndProject($data['project'], $data['supplier']), $paymentSupplierRepo);
+                return $this->print($data['project'], $data['supplier'], $managedData);
+            }
+            return $this->render('supplier/exportPayment.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUser(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
+    }
+
+    public function manageData($missions, PaymentSupplierRepository $paymentSupplierRepo)
+    {
+        $managedData = [];
+        foreach ($missions as $mission) {
+            $vehicle = $mission->getAllocate()->getVehicle();
+            $key = $vehicle->getMatricule()." ".$vehicle->getBrand()." ".$vehicle->getType()->getName();
+            $managedData[$key] = $paymentSupplierRepo->findByPayment($mission->getPayment());
+        }
+        return $managedData;
+    }
+
+    public function print(Project $project, Supplier $supplier, array $data)
+    {
+        if($this->getUser()->getRole()!=3 && $project){
+            $fileName = (new \DateTime())->format('Hidmy');
+            // Configure Dompdf according to your needs
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            
+            // Instantiate Dompdf with our options
+            $dompdf = new Dompdf($pdfOptions);
+            
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('exportedFile/payment_supplier.html.twig', [
+                'project' => $project,
+                'supplier' => $supplier,
+                'data' => $data,
+            ]);
+            
+            // Load HTML to Dompdf
+            $dompdf->loadHtml($html);
+            
+            // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+            $dompdf->setPaper('A4', 'portrait');
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+    
+            // Output the generated PDF to Browser (force download)
+            $dompdf->stream($fileName.".pdf", [
+                "Attachment" => false,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 }

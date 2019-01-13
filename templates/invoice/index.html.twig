@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block header %}
-    Fuel Reconciliations
+    Fuel Invoices
 {% endblock %}
 {% block header_annex %}
     <li><a href="index.html">Home</a></li>
-    <li class="active">Fuel Reconciliations</li>
+    <li class="active">Fuel Invoices</li>
 {% endblock %}
 
 {% block left_column %}
-    <a href="{{path('invoice_new')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Invoice</a>
+    <a href="{{path('makeAsFactured')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Invoice</a>
     <a href="{{path('invoice_index')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all Invoices</a>
 {% endblock %}
 
@@ -17,7 +17,6 @@
     <div class="panel-heading main-color-bg">
         <h3 class="panel-title">Invoices</h3>
     </div>
-    <br>
     <div class="panel-body">
     {% if app.session.flashBag.has('invoiceMsg') %}
         <div class="alert alert-success error">
@@ -26,41 +25,9 @@
             {% endfor %}
         </div>
     {% endif %}
-        <a title="Add new Invoice" href="{{path('invoice_new')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
-        <br>
-        <div class="table-responsive">
-            <p class="content-group-lg"></p>
-
-            <form action="{{ path('invoice_index') }}" method="post">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label for="number" class="required">Invoice N°</label>
-                        <input type="integer" id="number"
-                               name="number"
-                               required="required" class="form-control">
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label for="date" class="">Date</label>
-                        <input type="date" id="date"
-                               name="date" class="form-control">
-                    </div>
-                </div>
-                <br/>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary legitRipple">Validate <i
-                                class="icon-arrow-right14 position-right"></i></button>
-
-
-                </div>
-            </form>
-
-        </div>
+        <a title="Add new Invoice" href="{{path('makeAsFactured')}}" class="btn-group-justified btn-primary btn-xs ">ADD NEW </a>
     </div>
     <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h5 class="text text-center panel-title"><strong>INVOICES LIST</strong></h5>
-        </div>
 
         <div class="panel-body">
 
@@ -79,30 +46,31 @@
                 <tbody>
                 {% for invoice in invoices %}
                     <tr>
-                        <td>{{ invoice.number }}</td>
-                        <td>{% if invoice.dateCreation %}{{ invoice.dateCreation|date('Y-m-d') }}{% endif %}</td>
-                        <td>{{ invoice.amount }}</td>
-                        <td>{{ invoice.liters }}</td>
+                        <td>{{ invoice.id }}</td>
+                        <td>{% if invoice.createdAt %}{{ invoice.createdAt|date('M d/m/y') }}{% endif %}</td>
+                        <td>{{ invoice.totalAmounts }} DHs</td>
+                        <td>{{ invoice.totalLitres }} Ls</td>
                         <td>
-                            <span class="label {% if invoice.isPaid %}label-success{% else %}label-danger{% endif %}">{% if invoice.isPaid %}Yes{% else %}No{% endif %}</span>
+                            <span class="label {% if invoice.isPaid %}label-success{% else %}label-danger{% endif %}">
+                                {% if invoice.isPaid %}Yes{% else %}No{% endif %}</span>
                         </td>
 
 
                         <td class="text-center">
                             <div class="">
                                 <a title="Show the invoice" href="{{ path('invoice_show', { 'id': invoice.id }) }}"
-                                   class="text-primary legitRipple"><i class="icon-eye position-left"></i></a>
+                                   class="btn btn-info"><i class="icon-eye position-left"></i>Details</a>
                                 {% if invoice.isPaid == false %}
-                                    <a title="Mark as Paid" href="{{ path('invoice_as_paid', { 'id': invoice.id }) }}"
-                                       class="text-primary legitRipple"><i
-                                                class="icon-checkmark3 position-left"></i></a>
+                                    <a title="Mark as Paid" onclick="return confirm('Are you sure that you want mark this invoice as paid?');" href="{{ path('invoice_as_paid', { 'id': invoice.id }) }}"
+                                       class="btn btn-default"><i
+                                                class="icon-checkmark3 position-left"></i>Paid</a>
                                 {% endif %}
-                                <a title="Download Invoice" href="{{ asset('spreadsheets/'~invoice.excelFile~'.xls') }}"
-                                   class="text-primary legitRipple"><i class="icon-download position-left"></i></a>
+                                <a title="Download Invoice" target="_blank" href="{{ asset('invoice/pdf/'~invoice.excelFile~'.pdf') }}"
+                                   class="btn btn-success"><i class="icon-download position-left"></i>Download</a>
                                 <a title="Delete"
-                                   onclick="return confirm('Are You sure ?');"
+                                   onclick="return confirm('Are you sure that you want delete this invoice?');"
                                    href="{{ path('invoice_delete', { 'id': invoice.id }) }}"
-                                   class="text-danger legitRipple"><i class="icon-trash position-left"></i></a>
+                                   class="btn btn-danger"><i class="icon-trash position-left"></i>Delete</a>
                             </div>
                         </td>
                     </tr>

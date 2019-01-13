@@ -21,6 +21,7 @@ use App\Repository\SupplierRepository;
 use App\Repository\MissionRepository;
 use App\Repository\AllocateRepository;
 use App\Repository\DriverRepository;
+use App\Repository\InvoiceRepository;
 // Include Dompdf required namespaces
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -112,6 +113,7 @@ class FuelReconciliationController extends AbstractController
                 }
                 // $manager->merge($fuelReconciliation);
                 $manager->persist($fuelReconciliation);
+                dd($fuelReconciliation);
                 $manager->flush();
 
                 return $this->redirectToRoute('show_fuel_reconciliation', array('id' => $fuelReconciliation->getId()));
@@ -325,27 +327,37 @@ class FuelReconciliationController extends AbstractController
     /**
      * @Route("fuel/reconciliation/make/invoice", name="makeAsFactured")
      */
-    public function makeAsFactured(Request $request, ObjectManager $manager, PaymentRepository $paymentRepo, SupplierRepository $supplierRepo, MissionRepository $missionRepo, DriverRepository $driverRepo)
+    public function makeAsFactured(Request $request, ObjectManager $manager, InvoiceRepository $invoiceRepo)
     {
-        $fileName = (new \DateTime())->format('Hidmy');
-        $reconciliations = $request->getSession()->get('reconciliations');
-        $invoice = InvoiceController::init($reconciliations, $request, $fileName, $manager);
-        foreach ($reconciliations as $item) {
-            // $mission = $missionRepo->find($item->getMission()->getId());
-            // $item->setMission($mission);
-            // dd($item);
-            $item->setInvoice($invoice);
-            $invoice->addReconciliation($item);
-            // $manager->merge($item);
+        if($this->getUser()->getRole() != 3){
+            $reconciliations = $request->getSession()->get('reconciliations');
+            if($reconciliations){
+                $fileName = (new \DateTime())->format('Hidmy');
+                $id = $invoiceRepo->findMaxId() + 1;
+                $invoice = InvoiceController::init($reconciliations, $request, $fileName, $manager, $id);
+                $manager->persist($invoice);
+                $manager->flush();
+                foreach ($reconciliations as $item) {
+                    $item->setInvoice($invoice);
+                    $invoice->addReconciliation($item);
+                    $RAW_QUERY = "UPDATE fuel_reconciliation f SET f.invoice_id = ".$id." WHERE f.id = ".$item->getId()." ;" ;
+                    $statement = $manager->getConnection()->prepare($RAW_QUERY);
+                    $statement->execute();
+                }
+        
+                $request->getSession()->clear();
+                $request->getSession()->getFlashBag()->add('InvoiceMsg', 'Your invoice has been created successfully!');
+                $this->print($reconciliations, $fileName, $invoice);
+            }else{
+                $request->getSession()->getFlashBag()->add('fuelMsg', "Please search for reconciliations to create an invoice.");
+                return $this->redirectToRoute('searchFuelReconciliation');
+            }
+        }else{
+            return $this->redirectToRoute('error403');
         }
-        $manager->merge($invoice);
-        $manager->flush();
-        // dd($reconciliations);
-
-        $this->print($reconciliations, $fileName);
     }
 
-    public function print(array $reconciliations, $fileName)
+    public function print(array $reconciliations, $fileName, $invoice)
     {
         if($this->getUser()->getRole()!=3){
             
@@ -362,7 +374,7 @@ class FuelReconciliationController extends AbstractController
             ]);
             
             // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->setPaper('A4', 'portrait');
 
             // Load HTML to Dompdf
             $dompdf->loadHtml($html);
@@ -371,8 +383,12 @@ class FuelReconciliationController extends AbstractController
             // Render the HTML as PDF
             $dompdf->render();
     
+            $output = $dompdf->output();
+            file_put_contents('invoice/pdf/'.$fileName.'.pdf', $output);
             // Output the generated PDF to Browser (force download)
-            $dompdf->stream('invoice/pdf/'.$fileName.".pdf");
+            $dompdf->stream($fileName.".pdf", [
+                "Attachment" => false,
+            ]);
         }else{
             return $this->redirectToRoute('error403');
         }

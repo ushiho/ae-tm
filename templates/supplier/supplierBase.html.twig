@@ -14,7 +14,7 @@
 {% block left_column %}
     <a href="{{path('addSupplier')}}"  class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Supplier</a>
     <a href="/supplier"  class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all Suppliers</a>
-    <a href="#"  class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search</a>
+    <a href="{{ path('exportPaymentSupplier') }}"  class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export Payments</a>
 {% endblock %}
 
 {% block center_column %}

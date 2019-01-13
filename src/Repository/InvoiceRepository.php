@@ -47,4 +47,18 @@ class InvoiceRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findMaxId()
+    {
+        $res = $this->createQueryBuilder('i')
+                    ->select('max(i.id)')
+                    ->getQuery()
+                    ->getOneOrNullResult()[1]
+                    ;
+        if(!$res){
+            $res = 0;
+        }
+
+        return $res;
+    }
 }

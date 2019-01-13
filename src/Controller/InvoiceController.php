@@ -25,89 +25,99 @@ class InvoiceController extends Controller
      */
     public function indexAction(Request $request, InvoiceRepository $repo)
     {
-        $invoices = array();
-        if ($request->getMethod() == 'POST') {
-            $criterias = array();
-            if ($request->get('number')) {
-                $criterias['number'] = $request->get('number');
-            }
-            if ($request->get('date')) {
-                $criterias['dateCreation'] = \DateTime::createFromFormat('Y-m-d', $request->get('date'));
-            }
-            $invoices = $repo->findBy($criterias);
-        } else {
-            $invoices = $repo->findAll();
-        }
+        if($this->getUser()->getRole() != 3){
 
-        return $this->render('invoice/index.html.twig', array(
-            'invoices' => $invoices,
-            'connectedUser' => $this->getUser(),
-        ));
+            $invoices = array();
+            if ($request->getMethod() == 'POST') {
+                $criterias = array();
+                if ($request->get('number')) {
+                    $criterias['number'] = $request->get('number');
+                }
+                if ($request->get('date')) {
+                    $criterias['dateCreation'] = \DateTime::createFromFormat('Y-m-d', $request->get('date'));
+                }
+                $invoices = $repo->findBy($criterias);
+            } else {
+                $invoices = $repo->findAll();
+            }
+    
+            return $this->render('invoice/index.html.twig', array(
+                'invoices' => $invoices,
+                'connectedUser' => $this->getUser(),
+            ));
+        }else{
+            return $this->redirectToRoute('error403');
+        }
     }
 
     /**
      * @Route("invoice/mark-as-paid/{id}", name="invoice_as_paid")
      * @Method("GET")
      */
-    public function markAsPaid(Invoice $invoice)
+    public function markAsPaid(Invoice $invoice = null)
     {
-        $invoice->setIsPaid(true);
-        foreach ($invoice->getReconciliations() as $reconciliation) {
-            $reconciliation->setIsPayed(true);
-        }
-        $this->getDoctrine()->getManager()->flush();
+        if($this->getUser()->getRole() != 3){
 
-        return $this->redirectToRoute('invoice_show', array(
-            'id' => $invoice->getId(),
-            'connectedUser' => $this->getUser(),
-        ));
-    }
-
-    /**
-     * @Route("invoice/new", name="invoice_new")
-     * @Method({"GET", "POST"})
-     */
-    public function newAction(Request $request, FuelReconciliationRepository $fuelRecoRepo, VehicleRepository $vehicleRepo)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $invoice = new Invoice();
-        $printSide = $this->get('session')->get('print-side');
-        if (!$printSide) {
-            $request->getSession()->getFlashBag()->add('fuelMsg', 'Please select the reconciliations to create the related invoice.');
-
-            return $this->redirectToRoute('searchFuelReconciliation');
-        }
-        $printSide = $printSide->refreshFromDatabase($fuelRecoRepo);
-        $invoice->setTotalAmounts($printSide->getTotalAmount())
-            ->setTotalLitres($printSide->getTotalLiters())
-            ->setIsPaid(false)
-            ->setCreatedAt(new \DateTime());
-        $form = $this->createForm(InvoiceType::class, $invoice);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $invoice->setCreatedAt(new \DateTime());
-            $reconciliations = $this->get('session')->get('print-side')->getAllReconciliations();
-            $em = $this->getDoctrine()->getManager();
-            $reconciliations = $em->getRepository('App:FuelReconciliation')->findReconciliationsByIds($reconciliations);
-            $invoice->setReconciliation($reconciliations);
-            $this->exportToExcel($invoice, $fuelRecoRepo, $vehicleRepo);
-            $this->exportToPdf($invoice, $fuelRecoRepo);
-            $em->persist($invoice);
-            $em->flush();
-
+            $invoice->setIsPaid(true);
+            foreach ($invoice->getReconciliations() as $reconciliation) {
+                $reconciliation->setIsPaid(true);
+            }
+            $this->getDoctrine()->getManager()->flush();
+            
             return $this->redirectToRoute('invoice_show', array(
                 'id' => $invoice->getId(),
                 'connectedUser' => $this->getUser(),
             ));
+        }else{
+            return $this->redirectToRoute('error403');
         }
-
-        return $this->render('invoice/new.html.twig', array(
-            'invoice' => $invoice,
-            'form' => $form->createView(),
-            'connectedUser' => $this->getUser(),
-        ));
     }
+
+    // /**
+    //  * @Route("invoice/new", name="invoice_new")
+    //  * @Method({"GET", "POST"})
+    //  */
+    // public function newAction(Request $request, FuelReconciliationRepository $fuelRecoRepo, VehicleRepository $vehicleRepo)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+    //     $invoice = new Invoice();
+    //     $printSide = $this->get('session')->get('print-side');
+    //     if (!$printSide) {
+    //         $request->getSession()->getFlashBag()->add('fuelMsg', 'Please select the reconciliations to create the related invoice.');
+
+    //         return $this->redirectToRoute('searchFuelReconciliation');
+    //     }
+    //     $printSide = $printSide->refreshFromDatabase($fuelRecoRepo);
+    //     $invoice->setTotalAmounts($printSide->getTotalAmount())
+    //         ->setTotalLitres($printSide->getTotalLiters())
+    //         ->setIsPaid(false)
+    //         ->setCreatedAt(new \DateTime());
+    //     $form = $this->createForm(InvoiceType::class, $invoice);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $invoice->setCreatedAt(new \DateTime());
+    //         $reconciliations = $this->get('session')->get('print-side')->getAllReconciliations();
+    //         $em = $this->getDoctrine()->getManager();
+    //         $reconciliations = $em->getRepository('App:FuelReconciliation')->findReconciliationsByIds($reconciliations);
+    //         $invoice->setReconciliation($reconciliations);
+    //         $this->exportToExcel($invoice, $fuelRecoRepo, $vehicleRepo);
+    //         $this->exportToPdf($invoice, $fuelRecoRepo);
+    //         $em->persist($invoice);
+    //         $em->flush();
+
+    //         return $this->redirectToRoute('invoice_show', array(
+    //             'id' => $invoice->getId(),
+    //             'connectedUser' => $this->getUser(),
+    //         ));
+    //     }
+
+    //     return $this->render('invoice/new.html.twig', array(
+    //         'invoice' => $invoice,
+    //         'form' => $form->createView(),
+    //         'connectedUser' => $this->getUser(),
+    //     ));
+    // }
 
     /**
      * @Route("invoice/show/{id}", name="invoice_show", requirements={"id"="\d+"}))
@@ -144,15 +154,13 @@ class InvoiceController extends Controller
      * @Route("invoice/delete/{id}", name="invoice_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Invoice $invoice)
+    public function deleteAction(Request $request, Invoice $invoice = null, ObjectManager $manager)
     {
-        $form = $this->createDeleteForm($invoice);
-        $form->handleRequest($request);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($invoice);
-        $em->flush();
-
+      
+        
+        $manager->remove($invoice);
+        $manager->flush();
+        $request->getSession()->getFlashBag()->add('InvoiceMsg', "The invoice was deleted successfully.");
         return $this->redirectToRoute('invoice_index');
     }
 
@@ -182,15 +190,15 @@ class InvoiceController extends Controller
         $writer->save('spreadsheets/'.$invoice->getNumber().'_'.$invoice->getExcelFile().'.xls');
     }
 
-    public function init($reconciliations, Request $request, $fileName, ObjectManager $manager)
+    public function init($reconciliations, Request $request, $fileName, ObjectManager $manager, $id)
     {
         $invoice = new Invoice();
         $invoice->setCreatedAt(new \DateTime())
                 ->setTotalAmounts($request->getSession()->get('totalAmount'))
                 ->setTotalLitres($request->getSession()->get('totalLitres'))
                 ->setExcelFile($fileName)
-                // ->setReconciliation($reconciliations)
-                ->setIsPaid(false);
+                ->setIsPaid(false)
+                ->setId($id);
         
         
         return $invoice;

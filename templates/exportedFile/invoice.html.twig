@@ -2,14 +2,171 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Example 1</title>
-    <link rel="stylesheet" href="asset('css/style_PDF.css')" media="all" />
+    <title>Print Invoice</title>
+    <!-- <link rel="stylesheet" href="asset('css/style_PDF.css')" media="all" /> -->
+    <style>
+        .clearfix:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+  
+        a {
+          color: #5D6975;
+          text-decoration: underline;
+        }
+  
+        body {
+          position: relative;
+          width: 100%;  
+          height: 100%; 
+          margin: 0 auto; 
+          color: #001028;
+          background: #ffffff; 
+          font-family: Arial, sans-serif; 
+          font-size: 12px; 
+          font-family: Arial;
+          margin-left: -20px;
+        }
+  
+        header {
+          padding: 10px 0;
+          margin-bottom: 30px;
+        }
+  
+        #logo {
+          text-align: center;
+          margin-bottom: 10px;
+        }
+  
+        #logo img {
+          width: 90px;
+        }
+        
+        .element {
+            opacity: 0.1;
+            margin: 0px 0 -224px 0;
+            }
+  
+        h1 {
+          border-top: 1px solid  #5D6975;
+          border-bottom: 1px solid  #5D6975;
+          color: #5D6975;
+          font-size: 2.4em;
+          line-height: 1.4em;
+          font-weight: normal;
+          text-align: center;
+          margin: -12px 0 20px 0;
+          background: url(dimension.png);
+        }
+  
+        #project {
+          float: left;
+        }
+  
+        #project span {
+          color: #5D6975;
+          text-align: left;
+          width: 100px;
+          margin-right: 10px;
+          display: inline-block;
+          font-size: 0.8em;
+        }
+  
+        #company {
+          float: right;
+          /* text-align: right; */
+        }
+  
+        #project div,
+        #company div {
+          white-space: nowrap;        
+        }
+  
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          border-spacing: 0;
+          margin-bottom: 20px;
+          border: 1px;
+        }
+  
+        table tr:nth-child(2n-1) td {
+          background: #F5F5F5;
+        }
+  
+        table th,
+        table td {
+          text-align: center;
+        }
+  
+        table th {
+          padding: 5px 5px;
+          color: #5D6975;
+          border-bottom: 1px solid #C1CED9;
+          white-space: nowrap;        
+          font-weight: normal;
+        }
+        
+  
+        table .service,
+        table .desc {
+          text-align: left;
+        }
+  
+        table td {
+          padding: 5px;
+          text-align: right;
+        }
+  
+        table td.service,
+        table td.desc {
+          vertical-align: top;
+          text-align: right;
+        }
+  
+        table td.unit,
+        table td.qty,
+        table td.total {
+          font-size: 10px;
+        }
+  
+        table td.grand {
+          border-top: 1px solid #5D6975;;
+        }
+  
+        #notices .notice {
+          color: #5D6975;
+          font-size: 1.2em;
+        }
+  
+        footer {
+          color: #5D6975;
+          width: 100%;
+          height: 30px;
+          position: absolute;
+          bottom: 0;
+          border-top: 1px solid #C1CED9;
+          padding: 8px 0;
+          text-align: center;
+        }
+        .noPayment{
+          font-size: 16px;
+          color: red;
+          text-align: center;
+          vertical-align: middle;
+        }
+        .title{
+          text-align: left;
+          font-size: 14px;
+        }
+      </style>
   </head>
   <body>
     <header class="clearfix" >
 
-      <img  class="element" src="asset('img/demo.png')" > 
-      <h1>INVOICE 3-2-1</h1>
+      <!-- <img  class="element" src="asset('img/demo.png')" >  -->
+      <h1>INVOICE {{ reconciliations|first.invoice.id }}</h1>
       <div id="company" class="clearfix">
         <div>Akram el kouzouz   </div>
         <div>455 Foggy Heights  ,<br /> AZ 85004, US   </div>
@@ -31,39 +188,57 @@
       <table>
         <thead>
           <tr>
-            <th class="service">RECEIPT N°</th>
-            <th class="service">DRIVER</th>
-            <th class="desc">LICENCE PLATE</th>
+            <th>RECEIPT N°</th>
+            <th style="width: 70px;">DRIVER</th>
+            <th>LICENCE PLATE</th>
             <th>GAZ STATION</th>
             <th>DEPARTMENT</th>
-            <th>KILOMETRAGE (KMs)</th>
-            <th>AMOUNT (DHs)</th>
-            <th>LITRES (LTRs)</th>
+            <th>KILOMETRAGE</th>
+            <th>LITRES</th>
+            <th>AMOUNT</th>
           </tr>
         </thead>
         <tbody>
-            {% if reconciliations is null or reconciliations is empty %}
-                <tr>
-                    <td>No Reconciliations Exist.</td>
-                </tr>
-            {% endif %}
-            {% for recon in  reconciliations %}
+          {% if reconciliations is null or reconciliations is empty %}
           <tr>
-            <td class="service">{{recon.receiptNum}}</td>
-            <td class="desc"> {{ recon.driver.firstName }} {{recon.driver.lastName }} </td>
-            <td class="unit"> {{ recon.vehicle.matricule }} </td>
-            <td class="qty"> {{ recon.department.name }} </td>
-            <td class="total"> {{recon.kilometrage}} </td>
-            <td class="total"> {{recon.totalAmount}} </td>
-            <td class="total"> {{recon.totalLitres}} </td>
+            <td>No Reconciliations Exist.</td>
           </tr>
+          {% endif %}
+          {% set totalLitres = 0 %}
+          {% set totalKilo = 0 %}
+          {% set totalAmount = 0 %}
+          {% for recon in  reconciliations %}
+          <tr>
+            <td style="text-align: center;">{{recon.id}}</td>
+            <td style="text-align: center;"> {{ recon.driver.firstName }} {{recon.driver.lastName }} </td>
+            <td style="text-align: center;"> {{ recon.vehicle.matricule }} </td>
+            <td style="text-align: center;">{{ recon.gasStation.name }}</td>
+            <td style="text-align: center;"> {{ recon.department.name }} </td>
+            <td style="text-align: center;"> {{recon.kilometrage}} KMs</td>
+            <td style="text-align: center;"> {{recon.totalLitres}} Ls</td>
+            <td style="text-align: center;"> {{recon.totalAmount}} DHs</td>
+          </tr>
+          {% set totalLitres = totalLitres + recon.totalLitres %}
+          {% set totalAmount = totalAmount + recon.totalAmount %}
+          {% set totalKilo = totalKilo + recon.kilometrage %}
           {% endfor %}
+          <tr>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="5" style="text-align: center;"><b>TOTAL</b></td>
+            <td style="text-align: center;">
+              {{ totalKilo }} KMs
+            </td>
+            <td style="text-align: center;">
+              {{ totalLitres }} Ls
+            </td>
+            <td style="text-align: center;">
+              {{ totalAmount }} DHs
+            </td>
+          </tr>
         </tbody>
       </table>
-      <div id="notices">
-        <div>NOTICE:</div>
-        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
-      </div>
     </main>
     <footer>
       Invoice was created on a computer and is valid without the signature and seal.

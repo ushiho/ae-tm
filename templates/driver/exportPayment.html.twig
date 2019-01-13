@@ -1,0 +1,53 @@
+{% extends 'driver/driverBase.html.twig'  %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block center_column %}
+{% block path %}
+{{ parent() }}
+    <div class="panel-heading main-color-bg">
+        <h3 class="panel-title">Export Payment</h3>
+    </div>
+{% endblock %}
+{{ form_start(form) }}
+
+
+    <div class="panel-body">
+        <div class="container-fluid table-responsive">
+            <br>
+                <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="full" colspan="2">Enter driver information</th>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.project) }}</strong>
+                        </td>
+                        <td class="last">{{ form_widget(form.project) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.driver) }}</strong>
+                        </td>
+                        <td class="last">{{ form_widget(form.driver) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="first" width="172">
+                            <strong>{{ form_label(form.fileType) }}</strong>
+                        </td>
+                        <td class="last">{{ form_widget(form.fileType) }}</td>
+                    </tr>
+                   
+                </table>
+            <br>
+            <div class="btn-group btn-group-justified ">
+                <div class="btn-group">
+                    <button title="Show All Drivers" href="{{ path('allDrivers') }}" class="btn btn-success btn-xs glyphicon glyphicon-arrow-left" formnovalidate >{#<a href="{{ path('allDrivers') }}" >#} Back</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary  btn-xs glyphicon glyphicon-pencil">Export</button>
+                    </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Driver;
 use App\Entity\Mission;
 use App\Entity\Payment;
+use App\Entity\Project;
 use App\Entity\PaymentDriver;
 use App\Form\PaymentDriverType;
+use App\Form\PaymentExportType;
 use App\Repository\DriverRepository;
 use App\Repository\MissionRepository;
 use App\Repository\PaymentRepository;
@@ -16,6 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class PaymentDriverController extends AbstractController
 {
@@ -248,6 +253,74 @@ class PaymentDriverController extends AbstractController
                 return 30;
             default:
                 return 0;
+        }
+    }
+
+    /**
+     * @Route("/driver/payment/export", name="exportPaymentDriver")
+     */
+    public function exportPayment(Request $request, MissionRepository $missionRepo, PaymentDriverRepository $paymentDriverRepo)
+    {
+        if($this->getUser()->getRole() != 3){
+            $form = $this->createForm(PaymentExportType::class);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid()){
+                $data = $form->getData();
+                $managedData = $this->manageData($missionRepo->findByDriverAndProject($data['project'], $data['driver']), $paymentDriverRepo);
+                return $this->print($data['project'], $data['driver'], $managedData);
+            }
+            return $this->render('driver/exportPayment.html.twig', [
+                'form' => $form->createView(),
+                'connectedUser' => $this->getUser(),
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
+        }
+    }
+
+    public function manageData($missions, PaymentDriverRepository $paymentDriverRepo)
+    {
+        $managedData = [];
+        foreach ($missions as $mission) {
+            $key = "FROM ".$mission->getStartDate()->format('M d/m/y')." TO ".$mission->getEndDate()->format('M d/m/y')." [ ".$mission->getAllocate()->getVehicle()->getMatricule()." ".$mission->getAllocate()->getVehicle()->getType()->getName()." ]";
+            $managedData[$key] = $paymentDriverRepo->findByPayment($mission->getPayment());
+        }
+        return $managedData;
+    }
+
+    public function print(Project $project, Driver $driver, array $data)
+    {
+        if($this->getUser()->getRole()!=3 && $project){
+            $fileName = (new \DateTime())->format('Hidmy');
+            // Configure Dompdf according to your needs
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+            
+            // Instantiate Dompdf with our options
+            $dompdf = new Dompdf($pdfOptions);
+            
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('exportedFile/payment_driver.html.twig', [
+                'project' => $project,
+                'driver' => $driver,
+                'data' => $data,
+            ]);
+            
+            // Load HTML to Dompdf
+            $dompdf->loadHtml($html);
+            
+            // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+            $dompdf->setPaper('A4', 'portrait');
+    
+            // Render the HTML as PDF
+            $dompdf->render();
+    
+            // Output the generated PDF to Browser (force download)
+            $dompdf->stream($fileName.".pdf", [
+                "Attachment" => false,
+            ]);
+        }else{
+            return $this->redirectToRoute('error403');
         }
     }
 }

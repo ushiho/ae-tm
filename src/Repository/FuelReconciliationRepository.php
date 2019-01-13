@@ -95,7 +95,7 @@ class FuelReconciliationRepository extends ServiceEntityRepository
 
     public function generateWhere($driverID, $vehicleID, $departmentID, $projectID, $firstDate, $scondDate, $isPaid, $gasStation, $query)
     {
-        $conds = '1=1 ';
+        $conds = '1=1 AND fr.invoice is NULL ';
         if ($driverID !== 0) {
             $conds .= 'AND driver.id = ?1';
             $query->setParameter(1, $driverID);

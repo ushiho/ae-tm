@@ -118,4 +118,5 @@ class SupplierController extends AbstractController
             return $this->redirectToRoute('error403');
         }
     }
+
 }
