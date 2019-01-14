@@ -6,6 +6,6 @@ swiftmailer:
     encryption: ssl
     auth_mode:  login
     host:       smtp.gmail.com
-    username:   hlotfi.hamza.lotfi@gmail.com
-    password:   Lotfi1997.#
+    username:   email
+    password:   password
     port: 465
