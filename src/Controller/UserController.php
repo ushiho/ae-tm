@@ -168,7 +168,7 @@ class UserController extends AbstractController
      */
     public function showDetails(User $user = null)
     {
-        if($this->getUser()->getRole == 1){
+        if($this->getUser()->getRole() == 1){
             if ($user) {
                 return $this->render('user/show.html.twig', [
                     'connectedUser' => $this->getUser(),
@@ -187,7 +187,7 @@ class UserController extends AbstractController
      */
     public function deleteAll(ObjectManager $manager, UserRepository $repo)
     {
-        if($this->getUser()->getRole == 1){
+        if($this->getUser()->getRole() == 1){
             foreach ($repo->findAll() as $user) {
                 if ($user != $this->getUser()) {
                     $manager->remove($user);
