@@ -102,7 +102,7 @@ class FuelReconciliationController extends AbstractController
             if ($fuelReconciliation->getVehicle() != null || $fuelReconciliation->getDriver() != null) {
                 $fuelReconciliation = $this->completeDatas($fuelReconciliation, $manager);
                 if (!$fuelReconciliation) {
-                    $request->getSession()->getFlashBag()->add('fuelMsg', 'The mission linked to this driver/vehicle is finished.');
+                    $request->getSession()->getFlashBag()->add('fuelMsg', 'No mission linked to this driver/vehicle.');
 
                     return $this->render('fuel_reconciliation/new.html.twig', array(
                         'fuelReconciliation' => $fuelReconciliation,
@@ -180,78 +180,7 @@ class FuelReconciliationController extends AbstractController
         return new JsonResponse(['success' => 200]);
     }
 
-    /**
-     * @Route("fuel/reconciliation/print-side", name="print_side",options={"expose"=true})
-     * @Method("GET")
-     */
-    public function printSideAction(Request $request)
-    {
-        $session = $this->get('session');
-        $em = $this->getDoctrine()->getManager();
-        $printSide = $session->has('print-side') ? $session->get('print-side') : new PrintSide();
-        $refershedPrintSide = $printSide->refreshFromDatabase($em);
-        $refershedPrintSide->sortDates();
-        $refershedPrintSide->exportToExcel();
-        VarDumper::dump($refershedPrintSide);
 
-        return $this->render('fuel_reconciliation/side_print.twig', array('printSide' => $refershedPrintSide));
-    }
-
-    /**
-     * @Route("fuel/reconciliation/clean-print-side", name="clean_print_side",options={"expose"=true})
-     * @Method("GET")
-     */
-    public function cleanPrintSide()
-    {
-        $this->get('session')->set('print-side', new PrintSide());
-
-        return $this->redirectToRoute('print_side');
-    }
-
-    /**
-     * @Route("fuel/reconciliation/export-print-side/{invoice}", name="export_print_side",options={"expose"=true})
-     * @Method("GET")
-     */
-    public function exportToExcelAction(Invoice $invoice)
-    {
-        $spreadsheet = $this->get('App\Service\ExcelGenerator')->generateExcel($invoice->getNumber());
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('spreadsheets/'.$invoice->getExcelFile().'.xls');
-        $response = $this->createStreamedResponse($writer, $invoice->getExcelFile().'.xls');
-
-        return $response;
-    }
-
-    /**
-     * Stream the file as Response.
-     *
-     * @param  $writer
-     * @param  $fileName
-     * @param int   $status
-     * @param array $headers
-     *
-     * @return StreamedResponse
-     */
-    public function createStreamedResponse($writer, $fileName, $status = 200, $headers = array())
-    {
-        $response = new StreamedResponse(
-            function () use ($writer,$fileName) {
-                $writer->save('php://output');
-            },
-            $status,
-            $headers
-        );
-        // adding headers
-        $dispositionHeader = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName);
-
-        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
-        $response->headers->set('Pragma', 'public');
-        $response->headers->set('Cache-Control', 'maxage=1');
-        $response->headers->set('Content-Disposition', $dispositionHeader);
-
-        return $response;
-    }
 
     /**
      * @Route("fuel/reconciliation/remove-reconciliation/{id}", name="remove_reconciliation_from_print_side",options={"expose"=true})
@@ -268,19 +197,6 @@ class FuelReconciliationController extends AbstractController
         return $this->redirectToRoute('print_side');
     }
 
-    /**
-     * @Route("fuel/reconciliation/remove-project/{id}", name="remove_project_from_print_side",options={"expose"=true})
-     * @Method("GET")
-     */
-    public function removeProjectFromPrintSideAction($id)
-    {
-        $session = $this->get('session');
-        $printSide = $session->get('print-side');
-        $printSide->removeProject($id);
-        $session->set('print-side', $printSide);
-
-        return $this->redirectToRoute('print_side');
-    }
 
     public function testRole()
     {
@@ -297,7 +213,7 @@ class FuelReconciliationController extends AbstractController
     public function completeDatas(FuelReconciliation $fuelReconciliation, ObjectManager $manager)
     {
         $mission = $this->testVehicleAndDriverToSearchForMission($fuelReconciliation, $manager);
-        if ($mission && !$mission->getFinished()) {
+        if ($mission) {
             return  $fuelReconciliation->setCreatedAt(new \DateTime())
                                 ->setIsPaid(false)
                                 ->setDepartment($mission->getDepartment())
@@ -313,9 +229,9 @@ class FuelReconciliationController extends AbstractController
     public function testVehicleAndDriverToSearchForMission(FuelReconciliation $fuelReconciliation, ObjectManager $manager)
     {
         if ($fuelReconciliation->getDriver()) {
-            $mission = $manager->getRepository(Mission::class)->findByDriverAndFinishedState($fuelReconciliation->getDriver());
+            $mission = $manager->getRepository(Mission::class)->findOneByDriver($fuelReconciliation->getDriver());
         } elseif ($fuelReconciliation->getVehicle()) {
-            $mission = $manager->getRepository(Mission::class)->findByVehicleAndFinishedState($fuelReconciliation->getVehicle());
+            $mission = $manager->getRepository(Mission::class)->findOneByVehicle($fuelReconciliation->getVehicle());
         } else {
             $mission = null;
         }

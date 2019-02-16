@@ -11,8 +11,8 @@
     Projects
 {% endblock %}
 {% block header_annex %}
-    <li><a href="index.html">Home</a></li>
-    <li class="active">Projet</li>
+    <li><a href="{{path('allProjects')}}">Home</a></li>
+    <li class="active">All Projects</li>
 {% endblock %}
 
 {% block left_column %}
@@ -20,6 +20,7 @@
         <a href="{{path('addProject')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Create Project</a>
     {% endif %}
         <a href="/project" class="list-group-item" ><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>  Show all projects</a>
+        <a href="{{path('exportMissionsOfProject')}}" class="list-group-item">Export</a>
 {% endblock %}
 
 {% block center_column %}
@@ -52,35 +53,6 @@
             <a href="/project/new" class="btn-group-justified btn-primary btn-xs "  >ADD NEW Project</a>
         {% endif %}
         <div class="table-responsive">
-                {% if projects%}
-                <!-- <table class="listing form table table-striped table-hover" cellpadding="0" cellspacing="0">
-            <tr class='first'>
-                <th colspan="12" class='fa-align-right text-capitalize text-center full'> Search for existing driver</th></tr>
-                <tr class='first'>
-                <br>
-                    {{ form_start(searchForm) }}
-                    <td>
-                    {{ form_widget(searchForm.startDate, {
-                        'attr': {
-                            'class': 'bootstrap-select .col-6 .col-sm-4',
-                            }
-                    }) }}
-                    </td>
-                    <td>
-                    {{ form_widget(searchForm.endDate, {
-                        'attr': {
-                            'class': 'bootstrap-select .col-6 .col-sm-4',
-                            }
-                    }) }}
-                    </td>
-                    <td>
-                <input type="submit" value="Search" class="bootstrap-select .col-6 .col-sm-4 link btn btn-ddefault">                    
-                    </td>
-                    {{ form_end(searchForm) }}
-                    </td>
-                    </tr>
-                </table> -->
-            {% endif %}
             <br>
             <table width="100%" class="table table-striped table-hover">
             {% if projects is empty or projects is null %}
@@ -94,7 +66,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Budget</th>
-                    <th width="50%" class="last" style="text-align: center;vertical-align: middle;">Actions</th>
+                    <th class="last" style="text-align: center;vertical-align: middle;">Actions</th>
                 </tr>
                 {% for project in projects %}
                 <tr class="bg">
@@ -105,13 +77,11 @@
                     <td class="first">{{ project.budget }} DH</td>
                     <td>
                         <div class="btn-group btn-sm">
-                            <a href="{{ path('showProject', {'id': project.id}) }}" class="btn btn-info">Details</a>&nbsp;
+                            <a title="Project's Details" href="{{ path('showProject', {'id': project.id}) }}" class="btn btn-info">Details</a>&nbsp;
                             {% if connectedUser.role == 1 %}
-                            <a href="{{ path('editProject', {'id': project.id}) }}" class="btn btn-default" >Edit</a>&nbsp;
-                            <a href="{{ path('deleteProject', {'id': project.id}) }}" class="btn btn-danger" onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" > Delete</a>
-                            <a title="Add Mission" href="{{ path('addMissionToProject', {'id': project.id}) }}"class="btn btn-success">Add</a>
-                            <a title="Print Missions To PDF" href="{{ path('printMissionOfProjectToPdf', {'id': project.id}) }}"class="btn btn-default">PDF</a>
-                            <a title="Print Missions To Excel" href="{{ path('printMissionOfProjectToExcel', {'id': project.id}) }}"class="btn btn-default">EXCEL</a>
+                            <a title="Edit This Project" href="{{ path('editProject', {'id': project.id}) }}" class="btn btn-default" >Edit</a>&nbsp;
+                            <a title="Delete This Project" href="{{ path('deleteProject', {'id': project.id}) }}" class="btn btn-danger" onclick="return confirm('This Project will be deleted and all its missions, Are u sure that you want?')" > Delete</a>
+                            <a title="Add New Mission" href="{{ path('addMissionToProject', {'id': project.id}) }}"class="btn btn-success">Add</a>
                             {% endif %}
                         </div>
                     </td>

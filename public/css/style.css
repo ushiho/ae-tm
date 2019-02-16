@@ -1,5 +1,7 @@
 body{
   background:#f4f4f4;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 15px;
 }
 
 /* Navbar */
@@ -136,4 +138,6 @@ body{
     color: #ffbbbc;
     background-color: #c0392b;
   }
+
+  
 }

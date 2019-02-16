@@ -25,11 +25,11 @@
                 {% else %}
                 <tr>
                     <th width="90px" title="Total Task/Mission expenses">Total Price </th>
-                    <th title="Total Amount Paid">Total Price Paid</th>
+                    <th title="Total Amount Paid">Price Paid</th>
                     <th title="Total Remaining Amount">Remaining Price</th>
                     <th title="State of Payment">Finished</th>
-                    <th title="Payment Supplier">Payments Supplier</th>
-                    <th title="Payment Driver">Payments Driver</th>
+                    <th title="Payment Supplier">Supplier</th>
+                    <th title="Payment Driver">Driver</th>
                     <th class="last">Actions</th>
                 </tr>
                 {% for payment in payments %}
@@ -45,7 +45,7 @@
                             {% if payment.remainigPriceToSupplier != 0 %}
                             <a href="{{path('addPaymentSupplier', {'idPayment': payment.id})}}">Add One</a>
                             {% else %}
-                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok" disabled="true" style="color: black;text-align:center"> Supplier is paid </a>
+                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok" disabled="true" style="color: black;text-align:center"> PAID </a>
                             {% endif %}
                             </td>
                     <td class="last">
@@ -55,7 +55,7 @@
                             {% if payment.remainingPriceToDriver != 0 %}
                             <a href="{{path('addPaymentDriver', {'idPayment': payment.id})}}">Add One</a>
                             {% else %}
-                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok"  disabled="true" style="color: black;text-align:center"> Driver is paid</a>
+                                &nbsp;&nbsp; <a class="btn-success btn-xs glyphicon glyphicon-ok"  disabled="true" style="color: black;text-align:center"> PAID</a>
                             {% endif %}
                             </td>
                     <td>

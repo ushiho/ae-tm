@@ -136,26 +136,35 @@ class MissionRepository extends ServiceEntityRepository
                     ->getOneOrNullResult();
     }
 
-    public function findByDriverAndFinishedState($driver)
+    public function findOneByDriver($driver)
     {
         return $this->createQueryBuilder('m')
                     ->andWhere('m.driver = :driver')
                     ->setParameter('driver', $driver)
-                    ->andWhere('m.finished = 0')
                     ->getQuery()
                     ->getOneOrNullResult();
     }
 
-    public function findByVehicleAndFinishedState($vehicle)
+    public function findOneByVehicle($vehicle)
     {
         return $this->createQueryBuilder('m')
                     ->innerJoin('App:Allocate', 'rent', Join::WITH, 'm.allocate = rent')
                     ->innerJoin('App:Vehicle', 'v', Join::WITH, 'rent.vehicle = v')
-                    ->andWhere('m.finished = 0')
                     ->andWhere('v = :vehicle')
                     ->setParameter('vehicle', $vehicle)
                     ->getQuery()
                     ->getOneOrNullResult()
+                    ;
+    }
+
+    public function findByVehicleType($idType){
+        return $this->createQueryBuilder('m')
+                    ->innerJoin('App:Allocate', 'rent', Join::WITH, 'm.allocate = rent')
+                    ->innerJoin('App:Vehicle', 'v', Join::WITH, 'rent.vehicle = v')
+                    ->andWhere('v.type = :type')
+                    ->setParameter('type', $idType)
+                    ->getQuery()
+                    ->getResult()
                     ;
     }
 }

@@ -16,6 +16,7 @@ use App\Entity\Allocate;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Repository\DriverRepository;
+use App\Repository\MissionRepository;
 
 class VehicleController extends AbstractController
 {
@@ -54,7 +55,6 @@ class VehicleController extends AbstractController
     /**
      * @Route("/vehicle/new", name="addVehicle")
      * @Route("/vehicle/edit/{id}", name="editVehicle", requirements={"id"="\d+"})
-     * @Route("/vehicle/new/{idType}", name="addByType", requirements={"idType"="\d+"})
      */
     public function action($idType = null, Vehicle $vehicle = null, ObjectManager $manager, Request $request,
         VehicleTypeRepository $typeRepo)
@@ -332,5 +332,21 @@ class VehicleController extends AbstractController
                             ),
                         ))
                     ->getForm();
+    }
+
+    /**
+     * @Route("vehicle/type/{idType}/missions", name="missionByVehicleType")
+     */
+    public function missionsByVehicleType($idType, MissionRepository $missionRepo, VehicleTypeRepository $typeRepo){
+        if($this->getUser()->getRole() == 3){
+            return $this->redirectToRoute('error403');
+        }else{
+            $missions = $missionRepo->findByVehicleType($idType);
+            return $this->render('vehicle/missionsByVehicleType.html.twig', [
+                'missions' => $missions,
+                'connectedUser' => $this->getUser(),
+                'types' => $typeRepo->findAll(),
+            ]);
+        }
     }
 }

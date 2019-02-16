@@ -1,18 +1,4 @@
-{% extends 'base.html.twig' %}
-{% block header %}
-    Fuel Reconciliations
-{% endblock %}
-{% block header_annex %}
-    <li><a href="index.html">Home</a></li>
-    <li class="active">Fuel Reconciliations</li>
-{% endblock %}
-
-{% block left_column %}
-    <a href="{{path('addFuelReconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Reconciliation</a>
-    <a href="{{path('all_fuel_reconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all reconciliations</a>
-    <a href="{{ path('searchFuelReconciliation') }}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search For</a>
-    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export data</a>
-{% endblock %}
+{% extends 'fuel_reconciliation/fuelReconciliationBase.html.twig' %}
 
 {% block center_column %}
     <div class="panel-heading main-color-bg">
@@ -69,7 +55,7 @@
                             </tr>
                             <tr>
                                 <th>Factured</th>
-                                <td> {% if fuelReconciliation.invoice == null %} NO {% else %} YES {% endif %} </td>
+                                <td> {% if fuelReconciliation.invoice == null %} No {% else %} Yes {% endif %} </td>
                             </tr>
                             <tr>
                                 <th>Paid</th>
@@ -79,7 +65,7 @@
                             </tr>
                             <tr>
                                 <th>Note</th>
-                                <td>{% if fuelReconciliation.note is empty %}-----------------{% else %} {{ fuelReconciliation.note }}{% endif %}</td>
+                                <td>{{ fuelReconciliation.note }}</td>
                             </tr>
 
 
@@ -95,7 +81,7 @@
                         <div class="btn-group">
                             <a class="btn btn-primary legitRipple" href="{{ path('editFuelReconciliation', { 'id': fuelReconciliation.id }) }}">Update<i class="icon-rotate-cw2 position-right"></i>
                             </a>
-                            <a onclick="return confirm('Are you sure that you wan't to delete this item?.');" class="btn btn-danger legitRipple" href="{{ path('deleteFuelReconciliation', { 'id': fuelReconciliation.id }) }}">Delete
+                            <a onclick="return confirm('Are you sure that you wan\'t to delete this item?.');" class="btn btn-danger legitRipple" href="{{ path('deleteFuelReconciliation', { 'id': fuelReconciliation.id }) }}">Delete
                                 <i class="icon-trash-alt position-right"></i>
                             </a>
                         </div>

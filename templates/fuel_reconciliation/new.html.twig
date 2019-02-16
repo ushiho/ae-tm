@@ -1,29 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'fuel_reconciliation/fuelReconciliationBase.html.twig' %}
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
-{% block header %}
-    Fuel Reconciliations
-{% endblock %}
-{% block header_annex %}
-    <li><a href="#">Home</a></li>
-    <li class="active">Fuel Reconciliations</li>
-{% endblock %}
-
-{% block left_column %}
-    <a href="{{path('addFuelReconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Reconciliation</a>
-    <a href="{{path('all_fuel_reconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all reconciliations</a>
-    <a href="{{ path('searchFuelReconciliation') }}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search For</a>
-    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export data</a>
-{% endblock %}
 
 {% block center_column %}
 {% block path %}
 
     <div class="panel-heading main-color-bg">
-        <h3 class="panel-title">{% if fuelReconciliation == null or fuelReconciliation.id == null %}Create Reconciliation
+        <h3 class="panel-title">{% if fuelReconciliation == null or fuelReconciliation.id == null %}Create 
                     {% else %}
-                    Edit Reconciliation
-                    {% endif %}</h3>
+                    Edit 
+                    {% endif %}Reconciliation</h3>
     </div>
 {% endblock %}
 {{ form_start(form) }}
@@ -50,20 +36,20 @@
                             <strong>{{ form_label(form.totalAmount) }}</strong>
                         </td>
                         <td class="last" width="172">{{ form_widget(form.totalAmount, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }})
+                        {'placeholder':'Total Amount (DH)', 'class':'text' }})
                             }}</td>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.totalLitres) }}</strong>
                         </td>
                         <td class="last" width="172">{{ form_widget(form.totalLitres, {'attr' :
-                                {'placeholder':'Total Litres', 'class':'text' }}) }}</td>
+                                {'placeholder':'Total Litres (L)', 'class':'text' }}) }}</td>
                     </tr>
                     <tr>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.kilometrage) }}</strong>
                         </td>
                         <td class="last" width="172">{{ form_widget(form.kilometrage, {'attr' :
-                        {'placeholder':'Kilometrage', 'class':'text' }}) }}</td>
+                        {'placeholder':'Kilometrage (Km)', 'class':'text' }}) }}</td>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.gasStation) }}</strong>
                         </td>

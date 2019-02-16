@@ -1,20 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'fuel_reconciliation/fuelReconciliationBase.html.twig' %}
+
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 
-{% block header %}
-    Search Reconciliations
-{% endblock %}
-{% block header_annex %}
-    <li><a href="#">Home</a></li>
-    <li class="active">Search Reconciliations</li>
-{% endblock %}
-
-{% block left_column %}
-    <a href="{{path('addFuelReconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Create Reconciliation</a>
-    <a href="{{path('all_fuel_reconciliation')}}" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Show all reconciliations</a>
-    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Search For</a>
-    <a href="#" class="list-group-item"><span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> Export data</a>
-{% endblock %}
 
 {% block center_column %}
 

@@ -30,24 +30,21 @@ class ProjectController extends AbstractController
 {
     /**
      * @Route("/project", name="allProjects")
+     * @Route("/project/export", name="exportMissionsOfProject")
      */
     public function show(ProjectRepository $repo, Request $request)
     {
         if($this->getUser()->getRole() != 3){
-            $searchForm = $this->createForm(ExportProjectsType::class);
-            $searchForm->handleRequest($request);
-            if($searchForm->isSubmitted() && $searchForm->isValid()){
-
-                // return $this->renderView('exportedFile/project.html.twig', [
-                //     'projects' => $repo->findByDates($searchForm->getData()),
-                // ]);
-                return $this->print($repo->findByDates($searchForm->getData()));
+            if($request->attributes->get('_route') == 'exportMissionsOfProject'){
+                return $this->render('project/exportProjects.html.twig', [
+                    'connectedUser' => $this->getUser(),
+                    'projects' => $repo->findAll(),
+                ]);
             }
 
             return $this->render('project/projectBase.html.twig', [
                'connectedUser' => $this->getUser(),
                'projects' => $repo->findAll(),
-               'searchForm' => $searchForm->createView(),
             ]);
         }else{
             return $this->redirectToRoute('error403');
