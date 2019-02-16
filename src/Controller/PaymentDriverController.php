@@ -21,6 +21,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 // Include Dompdf required namespaces
 use Dompdf\Dompdf;
 use Dompdf\Options;
+// Incluse Excel Controller
+use App\Controller\ExcelController;
 
 class PaymentDriverController extends AbstractController
 {
@@ -267,7 +269,11 @@ class PaymentDriverController extends AbstractController
             if($form->isSubmitted() && $form->isValid()){
                 $data = $form->getData();
                 $managedData = $this->manageData($missionRepo->findByDriverAndProject($data['project'], $data['driver']), $paymentDriverRepo);
-                return $this->print($data['project'], $data['driver'], $managedData);
+                if($data['fileType']==2){
+                    return $this->print($data['project'], $data['driver'], $managedData);
+                }else{
+                    return ExcelController::printMission();
+                }
             }
             return $this->render('driver/exportPayment.html.twig', [
                 'form' => $form->createView(),

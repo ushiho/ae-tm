@@ -22,6 +22,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+use App\Controller\ExcelController;
+use App\Controller\MyController;
+
 
 class ProjectController extends AbstractController
 {
@@ -160,9 +163,9 @@ class ProjectController extends AbstractController
 
 
     /**
-     * @Route("/project/{id}/print", name="printMissionOfProject")
+     * @Route("/project/{id}/print/pdf", name="printMissionOfProjectToPdf")
      */
-    public function print(Project $project=null)
+    public function printToPdf(Project $project=null)
     {
         if($this->getUser()->getRole()!=3 && $project){
             $fileName = (new \DateTime())->format('Hidmy');
@@ -194,5 +197,13 @@ class ProjectController extends AbstractController
         }else{
             return $this->redirectToRoute('error403');
         }
+    }
+
+    /**
+     * @Route("/project/{id}/print/excel", name="printMissionOfProjectToExcel")
+     */
+    public function printToExcel(Project $project = null){
+        $excelController = new ExcelController();
+        $excelController->printMissions($project);
     }
 }
