@@ -30,8 +30,12 @@
     <div class="panel panel-flat">
 
         <div class="panel-body">
-
             <table class="table datatable-responsive table-bordered table-hover datatable-highlight">
+                {% if invoices == null or invoices is empty %}
+                <tr class="bg">
+                        <td class="first" style="text-align:center;font-weight: bold;">There is no Invoices add some <a href="{{path('makeAsFactured')}}" style="color:red;text-decoration: underline black;">here</a></td>
+                    </tr>
+                {% else %}
                 <thead>
                 <tr>
                     <th>N°</th>
@@ -76,6 +80,7 @@
                     </tr>
                 {% endfor %}
                 </tbody>
+                {% endif %}
             </table>
         </div>
     </div>

@@ -20,7 +20,7 @@ class SearchReconciliationType extends AbstractType
     {
         $builder
             ->add('firstDate', DateType::class, array(
-                'label' => 'Start Date :',
+                'label' => 'Start Date',
                 'required' => false,
                 'placeholder' => 'Select a value',
                 'widget' => 'single_text',
@@ -29,7 +29,7 @@ class SearchReconciliationType extends AbstractType
                 ),
             ))
             ->add('secondDate', DateType::class, array(
-                'label' => 'End Date :',
+                'label' => 'End Date',
                 'required' => false,
                 'placeholder' => 'Select a value',
                 'widget' => 'single_text',

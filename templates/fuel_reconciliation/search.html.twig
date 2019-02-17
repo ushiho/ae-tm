@@ -25,15 +25,13 @@
                         <td class="first" width="150">
                             <strong>{{ form_label(form.firstDate) }}</strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.firstDate, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }})}}</td>
+                        <td class="last" width="172">{{ form_widget(form.firstDate)}}</td>
                         <td class="first" width="150">
                             <strong>
                                 {{ form_label(form.secondDate) }}                            
                             </strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.secondDate, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}</td>
+                        <td class="last" width="172">{{ form_widget(form.secondDate) }}</td>
                     </tr>
                     <tr>
                         <td class="first" width="150">
@@ -41,20 +39,17 @@
                     {{ form_label(form.department) }}                            
                             </strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.department, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}</td>
+                        <td class="last" width="172">{{ form_widget(form.department) }}</td>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.driver) }}</strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.driver, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}</td>
+                        <td class="last" width="172">{{ form_widget(form.driver) }}</td>
                     </tr>
                     <tr>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.vehicle) }}</strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.vehicle, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}</td>
+                        <td class="last" width="172">{{ form_widget(form.vehicle) }}</td>
                         <td class="first" width="150">
                             <strong>{{ form_label(form.isPaid) }}</strong>
                         </td>
@@ -69,14 +64,12 @@
                         <td class="first" width="150" rowspan="2">
                             <strong>{{ form_label(form.project) }}</strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.project, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}
+                        <td class="last" width="172">{{ form_widget(form.project) }}
                         </td>
                         {# <td class="first" width="150">
                             <strong>{{ form_label(form.isPaid) }}</strong>
                         </td>
-                        <td class="last" width="172">{{ form_widget(form.isPaid, {'attr' :
-                        {'placeholder':'Total Amount', 'class':'text' }}) }}
+                        <td class="last" width="172">{{ form_widget(form.isPaid) }}
                         </td> #}
                     </tr>
                     
@@ -121,13 +114,13 @@
                             {% set totalLitres = totalLitres + fuelReconciliation.totalLitres %}
                             {% set totalKilom = totalKilom + fuelReconciliation.kilometrage %}
                         </tr>
+                    {% endfor %}
                         <tr>
                             <td>Totals</td>
                             <td>{{ totalKilom }} KMs</td>
                             <td>{{ totalLitres }} Lts</td>
                             <td>{{ totalAmount }} DHs</td>
                         </tr>
-                    {% endfor %}
 
                 </tbody>
                 

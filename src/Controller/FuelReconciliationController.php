@@ -160,26 +160,6 @@ class FuelReconciliationController extends AbstractController
         return $this->redirectToRoute('all_fuel_reconciliation');
     }
 
-    /**
-     * @Route("/add-reconciliations-to-print", name="add_reconciliation_to_print",options={"expose"=true})
-     * @Method("POST|GET")
-     */
-    public function addReconciliationsToPrintAction(Request $request, FuelReconciliationRepository $repo)
-    {
-        $reconciliations_ids = $request->get('reconciliations') ? $request->get('reconciliations') : array(3, 4, 1, 2);
-        $reconciliations = $repo->findReconciliationsByIds($reconciliations_ids);
-        $session = $this->get('session');
-        if (!$session->has('print-side')) {
-            $printSide = new PrintSide();
-            $session->set('print-side', $printSide);
-        }
-        $printSide = $this->get('session')->get('print-side');
-        $printSide->addReconciliations($reconciliations);
-        $session->set('print-side', $printSide);
-
-        return new JsonResponse(['success' => 200]);
-    }
-
 
 
     /**
@@ -261,8 +241,12 @@ class FuelReconciliationController extends AbstractController
                 }
         
                 $request->getSession()->clear();
-                $request->getSession()->getFlashBag()->add('InvoiceMsg', 'Your invoice has been created successfully!');
-                $this->print($reconciliations, $fileName, $invoice);
+                $request->getSession()->getFlashBag()->add('InvoiceMsg', 'Your invoice created successfully!');
+                $this->printExcelFile($reconciliations, $invoice, $fileName);
+                $this->print($reconciliations, $fileName);
+                return $this->redirectToRoute('invoice_show', [
+                    'id' => $id,
+                ]);
             }else{
                 $request->getSession()->getFlashBag()->add('fuelMsg', "Please search for reconciliations to create an invoice.");
                 return $this->redirectToRoute('searchFuelReconciliation');
@@ -272,7 +256,7 @@ class FuelReconciliationController extends AbstractController
         }
     }
 
-    public function print(array $reconciliations, $fileName, $invoice)
+    public function print(array $reconciliations, $fileName)
     {
         if($this->getUser()->getRole()!=3){
             
@@ -301,11 +285,18 @@ class FuelReconciliationController extends AbstractController
             $output = $dompdf->output();
             file_put_contents('invoice/pdf/'.$fileName.'.pdf', $output);
             // Output the generated PDF to Browser (force download)
-            $dompdf->stream($fileName.".pdf", [
-                "Attachment" => false,
-            ]);
+            // $dompdf->stream($fileName.".pdf", [
+            //     "Attachment" => false,
+            // ]);
         }else{
             return $this->redirectToRoute('error403');
         }
+    }
+
+    public function printExcelFile(array $reconciliations, $invoice, $fileName){
+        $excelController = new ExcelController();
+        $project = $reconciliations[0]->getProject();
+        $excelController->printReconciliations($invoice, $project, $reconciliations, $fileName);
+        return;
     }
 }
